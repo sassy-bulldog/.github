@@ -13,13 +13,20 @@ on:
         description: 'A token passed from the caller workflow that can read the organization members'
         required: true
   push:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - 'releases/**'
+      - main
+      - rc/*
+      - rc
+      - beta/*
+      - beta
+      - alpha/*
+      - alpha
     paths:
       - '.github/workflows/codeowners.yml'
       - CODEOWNERS
-  pull_request:
-    # Sequence of patterns matched against refs/heads
-    branches:
-      - main
+  pull_request_target:
     paths:
       - '.github/workflows/codeowners.yml'
       - '**/CODEOWNERS'

@@ -10,9 +10,6 @@ on:
         type: string
 
   pull_request_target:
-    # Sequence of patterns matched against refs/heads
-    branches:
-      - main
     types:
       - opened
       - edited

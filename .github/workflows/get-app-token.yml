@@ -1,7 +1,6 @@
 name: Get GitHub App Token
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       runs-on:

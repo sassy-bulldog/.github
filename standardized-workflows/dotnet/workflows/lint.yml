@@ -6,21 +6,15 @@ on:
   push:
     # Sequence of patterns matched against refs/heads
     branches:
-      - main
       - 'releases/**'
-    paths:
-      # You should add paths for files that would be considered part of the program or work-product
-      - '.github/workflows/lint.yml'
-      - '**/*.cs'
-  pull_request:
-    # Sequence of patterns matched against refs/heads
-    branches:
       - main
-      - 'releases/**'
-    paths:
-      # You should add paths for files that would be considered part of the program or work-product
-      - '.github/workflows/lint.yml'
-      - '**/*.cs'
+      - rc/*
+      - rc
+      - beta/*
+      - beta
+      - alpha/*
+      - alpha
+  pull_request_target:
 
 # Down scope as necessary via https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
 permissions:

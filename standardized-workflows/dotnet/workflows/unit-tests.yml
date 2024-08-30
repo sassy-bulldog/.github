@@ -5,28 +5,17 @@ name: 'Unit Tests'
 on:
   workflow_dispatch:
   push:
-    paths:
-      # You should add paths for files that would be considered part of the program or work-product
-      - '.github/workflows/unit-tests.yml'
-      - '**.sln'
-      - '**.csproj'
-      - '**.cs'
-      - '**.runsettings'
-  pull_request:
     # Sequence of patterns matched against refs/heads
     branches:
-      - main
-      - pre/rc
-      - beta
-      - alpha
       - 'releases/**'
-    paths:
-      # You should add paths for files that would be considered part of the program or work-product
-      - '.github/workflows/unit-tests.yml'
-      - '**.sln'
-      - '**.csproj'
-      - '**.cs'
-      - '**.runsetting'
+      - main
+      - rc/*
+      - rc
+      - beta/*
+      - beta
+      - alpha/*
+      - alpha
+  pull_request_target:
 
 jobs:
   test:

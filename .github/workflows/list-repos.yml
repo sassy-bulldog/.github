@@ -44,10 +44,6 @@ on:
         description: "The count of repos to use in the matrix job"
         value: ${{ jobs.matrix-repos.outputs.count }}
 
-  push:
-    paths:
-      - '.github/workflows/list-repos.yml'
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   get-app-token:

@@ -19,20 +19,14 @@ on:
   push:
     # Sequence of patterns matched against refs/heads
     branches:
-      - main
-      - pre/rc
-      - beta
-      - alpha
       - 'releases/**'
-    paths:
-      # You should add paths for files that would be considered part of the program or work-product
-      - '.github/workflows/release.yml'
-      - '.releaserc.json'
-      - '**.sln'
-      - '**.csproj'
-      - '**.cs'
-      - '**.runsetting'
-      - 'nuget.config'
+      - main
+      - rc/*
+      - rc
+      - beta/*
+      - beta
+      - alpha/*
+      - alpha
 
 permissions:
   contents: write

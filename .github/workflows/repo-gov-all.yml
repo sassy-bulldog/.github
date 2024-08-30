@@ -32,7 +32,7 @@ on:
       - '.github/workflows/repo-gov.yml'
       - '.github/workflows/repo-gov-all.yml'
       - '.github/workflows/repo-gov-matrixed.yml'
-      - 'standardized-workflows/*'
+      - 'standardized-workflows/**'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:

@@ -6,19 +6,15 @@ on:
   push:
     # Sequence of patterns matched against refs/heads
     branches:
-      - main
       - 'releases/**'
-    paths:
-      - '.github/workflows/unit-tests.yml'
-      - '**/*.tf'
-  pull_request:
-    # Sequence of patterns matched against refs/heads
-    branches:
       - main
-      - 'releases/**'
-    paths:
-      - '.github/workflows/unit-tests.yml'
-      - '**/*.tf'
+      - rc/*
+      - rc
+      - beta/*
+      - beta
+      - alpha/*
+      - alpha
+  pull_request_target:
     types:
       - opened
       - synchronize

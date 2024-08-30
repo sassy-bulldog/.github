@@ -14,15 +14,14 @@ on:
   push:
     # Sequence of patterns matched against refs/heads
     branches:
+      - 'releases/**'
       - main
+      - rc/*
       - rc
+      - beta/*
       - beta
+      - alpha/*
       - alpha
-    paths:
-      # You should add paths for files that would be considered part of the program or work-product
-      - '.github/workflows/release.yml'
-      - '.releaserc.json'
-      - '**/*.tf'
 
 permissions:
   contents: write
