@@ -105,17 +105,12 @@ jobs:
           terraform-docs-version: ${{ env.TERRAFORM_DOCS_VERSION }}
           install-hcledit: true
 
-      - name: Create bug if failed
-        if: failure()
-        uses: dacbd/create-issue-action@v2.0.0
-        with:
-          token: ${{ github.token }}
-          title: 'BUG: Unit Tests Failed for ${{ steps.minMax.outputs.maxVersion }}'
-          body: |
-            ### Context
-            [Failed Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            [Codebase](${{ github.server_url }}/${{ github.repository }}/tree/${{ github.sha }})
-            Workflow name - `${{ github.workflow }}`
-            Job -           `${{ github.job }}`
-            status -        `${{ job.status }}`
-          assignees: ${{ github.triggering_actor }}
+  createBug:
+    name: Create Bug
+    needs: [preCommitMinVersions, preCommitMaxVersion]
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Terraform Lint Failed for ${{ steps.minMax.outputs.maxVersion }}'
+      job: ${{ needs.preCommitMaxVersion.name }}
+      status: ${{ needs.preCommitMaxVersion.outcome }}

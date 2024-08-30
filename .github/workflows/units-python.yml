@@ -104,17 +104,12 @@ jobs:
         run: |
           tox -- --hypothesis-profile=ci
 
-      - name: Create bug if failed
-        if: failure()
-        uses: dacbd/create-issue-action@v1.2.1
-        with:
-          token: ${{ github.token }}
-          title: 'BUG: Unit Tests Failed for ${{ matrix.directory }}'
-          body: |
-            ### Context
-            [Failed Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            [Codebase](${{ github.server_url }}/${{ github.repository }}/tree/${{ github.sha }})
-            Workflow name - `${{ github.workflow }}`
-            Job -           `${{ github.job }}`
-            status -        `${{ job.status }}`
-          assignees: ${{ github.triggering_actor }}
+  createBug:
+    name: Create Bug
+    needs: [test]
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Python Tests Failed'
+      job: ${{ needs.test.name }}
+      status: ${{ needs.test.outcome }}

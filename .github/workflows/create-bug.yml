@@ -1,0 +1,43 @@
+name: Create an Issue documenting the bug
+
+# Controls when the workflow will run
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        default: '["self-hosted"]'  # ,"linux"
+        required: false
+        type: string
+      title:
+        description: Title of the issue to create
+        required: true
+        type: string
+      job:
+        description: Job name that failed
+        required: true
+        type: string
+      status:
+        description: Status of the preceeding job
+        required: true
+        type: string
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  create-bug:
+    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    steps:
+      - name: Create bug if failed
+        if: inputs.status == 'failure'
+        uses: dacbd/create-issue-action@v2.0.0
+        with:
+          token: ${{ github.token }}  # TODO: This should be an github bot
+          title: 'BUG: ${{ inputs.title }}'
+          body: |
+            ### Context
+            [Failed Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [Codebase](${{ github.server_url }}/${{ github.repository }}/tree/${{ github.sha }})
+            Workflow name - `${{ github.workflow }}`
+            Job -           `${{ inputs.job }}`
+            status -        `${{ inputs.status }}`
+          assignees: ${{ github.triggering_actor }}

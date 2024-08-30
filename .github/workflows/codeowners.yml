@@ -8,7 +8,7 @@ on:
         default: '["self-hosted","linux"]'
         required: false
         type: string
-    secrets:
+    secrets: # TODO: should be a github bot
       ORG_READER:
         description: 'A token passed from the caller workflow that can read the organization members'
         required: true
@@ -50,6 +50,6 @@ jobs:
         if: steps.check_codeowners.outputs.files_exists
         with:
           checks: "owners,duppatterns,syntax"
-          github_access_token: ${{ secrets.ORG_READER }} # should be a github bot
+          github_access_token: ${{ secrets.ORG_READER }} # TODO: should be a github bot
           owner_checker_owners_must_be_teams: true
           # owner_checker_ignored_owners:
