@@ -1,0 +1,55 @@
+name: 'Code-Owners are Team(s)'
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        default: '["self-hosted","linux"]'
+        required: false
+        type: string
+    secrets:
+      ORG_READER:
+        description: 'A token passed from the caller workflow that can read the organization members'
+        required: true
+  push:
+    paths:
+      - '.github/workflows/codeowners.yml'
+      - CODEOWNERS
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - main
+    paths:
+      - '.github/workflows/codeowners.yml'
+      - '**/CODEOWNERS'
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  codeowners:
+    name: Verify Code Owners per Governance
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]') }}
+    steps:
+      - name: Clean Agent Workspace
+        uses: mickem/clean-after-action@v2.0.0
+        
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.base_ref }}
+      - name: Check for CODEOWNERS file
+        uses: andstor/file-existence-action@v2
+        id: check_codeowners
+        with:
+          files: '**/CODEOWNERS'
+      - name: Validate CODEOWNERS
+        uses: mszostok/codeowners-validator@v0.7.4
+        if: steps.check_codeowners.outputs.files_exists
+        with:
+          checks: "owners,duppatterns,syntax"
+          github_access_token: ${{ secrets.ORG_READER }} # should be a github bot
+          owner_checker_owners_must_be_teams: true
+          # owner_checker_ignored_owners:

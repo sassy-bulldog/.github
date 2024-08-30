@@ -1,0 +1,71 @@
+name: 'Issue & PR Maintenance'
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        default: '["self-hosted","linux"]'
+        required: false
+        type: string
+
+  schedule:
+    - cron: '0 0 * * *'
+
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/stale.yml'
+
+jobs:
+  stale:
+    name: Close Issues w/o Update for 10-days, Mark Issues and PRs Older than 90-days as Stale
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]' ) }}
+    steps:  
+      - name: Clean Agent Workspace
+        uses: mickem/clean-after-action@v2.0.0
+        
+      - name: Stale Issues and PRs
+        uses: actions/stale@v6.0.1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          # Staling issues and PR's
+          days-before-stale: 90
+          stale-issue-label: stale
+          stale-pr-label: stale
+          stale-issue-message: |
+            This issue has been automatically marked as stale because it has been open 30 days
+            with no activity. Remove stale label or comment or this issue will be closed in 10 days
+          stale-pr-message: |
+            This PR has been automatically marked as stale because it has been open 30 days
+            with no activity. Remove stale label or comment or this PR will be closed in 10 days
+          # Not stale if have this labels or part of milestone
+          exempt-issue-labels: bug,wip,on-hold
+          exempt-pr-labels: bug,wip,on-hold
+          exempt-all-milestones: true
+          # Close issue operations
+          # Label will be automatically removed if the issues are no longer closed nor locked.
+          days-before-close: 10
+          delete-branch: true
+          close-issue-message: This issue was automatically closed because of stale in 10 days
+          close-pr-message: This PR was automatically closed because of stale in 10 days
+
+  lock:
+    name: Lock issues and PRs that have been closed for 60-days
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]' ) }}
+    steps:
+      - name: Clean Agent Workspace
+        uses: mickem/clean-after-action@v2.0.0
+
+      - name: Lock Threads
+        uses: dessant/lock-threads@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-comment: >
+            I'm going to lock this issue because it has been closed for _60 days_ ⏳. This helps our maintainers find and focus on the active issues.
+            If you have found a problem that seems similar to this, please open a new issue and complete the issue template so we can capture all the details necessary to investigate further.
+          issue-inactive-days: '60'
+          pr-comment: >
+            I'm going to lock this pull request because it has been closed for _60 days_ ⏳. This helps our maintainers find and focus on the active issues.
+            If you have found a problem that seems related to this change, please open a new issue and complete the issue template so we can capture all the details necessary to investigate further.
+          pr-inactive-days: '60'

@@ -1,0 +1,76 @@
+name: Matrixed Repository Governance
+
+# Controls when the workflow will run
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: false
+        type: string
+        default: '["self-hosted","linux"]'
+      # encrypted-token:
+      #   description: An encrypted token to use with this action (encrypted because you can't pass keys in plain text).
+      #   required: false
+      #   type: string
+      repo-filter:
+        description: Filter the repositories to apply governance to.
+        default: 'terraform'
+        required: false
+        type: string
+      delay:
+        description: Delay in seconds between each repository.
+        default: 0
+        required: false
+        type: number
+      settings_files:
+        description: Settings files to apply to the repositories.
+        required: false
+        default: '[ "examples/all/settings.yml", "examples/terraform/settings.yml" ]'
+        type: string
+      action:
+        description: |
+          What action to take with this action. One of validate, check, or apply.
+          - Validate will validate your settings file, but not touch your repo.
+          - Check will check your repo with your settings file and output a report of any drift.
+          - Apply will apply the settings in your settings file to your repo.
+        default: check
+        required: false
+        type: string
+
+  push:
+    paths:
+      - '.github/workflows/repo-gov.yml'
+      - '.github/workflows/repo-gov-matrixed.yml'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  matrix-repos:
+    concurrency:
+      group: ${{ inputs.repo-filter || 'terraform' }}-repo-list@${{ inputs.settings_files || '[ "examples/all/settings.yml", "examples/terraform/settings.yml" ]' }}
+      cancel-in-progress: true
+
+    name: Get list of repos
+    if: ${{ inputs.action != 'skip' }}
+    uses: ./.github/workflows/list-repos.yml
+    with:
+      runs-on: ${{ inputs.runs-on || '[ "self-hosted", "linux" ]' }}
+      owner: ${{ github.repository_owner }}
+      matrix-use: true
+      format: list
+      repo-filter: ${{ inputs.repo-filter || 'terraform' }}
+      delay: ${{ inputs.delay || 0 }}
+    secrets: inherit
+
+  repo-manager:
+    name: ${{ inputs.repo-filter || 'terraform' }}
+    # The type of runner that the job will run on
+    needs: matrix-repos
+    uses: ./.github/workflows/repo-gov.yml
+    with:
+      runs-on: ${{ inputs.runs-on || '[ "self-hosted", "linux" ]' }}
+      # encrypted-token: ${{ inputs.encrypted-token }}
+      repos: ${{ needs.matrix-repos.outputs.repos }}
+      settings_files: ${{ inputs.settings_files || '[ "examples/all/settings.yml", "examples/terraform/settings.yml" ]' }}
+      action: ${{ inputs.action || 'check' }}
+    secrets: inherit

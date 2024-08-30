@@ -1,0 +1,121 @@
+# TODO: Make this a pre-commit action
+name: 'Lint Terraform'
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        default: '["self-hosted","linux"]'
+        required: false
+        type: string
+      
+env:
+  TERRAFORM_VERSION_IN_PRODUCTION: "1.6.2"
+  TERRAFORM_DOCS_VERSION: v0.16.0
+  TFLINT_VERSION: v0.44.1
+  
+jobs:
+  collectInputs:
+    name: Collect workflow inputs
+    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    outputs:
+      directories: ${{ steps.dirs.outputs.directories }}
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Get root directories
+        id: dirs
+        uses: clowdhaus/terraform-composite-actions/directories@v1.8.3
+
+  preCommitMinVersions:
+    name: Validate @ Min Version
+    needs: collectInputs
+    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    strategy:
+      matrix:
+        directory: ${{ fromJson(needs.collectInputs.outputs.directories) }}
+      fail-fast: false
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: mickem/clean-after-action@v2.0.0
+        
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Terraform min/max versions
+        id: minMax
+        uses: clowdhaus/terraform-min-max@v1.2.4
+        with:
+          directory: ${{ matrix.directory }}
+
+      - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
+        # Run only validate pre-commit check on min version supported
+        if: ${{ matrix.directory !=  '.' }}
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
+        with:
+          terraform-version: ${{ steps.minMax.outputs.minVersion }}
+          tflint-version: ${{ env.TFLINT_VERSION }}
+          args: 'terraform_validate --color=always --show-diff-on-failure --files ${{ matrix.directory }}/*'
+          
+      - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
+        # Run only validate pre-commit check on min version supported
+        if: ${{ matrix.directory ==  '.' }}
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
+        with:
+          terraform-version: ${{ steps.minMax.outputs.minVersion }}
+          tflint-version: ${{ env.TFLINT_VERSION }}
+          args: 'terraform_validate --color=always --show-diff-on-failure --files $(ls *.tf)'
+
+  preCommitMaxVersion:
+    name: Lint @ Max Version
+    needs: collectInputs
+    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    steps:
+      - name: Clean Agent Workspace
+        uses: mickem/clean-after-action@v2.0.0
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+
+      - name: Terraform min/max versions
+        id: minMax
+        uses: clowdhaus/terraform-min-max@v1.2.4
+
+      - name: Pre-commit Terraform ${{ steps.minMax.outputs.maxVersion }}
+        if: ${{ steps.minMax.outputs.maxVersion < env.TERRAFORM_VERSION_IN_PRODUCTION }}
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
+        with:
+          terraform-version: ${{ steps.minMax.outputs.maxVersion }}
+          tflint-version: ${{ env.TFLINT_VERSION }}
+          terraform-docs-version: ${{ env.TERRAFORM_DOCS_VERSION }}
+          install-hcledit: true
+
+      - name: Pre-commit Terraform ${{ env.TERRAFORM_VERSION_IN_PRODUCTION }}
+        if: ${{ steps.minMax.outputs.maxVersion >= env.TERRAFORM_VERSION_IN_PRODUCTION }}
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
+        with:
+          terraform-version: ${{ env.TERRAFORM_VERSION_IN_PRODUCTION }}
+          tflint-version: ${{ env.TFLINT_VERSION }}
+          terraform-docs-version: ${{ env.TERRAFORM_DOCS_VERSION }}
+          install-hcledit: true
+
+      - name: Create bug if failed
+        if: failure()
+        uses: dacbd/create-issue-action@v2.0.0
+        with:
+          token: ${{ github.token }}
+          title: 'BUG: Unit Tests Failed for ${{ steps.minMax.outputs.maxVersion }}'
+          body: |
+            ### Context
+            [Failed Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [Codebase](${{ github.server_url }}/${{ github.repository }}/tree/${{ github.sha }})
+            Workflow name - `${{ github.workflow }}`
+            Job -           `${{ github.job }}`
+            status -        `${{ job.status }}`
+          assignees: ${{ github.triggering_actor }}

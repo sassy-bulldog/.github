@@ -1,0 +1,68 @@
+name: 'Terraform Unit Tests'
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        default: '["self-hosted"]'
+        required: false
+        type: string
+
+jobs:
+  unitTests:
+    name: Perform Unit Tests on Terraform IaC
+    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    steps:
+      - name: Clean Agent Workspace
+        uses: mickem/clean-after-action@v2.0.0
+        
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Install Go
+        id: installGo
+        # https://linuxhandbook.com/curl-downloading-html-file/
+        # We should add a version check as well, and update when necessary
+        # rm -rf /usr/local/go 
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gtkhash
+          if [ -d "/usr/local/go" ]; then
+            echo "Go is already installed; using current version"
+          else
+            curl -JLO 'https://go.dev/dl/go1.21.5.linux-amd64.tar.gz'
+            if ! echo "e2bc0b3e4b64111ec117295c088bde5f00eeed1567999ff77bc859d7df70078e go1.21.5.linux-amd64.tar.gz" | sha256sum -c -; then
+                echo "Checksum failed" >&2
+                exit 1
+            fi
+            sudo tar -C /usr/local -xzf 'go1.21.5.linux-amd64.tar.gz'
+            export PATH=$PATH:/usr/local/go/bin
+          fi
+          go version
+        
+      - name: Install Terraform
+        id: installTerraform
+        # https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
+        run: |
+          sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+          wget -O- https://apt.releases.hashicorp.com/gpg | \
+            gpg --dearmor | \
+            sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          gpg --no-default-keyring \
+            --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+            --fingerprint
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+            https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+            sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt-get update
+          sudo apt-get install terraform
+
+      - name: Perform Unit Tests
+        id: units
+        run: |
+          export PATH=$PATH:/usr/local/go/bin
+          cd test
+          go mod init github.com/aws-ia/terraform-project-ephemeral
+          go mod tidy
+          go install github.com/gruntwork-io/terratest/modules/terraform
+          go test -timeout 45m

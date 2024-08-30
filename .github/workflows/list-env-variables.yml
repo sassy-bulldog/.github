@@ -1,0 +1,48 @@
+name: 'List Environment Variables'
+
+on:
+  workflow_run:
+    workflows: [ 'Mock Test Workflow for Other Branches' ]
+    types:
+      - completed # in_progress
+    
+  workflow_dispatch:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        default: '["self-hosted","linux"]'
+        required: false
+        type: string
+
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        default: '["self-hosted","linux"]'
+        required: false
+        type: string
+
+  push:
+    paths:
+      # You should add paths for files that would be considered part of the program or work-product
+      - '.github/workflows/list-env-variables.yml'
+
+jobs:
+  list-env-vars:
+    name: List Environment Variables
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "windows" ]') }} # do not need default, workflow call only
+    steps:
+      - run: |
+          ${{ runner.os == 'Windows' && 'dir env:' || 'printenv' }};
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+          GITHUB_VARS: ${{ toJson(vars) }}
+          GITHUB_JOB: ${{ toJson(job) }}
+          # GITHUB_JOBS: ${{ toJson(jobs) }}
+          GITHUB_STEPS: ${{ toJson(steps) }}
+          GITHUB_RUNNER: ${{ toJson(runner) }}
+          GITHUB_SECRETS: ${{ toJson(secrets) }}
+          # GITHUB_STRATEGY: ${{ toJson(strategy) }}
+          # GITHUB_MATRIX: ${{ toJson(matrix) }}
+          GITHUB_NEEDS: ${{ toJson(needs) }}
+          GITHUB_INPUTS: ${{ toJson(inputs) }}

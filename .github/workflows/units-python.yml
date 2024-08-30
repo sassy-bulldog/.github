@@ -1,0 +1,120 @@
+name: 'Test python'
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Part of the matrix strategy - the Python code will be tested on each of these operating systems.
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
+      python-version:
+        description: Part of the matrix strategy - the Python code will be tested on each of these versions of python
+        required: False
+        type: string
+        default: '["3.10"]'
+      repo: 
+        description: Repository name with owner (like actions/checkout)
+        type: string
+        required: false
+        default: ${{ github.repository }}
+      branch:
+        description: Branch name
+        type: string
+        required: false
+        default: ${{ github.ref_name }}
+      workflow:
+        description: Workflow name (like build.yml)
+        type: string
+        required: false
+        default: build.yml
+      artifact-name:
+        description: Name of the artifact to upload to the calling workflow
+        type: string
+        required: false
+      working-directory:
+        description: 'Directory to use for storing the artifacts and running the unit tests'
+        type: string
+        required: false
+        default: ./
+      test-file:
+        description: 'Name of project or DLL containing the unit tests to run'
+        type: string
+        required: false
+        default: ''
+      test-filter:
+        description: 'Name of test to run in the DLL'
+        type: string
+        required: false
+        default: ''
+      test-runsettings:
+        description: 'Name of runsettings file containing the parameters to use for the unit tests'
+        type: string
+        required: false
+        default: '.runsettings'
+      test-parms:
+        description: 'Name of runsettings file containing the parameters to use for the unit tests'
+        type: string
+        required: false
+      build-config:
+        description: 'Build Configuration'
+        type: string
+        required: false
+        default: 'Debug'
+
+jobs:
+  test:
+    name: Testing ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+        python-version: ${{ fromJson(inputs.python-version) }}
+      fail-fast: false
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: mickem/clean-after-action@v2.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4.3.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          token: ${{ github.token }}
+          # cache: 'pip'
+
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update
+          sudo apt install libgmp-dev libmpfr-dev libmpc-dev
+
+      - name: Install python dependencies
+        if: runner.os == 'Linux'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade setuptools
+          python -m pip install tox
+          python -m pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: |
+          tox -- --hypothesis-profile=ci
+
+      - name: Create bug if failed
+        if: failure()
+        uses: dacbd/create-issue-action@v1.2.1
+        with:
+          token: ${{ github.token }}
+          title: 'BUG: Unit Tests Failed for ${{ matrix.directory }}'
+          body: |
+            ### Context
+            [Failed Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [Codebase](${{ github.server_url }}/${{ github.repository }}/tree/${{ github.sha }})
+            Workflow name - `${{ github.workflow }}`
+            Job -           `${{ github.job }}`
+            status -        `${{ job.status }}`
+          assignees: ${{ github.triggering_actor }}
