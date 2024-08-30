@@ -1,0 +1,34 @@
+# Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
+name: Lint Code
+
+# Controls when the workflow will run
+on: 
+  push:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - main
+      - 'releases/**'
+    paths:
+      # You should add paths for files that would be considered part of the program or work-product
+      - '.github/workflows/lint.yml'
+      - '**/*.cs'
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - main
+      - 'releases/**'
+    paths:
+      # You should add paths for files that would be considered part of the program or work-product
+      - '.github/workflows/lint.yml'
+      - '**/*.cs'
+
+# Down scope as necessary via https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+permissions:
+  checks: write
+  contents: write
+
+jobs:
+  run-linters:
+    name: Shared Workflow
+    uses: jaffa-nj/.github/.github/workflows/lint-dotnet.yml@v1.0.0 # x-release-please-version
+    secrets: inherit

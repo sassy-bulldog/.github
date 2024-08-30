@@ -1,0 +1,41 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-search-depth": 400,
+  "group-pull-request-title-pattern": "chore${scope}: Release ${component} v${version}",
+  "pull-request-title-pattern": "chore${scope}: Release ${component} v${version}",
+  "packages": {
+    ".": {
+      "pull-request-title-pattern": "chore${scope}: Release v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "CHANGELOG.md",
+      "release-type": "simple",
+      "bump-minor-pre-major": false,
+      "bump-patch-for-minor-pre-major": false,
+      "draft": false,
+      "prerelease": false,
+      "exclude-paths": [".github"],
+      "include-component-in-tag": false,
+      "extra-files": [
+        "examples/all/workflows/codeowners.yml",
+        "examples/all/workflows/conventional-commits.yml",
+        "examples/all/workflows/stale.yml",
+        "examples/dotnet/workflows/lint.yml",
+        "examples/dotnet/workflows/release.yml",
+        "examples/dotnet/workflows/unit-tests.yml",
+        "examples/ssdt/workflows/lint.yml",
+        "examples/ssdt/workflows/release.yml",
+        "examples/ssdt/workflows/repo-gov.yml",
+        "examples/ssdt/workflows/unit-tests.yml",
+        "examples/ssis/workflows/lint.yml",
+        "examples/ssis/workflows/release.yml",
+        "examples/ssis/workflows/repo-gov.yml",
+        "examples/ssis/workflows/unit-tests.yml",
+        "examples/terraform/workflows/lint.yml",
+        "examples/terraform/workflows/release.yml",
+        "examples/terraform/workflows/unit-tests.yml"
+      ]
+    }
+  },
+  "plugins": []
+}

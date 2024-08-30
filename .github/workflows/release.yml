@@ -1,0 +1,109 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        default: '["self-hosted","Linux"]'
+        required: false
+        type: string
+      dry_run:
+        description: 'When set to true it does not actually publish the version, but rather writes the info for the release to the agent output'
+        required: false
+        type: boolean
+        default: true
+        
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        default: '["self-hosted","Linux"]'
+        required: false
+        type: string
+      dry_run:
+        description: 'When set to true it does not actually publish the version, but rather writes the info for the release to the agent output'
+        required: false
+        type: boolean
+        default: true
+    outputs:
+      new_release_published:
+        description: Whether a new release was published. The return value is in the form of a string. ("true" or "false")
+        value: ${{ jobs.release.outputs.new_release_published }}
+      new_release_git_tag:
+        description: The Git tag associated with the new release.
+        value: ${{ jobs.release.outputs.new_release_git_tag }}
+      new_release_version:
+        description: Version of the new release. (e.g. `1.3.0`)
+        value: ${{ jobs.release.outputs.new_release_version }}
+      new_release_major_version:
+        description: Major version of the new release. (e.g. "1")
+        value: ${{ jobs.release.outputs.new_release_major_version }}
+      new_release_minor_version:
+        description: Minor version of the new release. (e.g. "3")
+        value: ${{ jobs.release.outputs.new_release_minor_version }}
+      new_release_patch_version:
+        description: Patch version of the new release. (e.g. "0")
+        value: ${{ jobs.release.outputs.new_release_patch_version }}
+      new_release_channel:
+        description: The distribution channel on which the last release was initially made available (undefined for the default distribution channel).
+        value: ${{ jobs.release.outputs.new_release_channel }}
+      new_release_notes:
+        description: The release notes for the new release.
+        value: ${{ jobs.release.outputs.new_release_notes }}
+      new_release_git_head:
+        description: The sha of the last commit being part of the new release
+        value: ${{ jobs.release.outputs.new_release_git_head }}
+      last_release_git_tag:
+        description: The Git tag associated with the last release, if there was one.
+        value: ${{ jobs.release.outputs.last_release_git_tag }}
+      last_release_version:
+        description: Version of the previous release, if there was one. (e.g. 1.2.0)
+        value: ${{ jobs.release.outputs.last_release_version }}
+      last_release_git_head:
+        description: The sha of the last commit being part of the last release, if there was one.
+        value: ${{ jobs.release.outputs.last_release_git_head }}
+
+jobs:
+  get-app-token:
+    name: Get GitHub App Token
+    uses: ./.github/workflows/get-app-token.yml
+    with:
+      runs-on: ${{ inputs.runs-on || '[ "self-hosted", "linux" ]' }}
+      client-id: ${{ vars.GOV_APP_CLIENT_ID }}
+      installation-id: ${{ vars.GOV_APP_INSTALLATION_ID }}
+    secrets: inherit
+
+  release:
+    needs: get-app-token
+    # it may be nice to use a different switch and use release please in other repos; but never got to that
+    if: ${{ github.repository == 'jaffa-nj/.github' }}
+    runs-on: ${{ fromJSON(inputs.runs-on || '["self-hosted","linux"]') }}
+    steps:
+      - name: Clean Agent Workspace
+        uses: mickem/clean-after-action@v2.0.0
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Decrypt Token
+        uses: cloudposse/github-action-secret-outputs@0.1.2
+        id: decrypt-token
+        with:
+          ## PASSWORD is a gpg passphrase stored in Github Secrets.
+          secret: ${{ secrets.PASSWORD }}
+          op: decode
+          in: ${{ needs.get-app-token.outputs.encrypted-token }}
+
+      - name: Create Release PR
+        uses: googleapis/release-please-action@v4.1.1
+        with:
+          token: ${{ steps.decrypt-token.outputs.out || github.token }}
+          manifest-file: .github/.release-please-manifest.json

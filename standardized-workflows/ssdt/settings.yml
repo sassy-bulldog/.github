@@ -1,0 +1,27 @@
+collaborators:
+
+settings:
+
+labels:
+
+branch_protections:
+
+environments:
+
+secrets:
+
+variables:
+  - key: SQL_SERVER_NAME
+    value: ''
+    exists: false
+
+batch_file_operations:
+  - target_branch: main
+    commit_msg: 'ci(standards): Update SSDT Workflows'
+    files:
+      - src_file: standardized-workflows/ssdt/workflows/lint.yml
+        dest_file: .github/workflows/lint.yml
+      - src_file: standardized-workflows/ssdt/workflows/release.yml
+        dest_file: .github/workflows/release.yml
+      - src_file: standardized-workflows/ssdt/workflows/unit-tests.yml
+        dest_file: .github/workflows/unit-tests.yml
