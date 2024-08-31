@@ -65,6 +65,7 @@ on:
 jobs:
   # This workflow contains a single job called "repo-manager"
   repo-manager:
+    if: ${{ inputs.repos != '[]' }}
     concurrency:
       group: ${{ matrix.repo }}-${{ matrix.settings_file}}
       cancel-in-progress: true
