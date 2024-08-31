@@ -116,9 +116,9 @@ jobs:
             }
             
             // construct search query
-            let query = `user:${inputOwner}`
+            let query = `user:${inputOwner}+NOT .github in:name`
             if (inputRepoFilter) {
-              query += `+${inputRepoFilter} in:name`
+              query += `AND ${inputRepoFilter} in:name`
             }
             // https://docs.github.com/en/search-github/searching-on-github/searching-for-repositories
             query += `+is:public+is:internal+is:private+archived:false+fork:true`
