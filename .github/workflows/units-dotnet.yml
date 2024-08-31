@@ -1,0 +1,147 @@
+name: 'Test dotnet'
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      repo: 
+        description: Repository name with owner (like actions/checkout)
+        type: string
+        required: false
+        default: ${{ github.repository }}
+      branch:
+        description: Branch name
+        type: string
+        required: false
+        default: ${{ github.ref_name }}
+      workflow:
+        description: Workflow name (like build.yml)
+        type: string
+        required: false
+        default: build.yml
+      artifact-name:
+        description: Name of the artifact to upload to the calling workflow
+        type: string
+        required: false
+      working-directory:
+        description: 'Directory to use for storing the artifacts and running the unit tests'
+        type: string
+        required: false
+        default: ./
+      test-file:
+        description: 'Name of project or DLL containing the unit tests to run'
+        type: string
+        required: false
+        default: ''
+      test-filter:
+        description: 'Name of test to run in the DLL'
+        type: string
+        required: false
+        default: ''
+      test-runsettings:
+        description: 'Name of runsettings file containing the parameters to use for the unit tests'
+        type: string
+        required: false
+        default: '.runsettings'
+      test-parms:
+        description: 'Name of runsettings file containing the parameters to use for the unit tests'
+        type: string
+        required: false
+      build-config:
+        description: 'Build Configuration'
+        type: string
+        required: false
+        default: 'Debug'
+
+jobs:
+  test:
+    name: Testing
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+
+    steps:
+      #TODO: Deprecated NodeJS Version
+      - name: Clean Agent Workspace
+        uses: mickem/clean-after-action@v2.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4.1.7
+
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          repo: ${{ inputs.repo }}
+          branch: ${{ inputs.branch }}
+          workflow: ${{ inputs.workflow }}
+          workflow_conclusion: success
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.working-directory }}
+          if_no_artifact_found: fail
+
+      - name: Setup .NET Core SDKs
+        # v3+ definitely has issue
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: |
+            6.0.x
+
+      - name: Install mono on Linux
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo apt install ca-certificates gnupg
+          sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+          sudo apt update
+          sudo apt install mono-complete -y
+          cat << \EOF >> ~/.bash_profile
+          EOF
+
+      - name: Install Report Generator
+        run: |
+          try {
+            dotnet tool update -g dotnet-reportgenerator-globaltool --version 5.1.25;
+          }
+          catch {
+            dotnet tool install -g dotnet-reportgenerator-globaltool --version 5.1.25;
+          }
+          ${{ runner.os == 'Linux' && 'export PATH="$PATH:/home/runner/.dotnet/tools"' || '$env:PATH +=  ";$($env:USERPROFILE)\.dotnet\tools";' }}
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Unit Tests
+        run: |
+          ${{ runner.os == 'Linux' && 'export PATH="$PATH:/home/runner/.dotnet/tools"' || '' }}
+          dotnet test "${{ inputs.test-file }}" ${{ runner.os == 'Linux' && '\' || '`' }}
+            ${{ contains(inputs.test-filter, '--filter') && inputs.test-filter || '' }} ${{ runner.os == 'Linux' && '\' || '`' }}
+            --settings ${{ inputs.test-runsettings }} ${{ runner.os == 'Linux' && '\' || '`' }}
+            --verbosity minimal ${{ runner.os == 'Linux' && '\' || '`' }}
+            --logger:"trx;LogFilePrefix=TestResults" ${{ runner.os == 'Linux' && '\' || '`' }}
+            ${{ format('--collect:"XPlat Code Coverage" --results-directory ./CodeCoverage --configuration {0}', inputs.build-config) }}
+          reportgenerator "-reports:./CodeCoverage/*/coverage.cobertura.xml" "-targetdir:./CodeCoverage" -reporttypes:Cobertura
+        working-directory: "${{ inputs.working-directory }}"
+        env:
+          NUGET_USERNAME: ${{ vars.NUGET_USERNAME }}
+          NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
+
+      - name: Publish Test & Coverage Results
+        if: '!cancelled()'
+        uses: bibipkins/dotnet-test-reporter@v1.4.1
+        with:
+          github-token: ${{ steps.decrypt-token.outputs.out }}
+          comment-title: "Unit Test Results"
+          results-path: "${{ inputs.working-directory }}CodeCoverage"
+          coverage-path: "${{ inputs.working-directory }}CodeCoverage/Cobertura.xml"
+          coverage-type: cobertura
+          coverage-threshold: 60
+
+  createBug:
+    name: Create Bug
+    needs: [test]
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'dotnet Tests Failed'
+      job: ${{ needs.test.name }}
+      status: ${{ needs.test.outcome }}

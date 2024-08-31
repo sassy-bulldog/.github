@@ -1,0 +1,51 @@
+name: 'Test PowerShell Modules'
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        default: '["ubuntu-latest"]'
+        required: false
+        type: string
+      working-directory:
+        description: 'Directory to use for storing the artifacts and running the unit tests'
+        type: string
+        required: false
+        default: ./
+      test-file:
+        description: 'Name of project or DLL containing the unit tests to run'
+        type: string
+        required: true
+
+jobs:
+  test:
+    name: Testing
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+
+    steps:
+      #TODO: Deprecated NodeJS Version
+      - name: Clean Agent Workspace
+        uses: mickem/clean-after-action@v2.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4.1.7
+
+      - name: Unit Tests
+        run: |
+          Write-Host "Running Unit Tests in $PWD";
+          Get-ChildItem -Path $PWD | Where-Object -Property FullName -imatch '${{ inputs.test-file }}' | ForEach-Object {
+            Write-Host "Executing $($_.Name)";
+            & $_.FullName;
+          };
+        working-directory: "${{ inputs.working-directory }}"
+
+  createBug:
+    name: Create Bug
+    needs: [test]
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'PowerShell Tests Failed'
+      job: ${{ needs.test.name }}
+      status: ${{ needs.test.outcome }}
