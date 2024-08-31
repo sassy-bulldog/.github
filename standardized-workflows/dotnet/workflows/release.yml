@@ -37,7 +37,7 @@ permissions:
 jobs:
   release:
     name: Shared Workflow
-    uses: jaffa-nj/.github/.github/workflows/release.yml@v1.0.0 # x-release-please-version
+    uses: jaffa-nj/.github/.github/workflows/release.yml@v0.1.0 # x-release-please-version
     with:
       dry_run: ${{ inputs.dry_run || false }}
     secrets: inherit
@@ -47,7 +47,7 @@ jobs:
     name: Publish
     needs: 
     - release      
-    uses: jaffa-nj/.github/.github/workflows/build-dotnet.yml@v1.0.0 # x-release-please-version
+    uses: jaffa-nj/.github/.github/workflows/build-dotnet.yml@v0.1.0 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'
       working-directory: ./

@@ -29,5 +29,5 @@ on:
 jobs:
   codeowners:
     name: Shared Workflow
-    uses: jaffa-nj/.github/.github/workflows/codeowners.yml@v1.0.0 # x-release-please-version
+    uses: jaffa-nj/.github/.github/workflows/codeowners.yml@v0.1.0 # x-release-please-version
     secrets: inherit
