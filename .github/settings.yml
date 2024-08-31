@@ -3,6 +3,10 @@ collaborators:
     type: team
     permission: admin
     exists: true
+  - name: sme
+    type: team
+    permission: write
+    exists: true
 
 settings:
   private: false
