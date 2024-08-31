@@ -95,7 +95,7 @@ jobs:
         uses: actuarysailor/gha-repo-manager@v2.2.1
         with:
           repo: ${{ matrix.repo || 'self' }}
-          action: ${{ inputs.action || 'apply' }}
+          action: ${{ inputs.action || (github.ref_name == 'main' && 'apply') || 'check' }}
           settings_file: ${{ matrix.settings_file }}
           app_id: ${{ vars.GOV_APP_CLIENT_ID }}
           private_key: ${{ secrets.GOV_APP_PVT_KEY }}
