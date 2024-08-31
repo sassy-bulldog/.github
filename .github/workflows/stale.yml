@@ -53,6 +53,7 @@ jobs:
     name: Lock issues and PRs that have been closed for 60-days
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
     steps:
+      #TODO: Deprecated NodeJS Version
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0
 
