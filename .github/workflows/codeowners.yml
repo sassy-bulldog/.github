@@ -35,7 +35,7 @@ jobs:
     name: Get GitHub App Token
     uses: ./.github/workflows/get-app-token.yml
     with:
-      runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
+      runs-on: ${{ finputs.runs-on || '[ "ubuntu-latest" ]' }}
       client-id: ${{ vars.GOV_APP_CLIENT_ID }}
       installation-id: ${{ vars.GOV_APP_INSTALLATION_ID }}
     secrets: inherit
