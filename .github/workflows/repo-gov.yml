@@ -90,7 +90,6 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       # Runs a single command using the runners shell
-      # TODO: We should add a conditional step if automated vs. executed
       - name: Run RepoManager
         if: '!cancelled()' # This is a workaround for a bug in the cancel-in-progress feature
         uses: actuarysailor/gha-repo-manager@v2.2.1
