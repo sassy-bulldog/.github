@@ -7,10 +7,6 @@ on:
         description: Additional required tags for the pipeline agents to use.
         required: true
         type: string
-    secrets: # TODO: should be a github bot
-      ORG_READER:
-        description: 'A token passed from the caller workflow that can read the organization members'
-        required: true
   push:
     # Sequence of patterns matched against refs/heads
     branches:
@@ -35,14 +31,33 @@ on:
       - reopened
 
 jobs:
+  get-app-token:
+    name: Get GitHub App Token
+    uses: ./.github/workflows/get-app-token.yml
+    with:
+      runs-on: ${{ inputs.runs-on }}
+      client-id: ${{ vars.GOV_APP_CLIENT_ID }}
+      installation-id: ${{ vars.GOV_APP_INSTALLATION_ID }}
+    secrets: inherit
+
   codeowners:
     name: Verify Code Owners per Governance
+    needs: get-app-token
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
     steps:
       #TODO: Deprecated NodeJS Version
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0
-        
+
+      - name: Decrypt Token
+        uses: cloudposse/github-action-secret-outputs@0.1.2
+        id: decrypt-token
+        with:
+          ## PASSWORD is a gpg passphrase stored in Github Secrets.
+          secret: ${{ secrets.GOV_APP_PASSWORD }}
+          op: decode
+          in: ${{ needs.get-app-token.outputs.encrypted-token }}
+
       - name: Checkout
         uses: actions/checkout@v4.1.7
         with:
@@ -57,6 +72,6 @@ jobs:
         if: steps.check_codeowners.outputs.files_exists
         with:
           checks: "owners,duppatterns,syntax"
-          github_access_token: ${{ secrets.ORG_READER }} # TODO: should be a github bot
+          github_access_token: ${{ steps.decrypt-token.outputs.out }}
           owner_checker_owners_must_be_teams: true
           # owner_checker_ignored_owners:
