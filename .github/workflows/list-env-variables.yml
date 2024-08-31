@@ -7,7 +7,7 @@ on:
     workflows: [ 'Mock Test Workflow for Other Branches' ]
     types:
       - completed # in_progress
-    
+
   workflow_dispatch:
     inputs:
       runs-on:

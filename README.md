@@ -27,6 +27,3 @@ The following workflows should be included in every Repository in this organizat
 4.  [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/jaffa-nj/.github/main.svg)](https://results.pre-commit.ci/latest/github/jaffa-nj/.github/main)
 5.  [![Release](https://git.nylcloud.com/jaffa-nj/.github/actions/workflows/release.yml/badge.svg)](https://git.nylcloud.com/jaffa-nj/.github/actions/workflows/release.yml)
     - If the all commits have followed [Conventional Commit Standards](https://www.conventionalcommits.org/en/v1.0.0/), this automates updating the [CHANGELOG](CHANGELOG.MD) and the creation of a GitHub release with release notes.
-
-
-

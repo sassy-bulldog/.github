@@ -45,7 +45,7 @@ jobs:
           secret: ${{ secrets.GOV_APP_PASSWORD }}
           op: decode
           in: ${{ needs.get-app-token.outputs.encrypted-token }}
-        
+
       # Please look up the latest version from
       # https://github.com/amannn/action-semantic-pull-request/releases
       - uses: amannn/action-semantic-pull-request@v5.2.0

@@ -88,12 +88,12 @@ python -m venv venv
 ```
 
 To activate the virtual environment:
-- On Windows: 
+- On Windows:
     ```sh
     .\venv\Scripts\activate
     ```
 
-- On Unix or MacOS: 
+- On Unix or MacOS:
     ```sh
     source venv/bin/activate
     ```
@@ -133,4 +133,3 @@ To ensure code quality and consistency, we use pre-commit hooks. Install pre-com
     ```
 
 This will automatically run checks on your code before each commit.
-

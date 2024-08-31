@@ -33,7 +33,7 @@ permissions:
   issues: write
   pull-requests: write
   id-token: write
-  
+
 jobs:
   release:
     name: Shared Workflow
@@ -41,12 +41,12 @@ jobs:
     with:
       dry_run: ${{ inputs.dry_run || false }}
     secrets: inherit
-    
+
   # This should maybe be it's own workflow triggered on a release created in GitHub
   publish:
     name: Publish
-    needs: 
-    - release      
+    needs:
+    - release
     uses: jaffa-nj/.github/.github/workflows/build-dotnet.yml@v0.1.0 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'

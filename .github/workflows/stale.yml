@@ -30,7 +30,7 @@ jobs:
     name: Close Issues w/o Update for 10-days, Mark Issues and PRs Older than 90-days as Stale
     needs: get-app-token
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
-    steps:  
+    steps:
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0
 
