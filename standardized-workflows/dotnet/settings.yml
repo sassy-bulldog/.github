@@ -14,6 +14,8 @@ batch_file_operations:
   - target_branch: main
     commit_msg: 'ci(standards): Update dotnet Workflows'
     files:
+      - src_file: standardized-workflows/dotnet/.pre-commit-config.yaml
+        dest_file: .pre-commit-config.yaml
       - src_file: standardized-workflows/dotnet/workflows/lint.yml
         dest_file: .github/workflows/lint.yml
       - src_file: standardized-workflows/dotnet/workflows/release.yml

@@ -2,7 +2,7 @@
 name: Lint Code
 
 # Controls when the workflow will run
-on: 
+on:
   push:
     # Sequence of patterns matched against refs/heads
     branches:

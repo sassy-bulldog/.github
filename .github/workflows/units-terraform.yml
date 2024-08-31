@@ -15,15 +15,15 @@ jobs:
       #TODO: Deprecated NodeJS Version
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0
-        
+
       - name: Checkout
         uses: actions/checkout@v4.1.7
-        
+
       - name: Install Go
         id: installGo
         # https://linuxhandbook.com/curl-downloading-html-file/
         # We should add a version check as well, and update when necessary
-        # rm -rf /usr/local/go 
+        # rm -rf /usr/local/go
         run: |
           sudo apt-get update
           sudo apt-get -y install gtkhash
@@ -39,7 +39,7 @@ jobs:
             export PATH=$PATH:/usr/local/go/bin
           fi
           go version
-        
+
       - name: Install Terraform
         id: installTerraform
         # https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli

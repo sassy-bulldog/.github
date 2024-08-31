@@ -36,7 +36,7 @@ on:
 
     # Map the workflow outputs to job outputs
     outputs:
-      repos: 
+      repos:
         description: "The JSON array of repos to use in the matrix job"
         value: ${{ jobs.matrix-repos.outputs.repos }}
       count:
@@ -106,7 +106,7 @@ jobs:
               core.setFailed(`Invalid matrix-use: ${inputMatrixUse}, accepted values: ${choiceBool.join(', ')}`)
               process.exit(core.ExitCode.Failure)
             }
-  
+
             // format
             const inputOutputFormat = INPUT_OUTPUT_FORMAT ? INPUT_OUTPUT_FORMAT.trim().toLowerCase() : 'json'
             const choiceInputOutputFormat = ['json', 'flat', 'list']
@@ -114,7 +114,7 @@ jobs:
               core.setFailed(`Invalid format: ${inputOutputFormat}, accepted values: ${choiceInputOutputFormat.join(', ')}`)
               process.exit(core.ExitCode.Failure)
             }
-            
+
             // construct search query
             let query = `user:${inputOwner}+NOT .github in:name`
             if (inputRepoFilter) {
