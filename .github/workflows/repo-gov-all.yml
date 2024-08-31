@@ -40,7 +40,7 @@ jobs:
     strategy:
       matrix:
         repo-filter: [ 'dotnet', 'ssdt', 'ssis', 'terraform' ]
-        settings_file: [ 'examples/all/settings.yml' ]
+        settings_file: [ 'standardized-workflows/all/settings.yml' ]
         delay: [0]
         action: [ apply ]
         include:
