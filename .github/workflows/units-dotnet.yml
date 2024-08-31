@@ -7,7 +7,7 @@ on:
         description: Additional required tags for the pipeline agents to use.
         required: true
         type: string
-      repo: 
+      repo:
         description: Repository name with owner (like actions/checkout)
         type: string
         required: false
