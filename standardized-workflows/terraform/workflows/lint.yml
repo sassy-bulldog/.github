@@ -24,12 +24,12 @@ jobs:
   # TO DO: Why isn't this completed by the pre-commit script below?
   run-markdown-linters:
     name: markdown
-    uses: jaffa-nj/.github/.github/workflows/lint-markdown.yml@v0.1.0 # x-release-please-version
+    uses: jaffa-nj/.github/.github/workflows/lint-markdown.yml@v0.1.1 # x-release-please-version
     secrets: inherit
     with:
       files: '**/.header.md'
 
   run-terraform-linters:
     name: terraform
-    uses: jaffa-nj/.github/.github/workflows/lint-terraform.yml@v0.1.0 # x-release-please-version
+    uses: jaffa-nj/.github/.github/workflows/lint-terraform.yml@v0.1.1 # x-release-please-version
     secrets: inherit
