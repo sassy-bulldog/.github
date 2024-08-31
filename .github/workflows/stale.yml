@@ -87,7 +87,7 @@ jobs:
           in: ${{ needs.get-app-token.outputs.encrypted-token }}
 
       - name: Lock Threads
-        uses: dessant/lock-threads@v4
+        uses: dessant/lock-threads@v5.0.1
         with:
           github-token: ${{ steps.decrypt-token.outputs.out }}
           issue-comment: >
