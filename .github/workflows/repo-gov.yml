@@ -87,7 +87,7 @@ jobs:
         
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.7
 
       # Runs a single command using the runners shell
       # TODO: We should add a conditional step if automated vs. executed

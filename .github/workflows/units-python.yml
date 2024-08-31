@@ -77,7 +77,7 @@ jobs:
         uses: mickem/clean-after-action@v2.0.0
 
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.7
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4.3.0

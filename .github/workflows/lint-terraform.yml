@@ -22,7 +22,7 @@ jobs:
       
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.7
         
       - name: Get root directories
         id: dirs
@@ -43,7 +43,7 @@ jobs:
         uses: mickem/clean-after-action@v2.0.0
         
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.7
         
       - name: Terraform min/max versions
         id: minMax
@@ -79,7 +79,7 @@ jobs:
         uses: mickem/clean-after-action@v2.0.0
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.7
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{github.event.pull_request.head.repo.full_name}}

@@ -98,7 +98,7 @@ jobs:
         uses: mickem/clean-after-action@v2.0.0
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.7
         with:
           persist-credentials: false
           fetch-depth: 0
