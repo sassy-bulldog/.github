@@ -1,5 +1,5 @@
 # TODO: Make this a pre-commit action
-name: 'Lint Terraform'
+name: 'Lint: Terraform'
 on:
   workflow_call:
     inputs:

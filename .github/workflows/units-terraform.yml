@@ -1,4 +1,4 @@
-name: 'Terraform Unit Tests'
+name: 'Unit Tests: Terraform'
 on:
   workflow_call:
     inputs:

@@ -1,4 +1,4 @@
-name: 'Test dotnet'
+name: 'Unit Tests: dotnet'
 
 on:
   workflow_call:

@@ -1,4 +1,4 @@
-name: 'Test PowerShell Modules'
+name: 'Unit Tests: PowerShell'
 
 on:
   workflow_call:

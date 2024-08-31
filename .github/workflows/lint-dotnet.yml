@@ -1,5 +1,5 @@
 # TODO: Make this a pre-commit action
-name: Lint dotnet
+name: 'Lint: dotnet'
 
 on:
   workflow_call:

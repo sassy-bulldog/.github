@@ -1,5 +1,5 @@
-# TODO: Make this a pre-commit action
-name: Lint MarkDown Files
+# TODO: Make this a pre-commit action?
+name: 'Lint: MarkDown'
 
 on:
   workflow_call:
