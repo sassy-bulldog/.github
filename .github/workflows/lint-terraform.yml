@@ -12,18 +12,18 @@ env:
   TERRAFORM_VERSION_IN_PRODUCTION: "1.6.2"
   TERRAFORM_DOCS_VERSION: v0.16.0
   TFLINT_VERSION: v0.44.1
-  
+
 jobs:
   collectInputs:
     name: Collect workflow inputs
     runs-on: ${{ fromJSON(inputs.runs-on) }}
     outputs:
       directories: ${{ steps.dirs.outputs.directories }}
-      
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.7
-        
+
       - name: Get root directories
         id: dirs
         uses: clowdhaus/terraform-composite-actions/directories@v1.8.3
@@ -41,10 +41,10 @@ jobs:
       #TODO: Deprecated NodeJS Version
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0
-        
+
       - name: Checkout
         uses: actions/checkout@v4.1.7
-        
+
       - name: Terraform min/max versions
         id: minMax
         uses: clowdhaus/terraform-min-max@v1.2.4
@@ -59,7 +59,7 @@ jobs:
           terraform-version: ${{ steps.minMax.outputs.minVersion }}
           tflint-version: ${{ env.TFLINT_VERSION }}
           args: 'terraform_validate --color=always --show-diff-on-failure --files ${{ matrix.directory }}/*'
-          
+
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
         # Run only validate pre-commit check on min version supported
         if: ${{ matrix.directory ==  '.' }}

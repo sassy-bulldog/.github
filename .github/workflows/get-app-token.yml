@@ -54,16 +54,16 @@ jobs:
           set -o pipefail
 
           client_id=${{ inputs.client-id || 31 }} # Client ID as first argument
-          
+
           echo "${{ secrets.GOV_APP_PVT_KEY }}" > /tmp/submodules-app-private-key.pem
           pem=$( cat /tmp/submodules-app-private-key.pem ) # file path of the private key as second argument
-          
+
           now=$(date +%s)
           iat=$((${now} - 60)) # Issues 60 seconds in the past
           exp=$((iat + 600)) # Expires 10 minutes in the future (this is upper limit for GitHub App token)
-          
+
           b64enc() { openssl base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n'; }
-          
+
           header_json='{
               "typ":"JWT",
               "alg":"RS256"
@@ -71,7 +71,7 @@ jobs:
 
           # Header encode
           header=$( echo -n "${header_json}" | b64enc )
-          
+
           payload_json='{
               "iat":'"${iat}"',
               "exp":'"${exp}"',
@@ -80,27 +80,27 @@ jobs:
           # Payload encode
           echo "payload=$payload_json"
           payload=$( echo -n "${payload_json}" | b64enc )
-          
+
           # Signature
           header_payload="${header}"."${payload}"
           signature=$(
               openssl dgst -sha256 -sign <(echo -n "${pem}") \
               <(echo -n "${header_payload}") | b64enc
           )
-          
+
           # Create JWT
           JWT="${header_payload}"."${signature}"
           printf '%s\n' "JWT: $JWT"
-          
+
           response=$(curl -s --request POST \
             --url "${{ github.api_url }}/app/installations/${{ inputs.installation-id || 92 }}/access_tokens" \
             --header "Accept: application/vnd.github+json" \
             --header "Authorization: Bearer ${JWT}" \
             --header "X-GitHub-Api-Version: 2022-11-28")
           http_code=$(echo "$response" | awk '{print $1}')
-          
+
           echo "HTTP Code: $http_code"
-          
+
           token=$(echo "$response" | jq -r '.token')
           echo "token=$token" >> $GITHUB_OUTPUT
 
@@ -112,7 +112,7 @@ jobs:
           secret: ${{ secrets.GOV_APP_PASSWORD }}
           op: encode
           in: ${{ steps.githubAppAuth.outputs.token }}
-        
+
   verify-token:
     name: 'Verify token'
     runs-on: ${{ fromJSON(inputs.runs-on) }}
@@ -123,7 +123,7 @@ jobs:
         uses: cloudposse/github-action-secret-outputs@0.1.2
         id: decrypt-token
         with:
-          ## PASSWORD is a gpg passphrase stored in Github Secrets.          
+          ## PASSWORD is a gpg passphrase stored in Github Secrets.
           secret: ${{ secrets.GOV_APP_PASSWORD }}
           op: decode
           in: ${{ needs.get-token.outputs.token }}

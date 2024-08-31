@@ -19,6 +19,8 @@ batch_file_operations:
   - target_branch: main
     commit_msg: 'ci(standards): Update SSDT Workflows'
     files:
+      - src_file: standardized-workflows/ssdt/.pre-commit-config.yaml
+        dest_file: .pre-commit-config.yaml
       - src_file: standardized-workflows/ssdt/workflows/lint.yml
         dest_file: .github/workflows/lint.yml
       - src_file: standardized-workflows/ssdt/workflows/release.yml

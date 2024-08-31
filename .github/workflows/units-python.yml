@@ -12,7 +12,7 @@ on:
         required: False
         type: string
         default: '["3.10"]'
-      repo: 
+      repo:
         description: Repository name with owner (like actions/checkout)
         type: string
         required: false
