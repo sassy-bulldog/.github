@@ -1,0 +1,199 @@
+name: Enumerate Repos by Name Pattern
+
+# Controls when the workflow will run
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      owner:
+        description: GitHub Organization or User name, default to `github.repository_owner`
+        required: false
+        default: ${{ github.repository_owner }}
+        type: string
+      matrix-use:
+        description: Output to use in the matrix job?, `true` or `false`
+        required: false
+        default: ${{ true }}
+        type: string
+      format:
+        description: Output format, `json` or `flat`, default to `json`
+        required: false
+        default: json
+        type: string
+      repo-filter:
+        description: Filter the repositories to apply governance to.
+        default: ''
+        required: false
+        type: string
+      delay:
+        description: Delay in seconds between each repository category.
+        default: 0
+        required: false
+        type: number
+
+    # Map the workflow outputs to job outputs
+    outputs:
+      repos: 
+        description: "The JSON array of repos to use in the matrix job"
+        value: ${{ jobs.matrix-repos.outputs.repos }}
+      count:
+        description: "The count of repos to use in the matrix job"
+        value: ${{ jobs.matrix-repos.outputs.count }}
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  get-app-token:
+    name: Get GitHub App Token
+    uses: ./.github/workflows/get-app-token.yml
+    with:
+      runs-on: ${{ inputs.runs-on }}
+      client-id: ${{ vars.GOV_APP_CLIENT_ID }}
+      installation-id: ${{ vars.GOV_APP_INSTALLATION_ID }}
+    secrets: inherit
+
+  matrix-repos:
+    name: List Repos
+    needs: get-app-token
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    outputs:
+      repos: ${{ steps.get-repos.outputs.repos }}
+      count: ${{ steps.get-repos.outputs.count }}
+
+    steps:
+      - name: Decrypt Token
+        uses: cloudposse/github-action-secret-outputs@0.1.2
+        id: decrypt-token
+        with:
+          ## PASSWORD is a gpg passphrase stored in Github Secrets.
+          secret: ${{ secrets.GOV_APP_PASSWORD }}
+          op: decode
+          in: ${{ needs.get-app-token.outputs.encrypted-token }}
+
+      - name: ${{ inputs.repo-filter && format('Repos with {0} in name', inputs.repo-filter) || 'All Repos' }}
+        id: get-repos
+        uses: actions/github-script@v7.0.1
+        env:
+          INPUT_OWNER: ${{ inputs.owner || github.repository_owner }}
+          INPUT_REPO_FILTER: ${{ inputs.repo-filter || '' }}
+          INPUT_MATRIX_USE: ${{ inputs.matrix-use || true }}
+          INPUT_OUTPUT_FORMAT: ${{ inputs.format || 'json' }}
+        with:
+          github-token: ${{ steps.decrypt-token.outputs.out }}
+          script: |
+            // constraints
+            const choiceBool = ['true', 'false']
+
+            // inputs
+            const { INPUT_OWNER, INPUT_REPO_FILTER, INPUT_MATRIX_USE, INPUT_OUTPUT_FORMAT } = process.env
+
+            // owner
+            if (INPUT_OWNER) {
+              inputOwner = INPUT_OWNER.trim()
+            } else {
+              core.setFailed('owner is required (organization or user name)')
+              process.exit(core.ExitCode.Failure)
+            }
+
+            // repo filter
+            const inputRepoFilter = INPUT_REPO_FILTER ? INPUT_REPO_FILTER.trim() : ''
+
+            // matrix use
+            const inputMatrixUse = INPUT_MATRIX_USE ? INPUT_MATRIX_USE.trim().toLowerCase() : 'true'
+            if (!choiceBool.includes(inputMatrixUse)) {
+              core.setFailed(`Invalid matrix-use: ${inputMatrixUse}, accepted values: ${choiceBool.join(', ')}`)
+              process.exit(core.ExitCode.Failure)
+            }
+  
+            // format
+            const inputOutputFormat = INPUT_OUTPUT_FORMAT ? INPUT_OUTPUT_FORMAT.trim().toLowerCase() : 'json'
+            const choiceInputOutputFormat = ['json', 'flat', 'list']
+            if (!choiceInputOutputFormat.includes(inputOutputFormat)) {
+              core.setFailed(`Invalid format: ${inputOutputFormat}, accepted values: ${choiceInputOutputFormat.join(', ')}`)
+              process.exit(core.ExitCode.Failure)
+            }
+            
+            // construct search query
+            let query = `user:${inputOwner}`
+            if (inputRepoFilter) {
+              query += `+${inputRepoFilter} in:name`
+            }
+            // https://docs.github.com/en/search-github/searching-on-github/searching-for-repositories
+            query += `+is:public+is:internal+is:private+archived:false+fork:true`
+            core.info(`Search query: ${query}`)
+
+            // check total count
+            const checkTotalCount = await github.rest.search.repos({
+              q: query,
+              per_page: 1,
+              page: 1
+            })
+            const totalCount = checkTotalCount.data.total_count
+            core.info(`Found repo(s): ${totalCount}`)
+
+            // check matrix limit
+            if (inputOutputFormat === 'json' && inputMatrixUse === 'true' && totalCount > 256) {
+              core.setFailed('Found more than 256 repos. Please adjust the filter. 256 repos is a hard limit for matrix job! ref: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs')
+              process.exit(core.ExitCode.Failure)
+            }
+
+            // check gh api limit
+            if (totalCount > 1000) {
+              core.setFailed('Found more than 1000 repos. Please adjust the filter. 1000 repos is a hard limit for GitHub API query return!')
+              process.exit(core.ExitCode.Failure)
+            }
+
+            // get repos
+            const getRepos = (await github.paginate(github.rest.search.repos, {
+              q: query,
+              per_page: 100,
+              order: 'desc'
+            }))
+
+            // construct output
+            let repos = []
+            if (totalCount) {
+              getRepos.map(element => {
+                const repo = {
+                  owner: element.owner.login,
+                  name: element.name,
+                  full_name: element.full_name,
+                  private: element.private,
+                  html_url: element.html_url,
+                  fork: element.fork,
+                  archived: element.archived,
+                  disabled: element.disabled,
+                  is_template: element.is_template,
+                  visibility: element.visibility,
+                  default_branch: element.default_branch
+                }
+                repos.push(repo)
+              })
+            }
+
+            // format output
+            if (inputOutputFormat === 'flat') {
+              repos = repos.map(element => {
+                return element.full_name
+              })
+              repos = repos.join(inputDelimiter)
+            }
+            if (inputOutputFormat === 'list') {
+              repos = repos.map(element => {
+                return element.full_name
+              })
+            }
+
+            // set outputs
+            core.setOutput('count', totalCount)
+            core.setOutput('repos', repos)
+            core.setOutput('format', inputOutputFormat)
+
+      - name: check outputs
+        run: |
+          echo "Found ${{ steps.get-repos.outputs.count }} repos"
+          echo "Repos: ${{ steps.get-repos.outputs.repos }}"
+          echo "Format: ${{ steps.get-repos.outputs.format }}"
+          sleep ${{ inputs.delay || 0 }}

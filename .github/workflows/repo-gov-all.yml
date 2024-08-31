@@ -1,0 +1,73 @@
+name: Organization Repository Governance
+
+concurrency:
+  group: ${{ github.repository_owner }}-repo-gov
+  cancel-in-progress: true
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
+      action:
+        description: |
+          What action to take with this action. One of validate, check, or apply.
+          - Validate will validate your settings file, but not touch your repo.
+          - Check will check your repo with your settings file and output a report of any drift.
+          - Apply will apply the settings in your settings file to your repo.
+        required: false
+        type: string
+        default: apply
+
+  schedule:
+    # Everyday @ 0000 - https://crontab.cronhub.io/
+    - cron: '0 0 * * *'
+
+  push:
+    paths:
+      - '.github/workflows/repo-gov.yml'
+      - '.github/workflows/repo-gov-all.yml'
+      - '.github/workflows/repo-gov-matrixed.yml'
+      - 'standardized-workflows/**'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  matrix-repos:
+    strategy:
+      matrix:
+        repo-filter: [ '','dotnet', 'ssdt', 'ssis', 'terraform' ]
+        settings_file: [ 'standardized-workflows/all/settings.yml' ]
+        delay: [0]
+        action: [ apply ]
+        include:
+          - repo-filter: 'terraform'
+            settings_file: 'standardized-workflows/terraform/settings.yml'
+            delay: 0
+            action: ${{ inputs.action || 'apply'}}
+          - repo-filter: 'dotnet'
+            settings_file: 'standardized-workflows/dotnet/settings.yml'
+            delay: 0 # 3600
+            action: ${{ inputs.action || 'apply'}}
+          - repo-filter: 'ssdt'
+            settings_file: 'standardized-workflows/ssdt/settings.yml'
+            delay: 0 # 7200
+            action: ${{ inputs.action || 'apply'}}
+          - repo-filter: 'ssis'
+            settings_file: 'standardized-workflows/ssis/settings.yml'
+            delay: 0 # 10800
+            action: ${{ inputs.action || 'apply'}}
+      fail-fast: false
+    name: ${{ inputs.action || 'check'}} ${{ matrix.settings_file }} ${{ inputs.action == 'apply' && 'to' || 'against'}} ${{ matrix.repo-filter }} repositories
+    uses: ./.github/workflows/repo-gov-matrixed.yml
+    with:
+      runs-on: ${{ inputs.runs-on || '[ "ubuntu-latest" ]' }}
+      # encrypted-token: ${{ needs.get-app-token.outputs.encrypted-token }}
+      repo-filter: ${{ matrix.repo-filter }}
+      delay: ${{ matrix.delay }}
+      settings_files: '[ "${{ matrix.settings_file }}" ]'
+      action: ${{ matrix.action }}
+    secrets: inherit

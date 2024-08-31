@@ -1,0 +1,58 @@
+# Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
+name: Create Release
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Whether or not to publish the package to the NuGet Server
+        type: boolean
+        required: false
+        default: false
+      dry_run:
+        description: 'When set to true it does not actually publish the version, but rather writes the info for the release to the agent output'
+        required: false
+        type: boolean
+        default: true
+
+  push:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - 'releases/**'
+      - main
+      - rc/*
+      - rc
+      - beta/*
+      - beta
+      - alpha/*
+      - alpha
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+  
+jobs:
+  release:
+    name: Shared Workflow
+    uses: jaffa-nj/.github/.github/workflows/release.yml@v1.0.0 # x-release-please-version
+    with:
+      dry_run: ${{ inputs.dry_run || false }}
+    secrets: inherit
+    
+  # This should maybe be it's own workflow triggered on a release created in GitHub
+  publish:
+    name: Publish
+    needs: 
+    - release      
+    uses: jaffa-nj/.github/.github/workflows/build-dotnet.yml@v1.0.0 # x-release-please-version
+    with:
+      runs-on: '["ubuntu-latest"]'
+      working-directory: ./
+      build-config: ${{ contains(fromJSON('["main","releases"]'), github.ref_name) && 'Release' || 'Debug' }}
+      artifact-name: ${{ var.ARTIFACT_NAME }}
+      publish: ${{ inputs.publish || needs.release.outputs.new_release_published == 'true' }}
+      version: ${{ needs.release.outputs.new_release_version }}
+    secrets: inherit

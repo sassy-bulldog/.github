@@ -1,0 +1,16 @@
+# Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
+# Restore this to the dummy file using git checkout 3cd1ed1006d2ad575de2218d2e96fb314b85cec2 .github/workflows/test.yml
+# This is useful for debugging YAML syntax and callability of other workflows here, because many of them do not apply to this repo themselves.
+name: 'Mock Test Workflow for Other Branches'
+
+# Controls when the workflow will run
+on:
+  pull_request_target:
+
+jobs:
+  test:
+    runs-on: ['ubuntu-latest']
+    steps:
+      - name: TEST
+        run: |
+          echo "modify the workflow of this file in other branches to test workflows adnosieum"

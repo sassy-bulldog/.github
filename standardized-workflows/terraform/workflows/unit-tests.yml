@@ -1,0 +1,30 @@
+# Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
+name: 'Tests'
+
+# Controls when the workflow will run
+on:
+  push:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - 'releases/**'
+      - main
+      - rc/*
+      - rc
+      - beta/*
+      - beta
+      - alpha/*
+      - alpha
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  test:
+    name: Terraform
+    uses: jaffa-nj/.github/.github/workflows/units-dotnet.yml@v1.0.0 # x-release-please-version
+    with:
+      runs-on: '["ubuntu-latest"]'
+      working-directory: "./"
+    secrets: inherit

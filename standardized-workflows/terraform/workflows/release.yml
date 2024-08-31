@@ -1,0 +1,39 @@
+# Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
+name: Create Release
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Set to true to run the workflow without creating a release'
+        type: boolean
+        required: true
+        default: true
+
+  push:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - 'releases/**'
+      - main
+      - rc/*
+      - rc
+      - beta/*
+      - beta
+      - alpha/*
+      - alpha
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release:
+    name: Shared Workflow
+    if: ${{ github.repository_owner == 'jaffa-nj' }}
+    uses: jaffa-nj/.github/.github/workflows/release.yml@v1.0.0 # x-release-please-version
+    with:
+      dry_run: ${{ inputs.dry_run || false }}
+    secrets: inherit

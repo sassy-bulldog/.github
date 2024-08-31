@@ -1,0 +1,64 @@
+collaborators:
+  - name: tsc
+    type: team
+    permission: admin
+    exists: true
+  - name: sme
+    type: team
+    permission: write
+    exists: true
+
+settings:
+  private: false
+  has_issues: false
+  has_wiki: false
+  has_downloads: true
+  default_branch: main
+  allow_squash_merge: true
+  allow_merge_commit: true
+  allow_rebase_merge: true
+  delete_branch_on_merge: true
+  enable_automated_security_fixes: true
+  enable_vulnerability_alerts: true
+
+labels:
+
+branch_protections:
+  - name: main
+    protection:
+      pr_options:
+        required_approving_review_count: 1
+        dismiss_stale_reviews: true
+        require_code_owner_reviews: true
+        dismissal_restrictions:
+          users: []
+          teams: [tsc]
+      required_status_checks:
+        strict: true
+        checks:
+          - Shared Workflow / Verify PR Title per Governance
+      require_conversation_resolution: true
+      enforce_admins: true
+      require_linear_history: true
+      allow_force_pushes: false
+      allow_deletions: false
+      block_creations: false
+
+environments:
+
+secrets:
+
+variables:
+
+batch_file_operations:
+  - target_branch: main
+    commit_msg: 'ci(standards): Update Standard Workflows'
+    files:
+      - src_file: CODEOWNERS
+        dest_file: CODEOWNERS
+      - src_file: standardized-workflows/all/workflows/codeowners.yml
+        dest_file: .github/workflows/codeowners.yml
+      - src_file: standardized-workflows/all/workflows/conventional-commits.yml
+        dest_file: .github/workflows/conventional-commits.yml
+      - src_file: standardized-workflows/all/workflows/stale.yml
+        dest_file: .github/workflows/stale.yml

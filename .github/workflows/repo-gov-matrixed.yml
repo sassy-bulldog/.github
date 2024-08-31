@@ -1,0 +1,66 @@
+name: Matrixed Repository Governance
+
+# Controls when the workflow will run
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      repo-filter:
+        description: Filter the repositories to apply governance to.
+        required: true
+        type: string
+      delay:
+        description: Delay in seconds between each repository.
+        required: false
+        type: number
+        default: 0
+      settings_files:
+        description: Settings files to apply to the repositories.
+        required: true
+        type: string
+      action:
+        description: |
+          What action to take with this action. One of validate, check, or apply.
+          - Validate will validate your settings file, but not touch your repo.
+          - Check will check your repo with your settings file and output a report of any drift.
+          - Apply will apply the settings in your settings file to your repo.
+        required: true
+        type: string
+
+  push:
+    paths:
+      - '.github/workflows/repo-gov.yml'
+      - '.github/workflows/repo-gov-matrixed.yml'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  matrix-repos:
+    concurrency:
+      group: ${{ inputs.repo-filter || 'all' }}-repo-list@${{ inputs.settings_files || '[ "standardized-workflows/all/settings.yml" ]' }}
+      cancel-in-progress: true
+
+    name: Get list of repos
+    if: ${{ inputs.action != 'skip' }}
+    uses: ./.github/workflows/list-repos.yml
+    with:
+      runs-on: ${{ inputs.runs-on || '[ "ubuntu-latest" ]' }}
+      owner: ${{ github.repository_owner }}
+      matrix-use: true
+      format: list
+      repo-filter: ${{ inputs.repo-filter || '' }}
+      delay: ${{ inputs.delay || 0 }}
+    secrets: inherit
+
+  repo-manager:
+    name: ${{ inputs.repo-filter || 'all' }}
+    needs: matrix-repos
+    uses: ./.github/workflows/repo-gov.yml
+    with:
+      runs-on: ${{ inputs.runs-on || '[ "ubuntu-latest" ]' }}
+      repos: ${{ needs.matrix-repos.outputs.repos }}
+      settings_files: ${{ inputs.settings_files || '[ "standardized-workflows/all/settings.yml" ]' }}
+      action: ${{ inputs.action || 'check' }}
+    secrets: inherit
