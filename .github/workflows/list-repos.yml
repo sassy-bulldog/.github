@@ -74,7 +74,7 @@ jobs:
 
       - name: ${{ inputs.repo-filter && format('Repos with {0} in name', inputs.repo-filter) || 'All Repos' }}
         id: get-repos
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v7.0.1
         env:
           INPUT_OWNER: ${{ inputs.owner || github.repository_owner }}
           INPUT_REPO_FILTER: ${{ inputs.repo-filter || '' }}
