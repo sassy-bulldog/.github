@@ -36,10 +36,6 @@ batch_file_operations:
   - target_branch: main
     commit_msg: 'ci(standards): Update Terraform Workflows'
     files:
-      - src_file: remote://.github/workflows/repo-gov.yml
-        exists: false
-      - src_file: remote://.github/settings.yml
-        exists: false
       - src_file: standardized-workflows/terraform/.pre-commit-config.yaml
         dest_file: .pre-commit-config.yaml
       - src_file: standardized-workflows/terraform/.terraform-docs.yaml
