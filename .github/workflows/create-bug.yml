@@ -6,8 +6,7 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted"]'  # ,"linux"
-        required: false
+        required: true
         type: string
       title:
         description: Title of the issue to create
@@ -25,7 +24,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   create-bug:
-    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
     steps:
       - name: Create bug if failed
         if: inputs.status == 'failure'

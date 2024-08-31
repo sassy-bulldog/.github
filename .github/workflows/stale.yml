@@ -4,8 +4,7 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
-        required: false
+        required: true
         type: string
 
   schedule:
@@ -20,7 +19,7 @@ on:
 jobs:
   stale:
     name: Close Issues w/o Update for 10-days, Mark Issues and PRs Older than 90-days as Stale
-    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]' ) }}
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
     steps:  
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0
@@ -28,7 +27,7 @@ jobs:
       - name: Stale Issues and PRs
         uses: actions/stale@v6.0.1
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}  #TODO: Should be a github bot
           # Staling issues and PR's
           days-before-stale: 90
           stale-issue-label: stale
@@ -52,7 +51,7 @@ jobs:
 
   lock:
     name: Lock issues and PRs that have been closed for 60-days
-    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]' ) }}
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
     steps:
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0
@@ -60,7 +59,7 @@ jobs:
       - name: Lock Threads
         uses: dessant/lock-threads@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}  #TODO: Should be a github bot
           issue-comment: >
             I'm going to lock this issue because it has been closed for _60 days_ ⏳. This helps our maintainers find and focus on the active issues.
             If you have found a problem that seems similar to this, please open a new issue and complete the issue template so we can capture all the details necessary to investigate further.

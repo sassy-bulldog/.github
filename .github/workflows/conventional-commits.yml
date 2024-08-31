@@ -5,8 +5,7 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
-        required: false
+        required: true
         type: string
 
   pull_request_target:
@@ -22,7 +21,7 @@ permissions:
 jobs:
   pr_title:
     name: Verify PR Title per Governance
-    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]' ) }}
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]' ) }}
     steps:
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0

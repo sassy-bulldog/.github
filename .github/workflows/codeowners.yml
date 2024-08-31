@@ -5,8 +5,7 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
-        required: false
+        required: true
         type: string
     secrets: # TODO: should be a github bot
       ORG_READER:
@@ -38,7 +37,7 @@ on:
 jobs:
   codeowners:
     name: Verify Code Owners per Governance
-    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]') }}
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
     steps:
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0

@@ -25,6 +25,6 @@ jobs:
     name: Terraform
     uses: jaffa-nj/.github/.github/workflows/units-dotnet.yml@v1.0.0 # x-release-please-version
     with:
-      runs-on: '["self-hosted"]'
+      runs-on: '["ubuntu-latest"]'
       working-directory: "./"
     secrets: inherit

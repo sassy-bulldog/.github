@@ -1,3 +1,5 @@
+# TODO: Need to make sure secrets are secure
+
 name: 'List Environment Variables'
 
 on:
@@ -10,16 +12,14 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
-        required: false
+        required: true
         type: string
 
   workflow_call:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
-        required: false
+        required: true
         type: string
 
   push:
@@ -30,7 +30,7 @@ on:
 jobs:
   list-env-vars:
     name: List Environment Variables
-    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "windows" ]') }} # do not need default, workflow call only
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
     steps:
       - run: |
           ${{ runner.os == 'Windows' && 'dir env:' || 'printenv' }};

@@ -6,8 +6,7 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
-        required: false
+        required: true
         type: string
       files:
         description: Markdown files to scan.
@@ -18,7 +17,7 @@ on:
 jobs:
   run-linters:
     name: Linting MarkDown Files
-    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
 
     steps:
       - name: Clean Agent Workspace

@@ -21,6 +21,7 @@ permissions:
   contents: write
 
 jobs:
+  # TO DO: Why isn't this completed by the pre-commit script below?
   run-markdown-linters:
     name: markdown
     uses: jaffa-nj/.github/.github/workflows/lint-markdown.yml@v1.0.0 # x-release-please-version

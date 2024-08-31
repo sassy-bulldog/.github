@@ -5,27 +5,26 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        required: false
+        required: true
         type: string
-        default: '["self-hosted","linux"]'
+        default: '["ubuntu-latest"]'
       client-id:
         description: 'GitHub App Client ID'
         required: true
         type: string
-        default: "31"
+        default: "Iv23lihLWbuwsOyIo6Hb"
       installation-id:
         description: 'GitHub App Installation ID'
         required: true
         type: string
-        default: '92'
+        default: '54341769'
 
   workflow_call:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        required: false
+        required: true
         type: string
-        default: '["self-hosted","linux"]'
       client-id:
         description: 'GitHub App Client ID'
         required: true
@@ -44,7 +43,7 @@ on:
 jobs:
   get-token:
     name: 'Get GitHub App Token'
-    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]') }} # # do not need default, workflow call only
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
     outputs:
       token: ${{ steps.encrypt-token.outputs.out }}
     steps:
@@ -110,13 +109,13 @@ jobs:
         id: encrypt-token
         with:
           ## PASSWORD is a gpg passphrase stored in Github Secrets.
-          secret: ${{ secrets.PASSWORD }}
+          secret: ${{ secrets.GOV_APP_PASSWORD }}
           op: encode
           in: ${{ steps.githubAppAuth.outputs.token }}
         
   verify-token:
     name: 'Verify token'
-    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]') }}
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
     if:  ${{ github.event_name == 'workflow_dispatch' }}
     needs: get-token
     steps:
@@ -125,7 +124,7 @@ jobs:
         id: decrypt-token
         with:
           ## PASSWORD is a gpg passphrase stored in Github Secrets.          
-          secret: ${{ secrets.PASSWORD }}
+          secret: ${{ secrets.GOV_APP_PASSWORD }}
           op: decode
           in: ${{ needs.get-token.outputs.token }}
 

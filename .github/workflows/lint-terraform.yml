@@ -5,10 +5,9 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
-        required: false
+        required: true
         type: string
-      
+
 env:
   TERRAFORM_VERSION_IN_PRODUCTION: "1.6.2"
   TERRAFORM_DOCS_VERSION: v0.16.0
@@ -17,7 +16,7 @@ env:
 jobs:
   collectInputs:
     name: Collect workflow inputs
-    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
     outputs:
       directories: ${{ steps.dirs.outputs.directories }}
       
@@ -32,7 +31,7 @@ jobs:
   preCommitMinVersions:
     name: Validate @ Min Version
     needs: collectInputs
-    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
     strategy:
       matrix:
         directory: ${{ fromJson(needs.collectInputs.outputs.directories) }}
@@ -72,7 +71,7 @@ jobs:
   preCommitMaxVersion:
     name: Lint @ Max Version
     needs: collectInputs
-    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
     steps:
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0

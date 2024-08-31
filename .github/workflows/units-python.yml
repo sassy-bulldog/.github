@@ -5,9 +5,8 @@ on:
     inputs:
       runs-on:
         description: Part of the matrix strategy - the Python code will be tested on each of these operating systems.
-        required: false
+        required: true
         type: string
-        default: '["ubuntu-latest"]'
       python-version:
         description: Part of the matrix strategy - the Python code will be tested on each of these versions of python
         required: False
@@ -68,7 +67,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+        os: ${{ fromJSON(inputs.runs-on) }}
         python-version: ${{ fromJson(inputs.python-version) }}
       fail-fast: false
 

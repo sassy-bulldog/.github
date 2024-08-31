@@ -6,8 +6,7 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
-        required: false
+        required: true
         type: string
       owner:
         description: GitHub Organization or User name, default to `github.repository_owner`
@@ -50,7 +49,7 @@ jobs:
     name: Get GitHub App Token
     uses: ./.github/workflows/get-app-token.yml
     with:
-      runs-on: ${{ inputs.runs-on || '[ "self-hosted", "linux" ]' }}
+      runs-on: ${{ inputs.runs-on }}
       client-id: ${{ vars.GOV_APP_CLIENT_ID }}
       installation-id: ${{ vars.GOV_APP_INSTALLATION_ID }}
     secrets: inherit
@@ -58,7 +57,7 @@ jobs:
   matrix-repos:
     name: List Repos
     needs: get-app-token
-    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]' ) }}
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
     outputs:
       repos: ${{ steps.get-repos.outputs.repos }}
       count: ${{ steps.get-repos.outputs.count }}
@@ -69,7 +68,7 @@ jobs:
         id: decrypt-token
         with:
           ## PASSWORD is a gpg passphrase stored in Github Secrets.
-          secret: ${{ secrets.PASSWORD }}
+          secret: ${{ secrets.GOV_APP_PASSWORD }}
           op: decode
           in: ${{ needs.get-app-token.outputs.encrypted-token }}
 

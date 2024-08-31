@@ -10,18 +10,18 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
         required: false
         type: string
+        default: '["ubuntu-latest"]'
       action:
         description: |
           What action to take with this action. One of validate, check, or apply.
           - Validate will validate your settings file, but not touch your repo.
           - Check will check your repo with your settings file and output a report of any drift.
           - Apply will apply the settings in your settings file to your repo.
-        default: apply
         required: false
         type: string
+        default: apply
 
   schedule:
     # Everyday @ 0000 - https://crontab.cronhub.io/
@@ -36,17 +36,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # get-app-token:
-  #   name: Get GitHub App Token
-  #   uses: ./.github/workflows/get-app-token.yml
-  #   with:
-  #     runs-on: ${{ inputs.runs-on || '[ "self-hosted", "linux" ]' }}
-  #     client-id: ${{ vars.GOV_APP_CLIENT_ID }}
-  #     installation-id: ${{ vars.GOV_APP_INSTALLATION_ID }}
-  #   secrets: inherit
-
   matrix-repos:
-    # needs: get-app-token
     strategy:
       matrix:
         repo-filter: [ 'dotnet', 'ssdt', 'ssis', 'terraform' ]
@@ -74,7 +64,7 @@ jobs:
     name: ${{ inputs.action || 'check'}} ${{ matrix.settings_file }} ${{ inputs.action == 'apply' && 'to' || 'against'}} ${{ matrix.repo-filter }} repositories
     uses: ./.github/workflows/repo-gov-matrixed.yml
     with:
-      runs-on: ${{ inputs.runs-on || '[ "self-hosted", "linux" ]' }}
+      runs-on: ${{ inputs.runs-on || '[ "ubuntu-latest" ]' }}
       # encrypted-token: ${{ needs.get-app-token.outputs.encrypted-token }}
       repo-filter: ${{ matrix.repo-filter }}
       delay: ${{ matrix.delay }}

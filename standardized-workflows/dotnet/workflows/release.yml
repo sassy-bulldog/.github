@@ -49,7 +49,7 @@ jobs:
     - release      
     uses: jaffa-nj/.github/.github/workflows/build-dotnet.yml@v1.0.0 # x-release-please-version
     with:
-      runs-on: '["windows"]'
+      runs-on: '["ubuntu-latest"]'
       working-directory: ./
       build-config: ${{ contains(fromJSON('["main","releases"]'), github.ref_name) && 'Release' || 'Debug' }}
       artifact-name: ${{ var.ARTIFACT_NAME }}

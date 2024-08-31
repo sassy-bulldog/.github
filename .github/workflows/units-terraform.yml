@@ -4,14 +4,13 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted"]'
-        required: false
+        required: true
         type: string
 
 jobs:
   unitTests:
     name: Perform Unit Tests on Terraform IaC
-    runs-on: ${{ fromJSON(inputs.runs-on) }} # || [ self-hosted, linux ] # do not need default, workflow call only
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
     steps:
       - name: Clean Agent Workspace
         uses: mickem/clean-after-action@v2.0.0

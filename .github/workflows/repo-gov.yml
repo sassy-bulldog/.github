@@ -6,45 +6,42 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
         required: false
         type: string
+        default: '["ubuntu-latest"]'
       repos:
         description: List of Repositories to apply governance to.
         required: false
-        default: '[ { full_name: "self" } ]'
         type: string
+        default: '[ { full_name: "self" } ]'
       settings_files:
         description: Settings file to apply to the repositories.
         required: false
-        default: '[ ".github/settings.yml" ]'
         type: string
+        default: '[ ".github/settings.yml" ]'
       action:
         description: |
           What action to take with this action. One of validate, check, or apply.
           - Validate will validate your settings file, but not touch your repo.
           - Check will check your repo with your settings file and output a report of any drift.
           - Apply will apply the settings in your settings file to your repo.
-        default: check
         required: false
         type: string
+        default: check
 
   workflow_call:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        default: '["self-hosted","linux"]'
-        required: false
+        required: true
         type: string
       repos:
         description: List of Repositories to apply governance to.
-        required: false
-        default: '[ { full_name: "self" } ]'
+        required: true
         type: string
       settings_files:
         description: Settings file to apply to the repositories.
-        required: false
-        default: '[ ".github/settings.yml" ]'
+        required: true
         type: string
       action:
         description: |
@@ -52,8 +49,7 @@ on:
           - Validate will validate your settings file, but not touch your repo.
           - Check will check your repo with your settings file and output a report of any drift.
           - Apply will apply the settings in your settings file to your repo.
-        default: check
-        required: false
+        required: true
         type: string
 
   push:
@@ -81,7 +77,7 @@ jobs:
     name: ${{ matrix.repo }} - ${{ matrix.settings_file }}
     if: ${{ inputs.action != 'skip' }}
     # The type of runner that the job will run on
-    runs-on: ${{ fromJSON(inputs.runs-on || '[ "self-hosted", "linux" ]' ) }}
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]' ) }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -91,16 +87,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v3
-
-      # - name: Decrypt Token
-      #   uses: cloudposse/github-action-secret-outputs@0.1.2
-      #   if: inputs.encrypted-token != 0
-      #   id: decrypt-token
-      #   with:
-      #     ## PASSWORD is a gpg passphrase stored in Github Secrets.
-      #     secret: ${{ secrets.PASSWORD }}
-      #     op: decode
-      #     in: ${{ inputs.encrypted-token }}
 
       # Runs a single command using the runners shell
       # TODO: We should add a conditional step if automated vs. executed
