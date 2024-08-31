@@ -50,13 +50,14 @@ jobs:
       owner: ${{ github.repository_owner }}
       matrix-use: true
       format: list
-      repo-filter: ${{ inputs.repo-filter || 'all' }}
+      repo-filter: ${{ inputs.repo-filter || '' }}
       delay: ${{ inputs.delay || 0 }}
     secrets: inherit
 
   repo-manager:
     name: ${{ inputs.repo-filter || 'all' }}
     needs: matrix-repos
+    if": ${{ needs.matrix-repos.outputs.count > 0 }}
     uses: ./.github/workflows/repo-gov.yml
     with:
       runs-on: ${{ inputs.runs-on || '[ "ubuntu-latest" ]' }}
