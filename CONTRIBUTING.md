@@ -1,6 +1,7 @@
 # Contributing Guidelines
 
-Thank you for considering contributing to our project! To ensure a smooth and efficient workflow, please follow these guidelines.
+Thank you for considering contributing to our project!
+To ensure a smooth and efficient workflow, please follow these guidelines.
 
 ## Table of Contents
 
@@ -99,7 +100,10 @@ To install Visual Studio, follow the instructions provided by Microsoft [here](h
 
 ## Using Virtual Environments
 
-For Python projects, it is highly recommended to use virtual environments to manage dependencies. This ensures that your project uses the correct versions of packages and avoids conflicts with other projects.
+For Python projects, it is highly recommended to use virtual environments to
+manage dependencies.
+This ensures that your project uses the correct versions of packages and avoids
+conflicts with other projects.
 
 To create a virtual environment:
 
@@ -129,7 +133,9 @@ deactivate
 
 ## Environment Variables
 
-For managing environment variables, you can use a `.env` file. This file should not be committed to version control. Use the following format:
+For managing environment variables, you can use a `.env` file.
+This file should not be committed to version control.
+Use the following format:
 
 ```bash
 API_KEY=your_api_key
@@ -145,7 +151,9 @@ Load these variables in your application using appropriate libraries:
 
 ### Windows Subsystem for Linux (WSL)
 
-For a more consistent development environment, especially when working with Unix-based tools, consider installing WSL. Follow the instructions [here](https://learn.microsoft.com/en-us/windows/wsl/install) to set it up.
+For a more consistent development environment,especially when working
+with Unix-based tools, consider installing WSL.
+Follow the instructions [here](https://learn.microsoft.com/en-us/windows/wsl/install) to set it up.
 
 ### Pre-commit Hooks
 
