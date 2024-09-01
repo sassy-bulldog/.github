@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/jaffa-nj/.github/compare/v0.1.1...v0.2.0) (2024-09-01)
+
+
+### Features
+
+* Adding more languages ([#8](https://github.com/jaffa-nj/.github/issues/8)) ([e09eb20](https://github.com/jaffa-nj/.github/commit/e09eb205b71b78860521e14abfd27fbb155a5c29))
+
 ## [0.1.1](https://github.com/jaffa-nj/.github/compare/v0.1.0...v0.1.1) (2024-08-31)
 
 
