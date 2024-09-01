@@ -93,15 +93,15 @@ jobs:
       uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
       with:
         source-directory: >
-          ${{ 
-            format('{0}/SQL', 
-              contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path || 
-                format('{0}/{1}/{2}', 
+          ${{
+            format('{0}/SQL',
+              contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+                format('{0}/{1}/{2}',
                   inputs.source-directory == '' && github.workspace || inputs.source-directory,
                   'artifacts',
                   fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
                 )
-            ) 
+            )
           }}
         destination-directory: ${{ inputs.server-local-file-path }}/Scripts
         file-filter: '^.*\.sql'
@@ -112,19 +112,19 @@ jobs:
       uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
       with:
         source-directory: >
-          ${{ 
-            format('{0}/Config', 
-              contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path || 
-                format('{0}/{1}/{2}', 
+          ${{
+            format('{0}/Config',
+              contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+                format('{0}/{1}/{2}',
                   inputs.source-directory == '' && github.workspace || inputs.source-directory,
                   'artifacts',
                   fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
                 )
-            ) 
+            )
           }}
         destination-directory: ${{ inputs.server-local-file-path }}/SSIS/Config/${{ inputs.is-catalog-folder }}/${{ inputs.is-catalog-project }}
         file-filter: '${{ inputs.environment }}\.json'
-    
+
     # - name: Publish ${{ inputs.is-catalog-folder }}/${{ inputs.is-catalog-project }} to ${{ inputs.server-instance }}
     #   id: deploy-ispac
     #   # TODO: Create an action on marketplace to build and deploy ISPACs
@@ -132,21 +132,21 @@ jobs:
     #   with:
     #     ssis-action: 'deploy'
     #     source-directory: >
-    #       ${{ 
-    #         format('{0}', 
-    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path || 
-    #             format('{0}/{1}/{2}', 
+    #       ${{
+    #         format('{0}',
+    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+    #             format('{0}/{1}/{2}',
     #               inputs.source-directory == '' && github.workspace || inputs.source-directory,
     #               'artifacts',
     #               fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
     #             )
-    #         ) 
+    #         )
     #       }}
     #     file-filter: ${{ inputs.ispac-name }}
     #     target-server: ${{ inputs.server-instance }}
     #     target-folder: ${{ inputs.is-catalog-folder }}
     #     target-project: ${{ inputs.is-catalog-project }}
-    
+
     # - name: 'Check Standard(s)'
     #   id: enforce-standards
     #   # TODO: Create an action on marketplace to build and deploy ISPACs
@@ -154,21 +154,21 @@ jobs:
     #   with:
     #     ssis-action: 'enforcestandards'
     #     source-directory: >
-    #       ${{ 
-    #         format('{0}', 
-    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path || 
-    #             format('{0}/{1}/{2}', 
+    #       ${{
+    #         format('{0}',
+    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+    #             format('{0}/{1}/{2}',
     #               inputs.source-directory == '' && github.workspace || inputs.source-directory,
     #               'artifacts',
     #               fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
     #             )
-    #         ) 
+    #         )
     #       }}
     #     file-filter: ${{ inputs.ispac-name }}
     #     target-server: ${{ inputs.server-instance }}
     #     target-folder: ${{ inputs.is-catalog-folder }}
     #     target-project: ${{ inputs.is-catalog-project }}
-    
+
     # - name: 'Configure Environment(s) and Permission(s)'
     #   id: configure-ssis
     #   # TODO: Create an action on marketplace to build and deploy ISPACs
@@ -179,8 +179,8 @@ jobs:
     #     file-filter: ${{ inputs.environment }}.json
     #     target-server: ${{ inputs.server-instance }}
     #     target-folder: ${{ inputs.is-catalog-folder }}
-    #     target-project: ${{ inputs.is-catalog-project }}  
-    
+    #     target-project: ${{ inputs.is-catalog-project }}
+
     # - name: Validate
     #   id: validate-ssis
     #   # TODO: Create an action on marketplace to build and deploy ISPACs
@@ -188,15 +188,15 @@ jobs:
     #   with:
     #     ssis-action: 'validate'
     #     source-directory: >
-    #       ${{ 
-    #         format('{0}', 
-    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path || 
-    #             format('{0}/{1}/{2}', 
+    #       ${{
+    #         format('{0}',
+    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+    #             format('{0}/{1}/{2}',
     #               inputs.source-directory == '' && github.workspace || inputs.source-directory,
     #               'artifacts',
     #               fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
     #             )
-    #         ) 
+    #         )
     #       }}
     #     file-filter: ${{ inputs.ispac-name }}
     #     target-server: ${{ inputs.server-instance }}

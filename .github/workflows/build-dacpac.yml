@@ -33,10 +33,10 @@ on:
         value: ${{ github.run_id }}
       artifact-id:
         description: 'ID of the artifact built and stored on GitHub as part of this workflow; this is what is used to download the artifact in other workflows'
-        value: ${{ jobs.build.outputs.artifact-id }}    
+        value: ${{ jobs.build.outputs.artifact-id }}
       artifact-name:
         description: 'Name of the artifact built; this is what is displayed on the workflow and becomes the zip/folder names for use in other workflows'
-        value: ${{ inputs.artifact-name }}  
+        value: ${{ inputs.artifact-name }}
 
 jobs:
   build:
@@ -62,10 +62,10 @@ jobs:
       # with:
       #   dotnet-version: 6.0.x
       #   vstest: false #this one is not part of setup-dotnet if you revert back (Windows only)
-    
+
     # - name: Add NuGet sources
     #   run: dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
-    
+
     #    dotnet add package Microsoft.Data.Tools.Msbuild
     #    dotnet new --install MSBuild.Sdk.SqlProj.Templates
     # - name: Add SqlPackage
@@ -80,13 +80,13 @@ jobs:
     #     where.exe sqlpackage.exe; # Verify it can be found
     #     echo $env:PATH;
     #     # dotnet add package Microsoft.Build.Sql --version 0.1.3-preview
-    
+
     # - name: Restore dependencies
     #   run: dotnet restore
     #   env:
     #     NUGET_USERNAME: ${{ vars.NUGET_USERNAME }}
     #     NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
-    
+
     # Can not use dotnet build because: error MSB4019: The imported project "C:\Program Files\dotnet\sdk\8.0.101\Microsoft\VisualStudio\v11.0\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" was not found.
     # Can not use --arch with dotnet build because DACPACS are Any CPU
     # dotnet build --configuration ${{ inputs.build-config || 'Debug' }} --verbosity:${{ inputs.verbosity }};

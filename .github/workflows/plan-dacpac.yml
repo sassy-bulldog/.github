@@ -120,7 +120,7 @@ jobs:
       with:
         name: ${{ inputs.artifact-name }}
         path: >
-          ${{ 
+          ${{
             format('{0}/artifacts/{1}',
             inputs.source-directory == '' && github.workspace || inputs.source-directory,
             inputs.artifact-name == '' && 'DACPACS' || inputs.artifact-name)
@@ -136,7 +136,7 @@ jobs:
         run_id: ${{ inputs.run_id }}
         name: ${{ inputs.artifact-name }}
         path: >
-          ${{ 
+          ${{
             format('{0}/artifacts/{1}',
             inputs.source-directory == '' && github.workspace || inputs.source-directory,
             inputs.artifact-name == '' && 'DACPACS' || inputs.artifact-name)
@@ -160,15 +160,15 @@ jobs:
     #     target-database: ${{ inputs.target-database }}
     #     deployment-action: 'DeployReport'
     #     source-directory: >
-    #         ${{ 
-    #           format('{0}', 
-    #             contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path || 
-    #             format('{0}/{1}/{2}', 
+    #         ${{
+    #           format('{0}',
+    #             contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+    #             format('{0}/{1}/{2}',
     #                 inputs.source-directory == '' && github.workspace || inputs.source-directory,
     #                 'artifacts',
     #                 fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
     #             )
-    #           ) 
+    #           )
     #         }}
     #     output-directory: '${{ github.workspace }}/artifacts/${{ inputs.server-instance }}'
     #     prevent-dataloss: ${{ inputs.prevent-dataloss }}
@@ -183,7 +183,7 @@ jobs:
     #     ignore-partitionschemes: ${{ inputs.ignore-partitionschemes }}
     #     include-compositeObjects: ${{ inputs.include-compositeObjects }}
     #     sqlcmd-variables: ${{ toJson(vars) }} # is there a way to merge? ${{ toJson(secrets) }}
-    
+
     # - name: SQL Script
     #   id: sql-dacpac
     #   # TODO: Create an action on marketplace to build and deploy DACPACs
@@ -196,15 +196,15 @@ jobs:
     #     target-database: ${{ inputs.target-database }}
     #     deployment-action: 'Script'
     #     source-directory: >
-    #       ${{ 
-    #         format('{0}', 
-    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path || 
-    #             format('{0}/{1}/{2}', 
+    #       ${{
+    #         format('{0}',
+    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+    #             format('{0}/{1}/{2}',
     #               inputs.source-directory == '' && github.workspace || inputs.source-directory,
     #               'artifacts',
     #               fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
     #             )
-    #         ) 
+    #         )
     #       }}
     #     output-directory: '${{ github.workspace }}/artifacts/${{ inputs.server-instance }}'
     #     prevent-dataloss: ${{ inputs.prevent-dataloss }}

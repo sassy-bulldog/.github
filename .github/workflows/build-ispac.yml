@@ -20,10 +20,10 @@ on:
     outputs:
       artifact-id:
         description: 'ID of the artifact built and stored on GitHub as part of this workflow; this is what is used to download the artifact in other workflows'
-        value: ${{ jobs.build.outputs.artifact-id }}    
+        value: ${{ jobs.build.outputs.artifact-id }}
       artifact-name:
         description: 'Name of the artifact built; this is what is displayed on the workflow and becomes the zip/folder names for use in other workflows'
-        value: ${{ inputs.artifact-name }}    
+        value: ${{ inputs.artifact-name }}
 
 jobs:
   build:
@@ -37,12 +37,12 @@ jobs:
       #TODO: Deprecated NodeJS Version
     - name: Clean Agent Workspace
       uses: tiacsys/clean-after-action@v3.0.0
-      
+
     - name: Checkout
       uses: actions/checkout@v4.1.7
       with:
         submodules: true
-    
+
     # - name: Compile
     #   id: build-ispac
     #   # TODO: Create an action on marketplace to build and deploy ISPACs
@@ -52,7 +52,7 @@ jobs:
     #     source-directory: '${{ github.workspace }}'
     #     destination-directory: '${{ github.workspace }}/artifacts'
     #     build-config: ${{ inputs.build-config }}
-        
+
     - name: 'Add Script(s)'
       id: copy-data
       uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
@@ -60,7 +60,7 @@ jobs:
         source-directory: '${{ github.workspace }}\SQL'
         destination-directory: '${{ github.workspace }}/artifacts/SQL'
         file-filter: '^.*\.sql'
-        
+
     - name: 'Add Configuration(s)'
       id: copy-config
       uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
