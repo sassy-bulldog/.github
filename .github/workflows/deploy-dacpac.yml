@@ -32,7 +32,7 @@ on:
         description: 'Username for the NuGet server'
         type: string
         required: false
-        default: T92J23K
+        default: username
       server-instance:
         description: 'MS SQL Server to deploy the DACPAC to'
         type: string
