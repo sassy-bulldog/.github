@@ -1,0 +1,154 @@
+name: Get Matrix of Environments by Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      branch:
+        description: Branch name to use in determining the applicable environments.
+        required: true
+        type: string
+      regex-dev:
+        description: Regex to filter what branches may deploy to Development Environment
+        required: false
+        type: string
+        default: ^.*$
+      regex-qa:
+        description: Regex to filter what branches may deploy to QA Environment
+        type: string
+        required: false
+        default: ^(beta|qa|main|rc(/[a-zA-Z0-9_/]+)*|releases/[a-zA-Z0-9_/]+)$
+      regex-model:
+        description: Regex to filter what branches may deploy to Model Environment
+        type: string
+        required: false
+        default: ^(main|rc(/[a-zA-Z0-9_/]+)*|releases/[a-zA-Z0-9_/]+)$
+      regex-prod:
+        description: Regex to filter what branches may deploy to Production Environment
+        type: string
+        required: false
+        default: ^(main|releases/[a-zA-Z0-9_/]+)$
+      matrix:
+        description: The JSON array of Environment specific parameters to Deploy / Run on
+        required: false
+        type: string
+        default: |
+          {
+            "Development": {
+              "key1": "value1",
+              "key2": "value2"
+            }, "QA": {
+              "key1": "value1",
+              "key2": "value2"
+            }, "Model": {
+              "key1": "value1",
+              "key2": "value2"
+            }, "Production": {
+              "key1": "value1",
+              "key2": "value2"
+            }
+          }
+
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      branch:
+        description: Branch name to use in determining the applicable environments.
+        required: true
+        type: string
+      regex-dev:
+        description: Regex to filter what branches may deploy to Development Environment
+        required: false
+        type: string
+        default: ^.*$
+      regex-qa:
+        description: Regex to filter what branches may deploy to QA Environment
+        type: string
+        required: false
+        default: ^(beta|qa|main|rc(/[a-zA-Z0-9_/]+)*|releases/[a-zA-Z0-9_/]+)$
+      regex-model:
+        description: Regex to filter what branches may deploy to Model Environment
+        type: string
+        required: false
+        default: ^(main|rc(/[a-zA-Z0-9_/]+)*|releases/[a-zA-Z0-9_/]+)$
+      regex-prod:
+        description: Regex to filter what branches may deploy to Production Environment
+        type: string
+        required: false
+        default: ^(main|releases/[a-zA-Z0-9_/]+)$
+      matrix:
+        # maybe this should be a file in the repo and we clone the repo to get it...
+        description: The JSON array of Environment specific parameters to Deploy / Run on
+        required: true
+        type: string
+    # Map the workflow outputs to job outputs
+    outputs:
+      matrix:
+        description: "The JSON array of Environments to Deploy / Run on"
+        value: ${{ jobs.get-matrix.outputs.matrix }}
+
+jobs:
+  get-matrix:
+    name: 'Get Environment(s)'
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    outputs:
+      matrix: ${{ steps.matrix-linux.outputs.matrix || steps.matrix-windows.outputs.matrix }}
+
+    steps:
+    - id: matrix-linux
+      name: Linux
+      if:  ${{ runner.os == 'Linux' }}
+      run: |
+        test_array=()
+        if [[ "${{ inputs.branch }}" =~ ${{ inputs.regex-dev }} ]]; then
+          test_array+=($(echo '${{ inputs.matrix }}' | jq '.Development'))
+        fi
+        if [[ "${{ inputs.branch }}" =~ ${{ inputs.regex-qa }} ]]; then
+          test_array+=($(echo '${{ inputs.matrix }}' | jq '.QA'))
+        fi
+        if [[ "${{ inputs.branch }}" =~ ${{ inputs.regex-model }} ]]; then
+          test_array+=($(echo '${{ inputs.matrix }}' | jq '.Model'))
+        fi
+        if [[ "${{ inputs.branch }}" =~ ${{ inputs.regex-prod }} ]]; then
+          test_array+=($(echo '${{ inputs.matrix }}' | jq '.Production'))
+        fi
+        echo "matrix=$(printf '%s\n' "${test_array[@]}" | jq -c -s '{ "include": . }')" >> $GITHUB_OUTPUT
+      env:
+        matrix: ${{ inputs.matrix }}
+        
+    - id: matrix-windows
+      name: Windows
+      if:  ${{ runner.os == 'Windows' }}
+      run: |
+        $test_array=@{include = @()};
+        if ('${{ inputs.branch }}' -match '${{ inputs.regex-dev }}') { 
+          $test_array["include"] += ('${{ inputs.matrix }}' | ConvertFrom-JSON).Development;
+        }
+        if ('${{ inputs.branch }}' -match '${{ inputs.regex-qa }}') { 
+          $test_array["include"] += ('${{ inputs.matrix }}' | ConvertFrom-JSON).QA;
+        }
+        if ('${{ inputs.branch }}' -match '${{ inputs.regex-model }}') { 
+          $test_array["include"] += ('${{ inputs.matrix }}' | ConvertFrom-JSON).Model;
+        }
+        if ('${{ inputs.branch }}' -match '${{ inputs.regex-prod }}') { 
+          $test_array["include"] += ('${{ inputs.matrix }}' | ConvertFrom-JSON).Production;
+        }
+        echo "matrix=$($test_array | ConvertTo-JSON -Depth 3 -Compress)" >> $env:GITHUB_OUTPUT;
+        
+  verify-matrix:
+    name: 'Verify Environment(s)'
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    if:  ${{ github.event_name == 'workflow_dispatch' }}
+    needs: get-matrix
+    steps:
+    - id: verify-matrix
+      name: Print matrix to console
+      run: |
+        echo '${{ needs.get-matrix.outputs.matrix }}' | ${{ runner.os == 'Windows' && 'ConvertFrom-JSON' || 'jq ''.''' }}
+  
