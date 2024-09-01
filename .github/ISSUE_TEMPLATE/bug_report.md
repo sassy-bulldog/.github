@@ -41,7 +41,7 @@ Before you submit an issue, please perform the following first:
 
 ## Versions
 
-- Application version [Required]: 
+- Application version [Required]:
 <!-- Version of the model or application used when the bug occurred -->
 
 ## Reproduction Code [Required]

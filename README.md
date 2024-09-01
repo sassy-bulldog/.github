@@ -24,7 +24,7 @@ This means that other repositories may use simplified calls to
 the workflows in this repository, and if we enhance the governance
 / standards here the maintenance in other repo's will be minimal.
 
-The following workflows should be included in every 
+The following workflows should be included in every
 Repository in this organization:
 
 1. [![Issue & PR Maintenance](https://github.com/jaffa-nj/.github/actions/workflows/stale.yml/badge.svg)](https://github.com/jaffa-nj/.github/actions/workflows/stale.yml)
