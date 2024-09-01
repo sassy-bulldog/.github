@@ -3,6 +3,7 @@
 This document outlines the governance process for making changes to workflows and language-specific files within our GitHub organization. These guidelines ensure that all changes are reviewed and approved by the appropriate parties to maintain the quality and integrity of our projects.
 
 ## Table of Contents
+
 1. [Workflow Changes](#workflow-changes)
 2. [Language-Specific Files](#language-specific-files)
 3. [Approval Process](#approval-process)
@@ -13,6 +14,7 @@ This document outlines the governance process for making changes to workflows an
 All changes to workflows, including Continuous Integration (CI) and Continuous Deployment (CD) pipelines, must go through the Target Steering Committee. This ensures that any modifications to the workflows are thoroughly reviewed and align with the organization's standards and best practices.
 
 ### Steps for Workflow Changes
+
 1. **Propose Change**: Create a detailed proposal for the workflow change.
 2. **Submit Pull Request**: Submit a pull request with the proposed changes.
 3. **Review by Target Steering Committee**: The Target Steering Committee will review the pull request.
@@ -23,6 +25,7 @@ All changes to workflows, including Continuous Integration (CI) and Continuous D
 Changes to language-specific files must be peer-reviewed by subject matter experts (SMEs) in the appropriate language. This ensures that the changes are technically sound and adhere to the best practices of the respective programming language.
 
 ### Steps for Language-Specific Changes
+
 1. **Propose Change**: Create a detailed proposal for the language-specific change.
 2. **Submit Pull Request**: Submit a pull request with the proposed changes.
 3. **Peer Review by SMEs**: The pull request will be reviewed by subject matter experts in the relevant language.
