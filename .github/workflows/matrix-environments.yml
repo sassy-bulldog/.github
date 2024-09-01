@@ -151,4 +151,3 @@ jobs:
       name: Print matrix to console
       run: |
         echo '${{ needs.get-matrix.outputs.matrix }}' | ${{ runner.os == 'Windows' && 'ConvertFrom-JSON' || 'jq ''.''' }}
-
