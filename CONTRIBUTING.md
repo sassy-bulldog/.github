@@ -153,11 +153,14 @@ Load these variables in your application using appropriate libraries:
 
 For a more consistent development environment,especially when working
 with Unix-based tools, consider installing WSL.
-Follow the instructions [here](https://learn.microsoft.com/en-us/windows/wsl/install) to set it up.
+Follow the instructions
+[here](https://learn.microsoft.com/en-us/windows/wsl/install)
+to set it up.
 
 ### Pre-commit Hooks
 
-To ensure code quality and consistency, we use pre-commit hooks. Install pre-commit and set up the hooks:
+To ensure code quality and consistency, we use pre-commit hooks.
+Install pre-commit and set up the hooks:
 
 1. Install pre-commit:
 
