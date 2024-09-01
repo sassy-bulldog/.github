@@ -1,7 +1,3 @@
-# FEATURE
-
-<!-- Document Title of your Feature Request Here -->
-
 ---
 name: Feature request
 about: Suggest an idea for this project
