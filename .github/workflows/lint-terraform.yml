@@ -1,5 +1,5 @@
 # TODO: Make this a pre-commit action
-name: 'Lint Terraform'
+name: 'Lint: Terraform'
 on:
   workflow_call:
     inputs:
@@ -40,7 +40,7 @@ jobs:
     steps:
       #TODO: Deprecated NodeJS Version
       - name: Clean Agent Workspace
-        uses: mickem/clean-after-action@v2.0.0
+        uses: tiacsys/clean-after-action@v3.0.0
 
       - name: Checkout
         uses: actions/checkout@v4.1.7
@@ -76,7 +76,7 @@ jobs:
     steps:
       #TODO: Deprecated NodeJS Version
       - name: Clean Agent Workspace
-        uses: mickem/clean-after-action@v2.0.0
+        uses: tiacsys/clean-after-action@v3.0.0
 
       - name: Checkout
         uses: actions/checkout@v4.1.7

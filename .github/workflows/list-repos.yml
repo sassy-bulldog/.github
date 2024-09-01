@@ -1,4 +1,4 @@
-name: Enumerate Repos by Name Pattern
+name: List Repos Matching a Name Pattern
 
 # Controls when the workflow will run
 on:

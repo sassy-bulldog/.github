@@ -1,6 +1,7 @@
 fail_fast: false
 minimum_pre_commit_version: "2.6.0"
 repos:
+  # https://pre-commit.com/hooks.html
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.81.0
     hooks:
@@ -24,6 +25,11 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
+      - id: check-illegal-windows-names
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
       - id: check-yaml
       - id: check-merge-conflict
       - id: end-of-file-fixer
@@ -40,3 +46,7 @@ repos:
           - "--recursive"
           - "--recursive-path=examples/"
           - "./"
+  - repo: https://github.com/markdownlint/markdownlint
+    rev: v0.13.0
+    hooks:
+      - id: markdownlint

@@ -1,0 +1,121 @@
+name: 'Unit Tests: SSIS'
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      repo:
+        description: Repository name with owner (like actions/checkout)
+        type: string
+        required: false
+        default: ${{ github.repository }}
+      branch:
+        description: Branch name
+        type: string
+        required: false
+        default: ${{ github.ref_name }}
+      workflow:
+        description: Workflow name (like build.yml)
+        type: string
+        required: false
+        default: build.yml
+      artifact-name:
+        description: Name of the artifact to upload to the calling workflow
+        type: string
+        required: false
+      working-directory:
+        description: 'Directory to use for storing the artifacts and running the unit tests'
+        type: string
+        required: false
+        default: ./
+      test-file:
+        description: 'Name of project or DLL containing the unit tests to run'
+        type: string
+        required: false
+        default: ''
+      test-runsettings:
+        description: 'Name of runsettings file containing the parameters to use for the unit tests'
+        type: string
+        required: false
+        default: '.runsettings'
+
+jobs:
+  get-app-token:
+    name: Get GitHub App Token
+    uses: ./.github/workflows/get-app-token.yml
+    with:
+      runs-on: ${{ inputs.runs-on }}
+      client-id: ${{ vars.GOV_APP_CLIENT_ID }}
+      installation-id: ${{ vars.GOV_APP_INSTALLATION_ID }}
+    secrets: inherit
+
+  test:
+    name: Testing
+    needs: [get-app-token]
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+
+    steps:
+      #TODO: Deprecated NodeJS Version
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Decrypt Token
+        uses: cloudposse/github-action-secret-outputs@0.1.2
+        id: decrypt-token
+        with:
+          ## PASSWORD is a gpg passphrase stored in Github Secrets.
+          secret: ${{ secrets.GOV_APP_PASSWORD }}
+          op: decode
+          in: ${{ needs.get-app-token.outputs.encrypted-token }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4.1.7
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          repo: ${{ inputs.repo }}
+          branch: ${{ inputs.branch }}
+          workflow: ${{ inputs.workflow }}
+          workflow_conclusion: success
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.working-directory }}
+          if_no_artifact_found: fail
+
+      - name: Setup .NET Core SDK 6.0.x
+        # v3+ definitely has issue
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Unit Tests
+        run: |
+          dotnet test "./bin/Debug/net6.0/${{ inputs.test-file }}" ${{ runner.os == 'Linux' && '\' || '`' }}
+            --settings ${{ inputs.test-runsettings }} ${{ runner.os == 'Linux' && '\' || '`' }}
+            --verbosity normal ${{ runner.os == 'Linux' && '\' || '`' }}
+            --logger:"trx;LogFilePrefix=TestResults"
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Publish Test & Coverage Results
+        if: '!cancelled()'
+        uses: bibipkins/dotnet-test-reporter@v1.4.1
+        with:
+          github-token: ${{ steps.decrypt-token.outputs.out }}
+          comment-title: 'Unit Test Results'
+          results-path: "${{ inputs.working-directory }}${{ endsWith( inputs.working-directory, '/' ) && '' || '/' }}CodeCoverage"
+
+  createBug:
+    name: Create Bug
+    needs: [test]
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'ISPAC Tests Failed'
+      job: ${{ needs.test.name }}
+      status: ${{ needs.test.outcome }}

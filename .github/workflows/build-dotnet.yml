@@ -1,0 +1,132 @@
+name: 'Build dotnet'
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for storing the artifacts and running the unit tests'
+        type: string
+        required: false
+        default: ./
+      build-config:
+        description: 'Build Configuration'
+        type: string
+        required: false
+        default: Debug
+      version:
+        description: Semantic version of current build
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      artifact-name:
+        description: Name of the artifact to upload to the calling workflow
+        type: string
+        required: true
+      flatten-directories:
+        description: Place all artifacts in a single directory
+        type: boolean
+        required: false
+        default: false
+      publish:
+        description: Whether or not to publish the package to the NuGet Server
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  build:
+    name: Building
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+
+    steps:
+      #TODO: Deprecated NodeJS Version
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
+
+      - name: Setup .NET Core SDKs
+        # v3+ definitely has issue
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: |
+            6.0.x
+
+      # required by copy-files-nodejs-action
+      - name: Install PowerShell
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo apt-get update;
+          sudo apt-get install -y wget apt-transport-https software-properties-common;
+          wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb";
+          sudo dpkg -i packages-microsoft-prod.deb;
+          rm packages-microsoft-prod.deb;
+          sudo apt-get update;
+          sudo apt-get install -y powershell;
+
+      - name: Install dependencies
+        run: |
+          dotnet tool install -g wix;
+          ${{ runner.os == 'Linux' && 'export PATH="$PATH:/home/runner/.dotnet/tools";' || '' }}
+          dotnet restore;
+        env:
+          NUGET_USERNAME: ${{ vars.NUGET_USERNAME }}
+          NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
+
+      - name: Build
+        run: dotnet build ${{ inputs.version && format(' /p:Version={0}', inputs.version) || '' }} --configuration ${{ inputs.build-config }} --no-restore
+      - name: Copy the Build Output
+        id: copy-artifacts
+        uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
+        with:
+          source-directory: '${{ inputs.working-directory }}'
+          destination-directory: '${{ inputs.working-directory }}/artifacts'
+          file-filter: "\\/bin\\/${{ inputs.build-config }}"
+          flatten-directories: '${{ inputs.flatten-directories }}'
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: '${{ inputs.working-directory }}artifacts'
+          if-no-files-found: error
+
+      - name: Copy the Packages to Publish
+        id: copy-packages
+        if: inputs.publish
+        uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
+        with:
+          source-directory: '${{ inputs.working-directory }}artifacts'
+          destination-directory: '${{ inputs.working-directory }}packages'
+          file-filter: "\\/bin\\/${{ inputs.build-config }}.*\\.nupkg"
+          flatten-directories: 'true'
+
+      # - name: Setup NuGet
+      #   uses: nuget/setup-nuget@v1.2.0
+
+      - name: Publish to NuGet
+        if: inputs.publish && steps.copy-packages.outputs.count > 0
+        run: |
+          dotnet nuget push *.nupkg --api-key $${{ runner.os == 'Windows' && 'env:' || '' }}NUGET_TOKEN --skip-duplicate
+        env:
+          NUGET_USERNAME: ${{ vars.NUGET_USERNAME }}
+          NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
+          NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        working-directory: "${{ inputs.working-directory }}packages"
+
+  createBug:
+    name: Create Bug
+    needs: [build]
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'dotnet Build Failed'
+      job: ${{ needs.build.name }}
+      status: ${{ needs.build.outcome }}

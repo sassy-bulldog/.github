@@ -42,8 +42,8 @@ batch_file_operations:
         dest_file: .terraform-docs.yaml
       - src_file: standardized-workflows/terraform/.gitignore
         dest_file: .gitignore
-      - src_file: standardized-workflows/terraform/workflows/lint.yml
-        dest_file: .github/workflows/lint.yml
+      # - src_file: standardized-workflows/terraform/workflows/lint.yml
+      #   dest_file: .github/workflows/lint.yml
       - src_file: standardized-workflows/terraform/workflows/release.yml
         dest_file: .github/workflows/release.yml
       - src_file: standardized-workflows/terraform/workflows/unit-tests.yml

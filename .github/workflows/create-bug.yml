@@ -38,7 +38,7 @@ jobs:
     steps:
       #TODO: Deprecated NodeJS Version
       - name: Clean Agent Workspace
-        uses: mickem/clean-after-action@v2.0.0
+        uses: tiacsys/clean-after-action@v3.0.0
 
       - name: Decrypt Token
         uses: cloudposse/github-action-secret-outputs@0.1.2

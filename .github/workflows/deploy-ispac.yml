@@ -1,0 +1,214 @@
+name: Deploy ISPACs
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      environment:
+        description: 'Environment to deploy to'
+        type: string
+        required: true
+        default: 'Development'
+      source-directory:  # id of input
+        description: 'Source directory containing the ispac file(s) to deploy'
+        type: string
+        required: false
+        default: ''
+      run_id:
+        description: |
+          Optional, will use specified workflow run use github.event.workflow_run.id when your action runs in a workflow_run event
+          and wants to download from the triggering workflow run"
+        type: string
+        required: true
+      artifact-name:
+        description: 'Name of the artifact to download and deploy; this is what becomes the zip/folder names in the artifacts directory'
+        type: string
+        required: false
+        default: 'ISPACS'
+      ispac-name:
+        description: 'Name of the ISPAC to deploy to specific server, folder, and project.'
+        type: string
+        required: true
+      server-instance:
+        description: 'MS SQL Server to deploy the DACPAC to'
+        type: string
+        required: true
+      is-catalog-folder:
+        description: 'Folder in the Integration Services Catalog to deploy the project / ISPAC to.'
+        type: string
+        required: true
+      is-catalog-project:
+        description: 'Project in the Integration Services Catalog to use within the folder above when deploying the ISPAC.'
+        type: string
+        required: true
+      server-local-file-path:
+        description: 'Path to SQL scripts and other configuration items local to the target server.'
+        type: string
+        required: true
+
+jobs:
+  deploy:
+    name: "Shared Workflow"
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    environment:
+      name: ${{ inputs.environment }}
+      url: ${{ fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['archive_download_url'] }} # this is the artifact url
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
+
+    steps:
+      #TODO: Deprecated NodeJS Version
+    - name: Schedule Worker Cleanup
+      uses: tiacsys/clean-after-action@v3.0.0
+
+    - name: 'Download artifact(s)'
+      id: download-current-artifacts
+      if: contains(github.workflow_ref, 'build.yml')
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ format('{0}/artifacts/{1}', inputs.source-directory == '' && github.workspace || inputs.source-directory, inputs.artifact-name) }}
+
+    - name: 'Download artifact(s)'
+      id: download-recent-artifact
+      if: ${{ !contains(github.workflow_ref, 'build.yml') }}
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        workflow: build.yml
+        run_id: ${{ inputs.run_id }}
+        name: ${{ inputs.artifact-name }}
+        path: ${{ format('{0}/artifacts/{1}', inputs.source-directory == '' && github.workspace || inputs.source-directory, inputs.artifact-name) }}
+        if_no_artifact_found: fail
+
+    # - name: 'Get Artifact JSON'
+    #   id: get-artifact-json
+    #   run: |
+    #     echo '${{ steps.download-recent-artifact.outputs.artifacts }}'
+
+    - name: 'Copy Script(s)'
+      id: copy-data
+      if: ${{ inputs.server-local-file-path != '' }}
+      uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
+      with:
+        source-directory: >
+          ${{
+            format('{0}/SQL',
+              contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+                format('{0}/{1}/{2}',
+                  inputs.source-directory == '' && github.workspace || inputs.source-directory,
+                  'artifacts',
+                  fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
+                )
+            )
+          }}
+        destination-directory: ${{ inputs.server-local-file-path }}/Scripts
+        file-filter: '^.*\.sql'
+
+    - name: 'Copy Configuration(s)'
+      id: copy-config
+      if: ${{ inputs.server-local-file-path != '' }}
+      uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
+      with:
+        source-directory: >
+          ${{
+            format('{0}/Config',
+              contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+                format('{0}/{1}/{2}',
+                  inputs.source-directory == '' && github.workspace || inputs.source-directory,
+                  'artifacts',
+                  fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
+                )
+            )
+          }}
+        destination-directory: ${{ inputs.server-local-file-path }}/SSIS/Config/${{ inputs.is-catalog-folder }}/${{ inputs.is-catalog-project }}
+        file-filter: '${{ inputs.environment }}\.json'
+
+    # - name: Publish ${{ inputs.is-catalog-folder }}/${{ inputs.is-catalog-project }} to ${{ inputs.server-instance }}
+    #   id: deploy-ispac
+    #   # TODO: Create an action on marketplace to build and deploy ISPACs
+    #   uses: actuarysailor/
+    #   with:
+    #     ssis-action: 'deploy'
+    #     source-directory: >
+    #       ${{
+    #         format('{0}',
+    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+    #             format('{0}/{1}/{2}',
+    #               inputs.source-directory == '' && github.workspace || inputs.source-directory,
+    #               'artifacts',
+    #               fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
+    #             )
+    #         )
+    #       }}
+    #     file-filter: ${{ inputs.ispac-name }}
+    #     target-server: ${{ inputs.server-instance }}
+    #     target-folder: ${{ inputs.is-catalog-folder }}
+    #     target-project: ${{ inputs.is-catalog-project }}
+
+    # - name: 'Check Standard(s)'
+    #   id: enforce-standards
+    #   # TODO: Create an action on marketplace to build and deploy ISPACs
+    #   uses: actuarysailor/
+    #   with:
+    #     ssis-action: 'enforcestandards'
+    #     source-directory: >
+    #       ${{
+    #         format('{0}',
+    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+    #             format('{0}/{1}/{2}',
+    #               inputs.source-directory == '' && github.workspace || inputs.source-directory,
+    #               'artifacts',
+    #               fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
+    #             )
+    #         )
+    #       }}
+    #     file-filter: ${{ inputs.ispac-name }}
+    #     target-server: ${{ inputs.server-instance }}
+    #     target-folder: ${{ inputs.is-catalog-folder }}
+    #     target-project: ${{ inputs.is-catalog-project }}
+
+    # - name: 'Configure Environment(s) and Permission(s)'
+    #   id: configure-ssis
+    #   # TODO: Create an action on marketplace to build and deploy ISPACs
+    #   uses: actuarysailor/
+    #   with:
+    #     ssis-action: 'configure'
+    #     source-directory: ${{ inputs.server-local-file-path }}
+    #     file-filter: ${{ inputs.environment }}.json
+    #     target-server: ${{ inputs.server-instance }}
+    #     target-folder: ${{ inputs.is-catalog-folder }}
+    #     target-project: ${{ inputs.is-catalog-project }}
+
+    # - name: Validate
+    #   id: validate-ssis
+    #   # TODO: Create an action on marketplace to build and deploy ISPACs
+    #   uses: actuarysailor/
+    #   with:
+    #     ssis-action: 'validate'
+    #     source-directory: >
+    #       ${{
+    #         format('{0}',
+    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+    #             format('{0}/{1}/{2}',
+    #               inputs.source-directory == '' && github.workspace || inputs.source-directory,
+    #               'artifacts',
+    #               fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
+    #             )
+    #         )
+    #       }}
+    #     file-filter: ${{ inputs.ispac-name }}
+    #     target-server: ${{ inputs.server-instance }}
+    #     target-folder: ${{ inputs.is-catalog-folder }}
+    #     target-project: ${{ inputs.is-catalog-project }}
+
+  createBug:
+    name: Create Bug
+    needs: [deploy]
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'ISPAC Deployment Failed'
+      job: ${{ needs.deploy.name }}
+      status: ${{ needs.deploy.outcome }}
