@@ -3,6 +3,7 @@
 Thank you for using our project! This document outlines the support process and resources available to help you.
 
 ## Table of Contents
+
 1. [Getting Help](#getting-help)
 2. [Reporting Issues](#reporting-issues)
 3. [Community Support](#community-support)
@@ -36,7 +37,9 @@ We encourage users to help each other and share knowledge. You can participate i
 
 ## Contributing
 
-We welcome contributions to our project! If you would like to contribute, please review our [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to get started.
+We welcome contributions to our project! If you would like to contribute,
+please review our [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines
+on how to get started.
 
 ## Contact
 

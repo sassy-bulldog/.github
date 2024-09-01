@@ -1,4 +1,4 @@
-## Description
+# Description
 <!--- Describe your changes in detail -->
 
 ## Motivation and Context
@@ -10,6 +10,7 @@
 <!-- If so, please provide an explanation why it is necessary. -->
 
 ## How Has This Been Tested?
+
 - [ ] I have updated at least one of the `examples/*` or `.runsettings` to demonstrate and validate my change(s)
 - [ ] I have tested and validated these changes using one or more of the provided `examples/*` or `.runsettings`
 <!--- Users should start with an existing example as its written, deploy it, then check their changes against it -->

@@ -1,3 +1,5 @@
+# FEATURE
+<!-- Document Title of your Feature Request Here -->
 ---
 name: Feature request
 about: Suggest an idea for this project
@@ -8,16 +10,17 @@ assignees: ''
 ---
 
 ## Is your request related to a new or existing service/process?
-  - New 🛑: [ ] - requesting a feature that the process currently does not perform
-  - Existing ✅: [ ] - requesting an enhancement or change to something the process currently performs
 
-## Is your request related to a problem? Please describe.
+- New 🛑: [ ]<!-- requesting a feature that the process currently does not perform -->
+- Existing ✅: [ ] <!-- requesting an enhancement or change to something the process currently performs -->
+
+## Is your request related to a problem? Please describe
 <!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when ... -->
 
-## Describe the solution you'd like.
+## Describe the solution you'd like
 <!-- A clear and concise description of what you want to happen -->
 
-## Describe alternatives you've considered.
+## Describe alternatives you've considered
 <!-- A clear and concise description of any alternative solutions or functionality you've considered -->
 
 ## Additional context
