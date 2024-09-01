@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v4.1.7
         with:
           submodules: recursive
-  
+
       - name: Setup .NET Core SDKs
         # v3+ definitely has issue
         uses: actions/setup-dotnet@v2
@@ -81,7 +81,7 @@ jobs:
           NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
 
       - name: Build
-        run: dotnet build ${{ inputs.version && format(' /p:Version={0}', inputs.version) || '' }} --configuration ${{ inputs.build-config }} --no-restore 
+        run: dotnet build ${{ inputs.version && format(' /p:Version={0}', inputs.version) || '' }} --configuration ${{ inputs.build-config }} --no-restore
       - name: Copy the Build Output
         id: copy-artifacts
         uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1

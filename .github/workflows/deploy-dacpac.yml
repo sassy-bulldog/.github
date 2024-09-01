@@ -153,7 +153,7 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
-    
+
     # - name: Publishing DACPACs
     #   id: sql-dacpac
     #   # TODO: Create an action on marketplace to build and deploy DACPACs
@@ -166,15 +166,15 @@ jobs:
     #     target-database: ${{ inputs.target-database }}
     #     deployment-action: 'Publish'
     #     source-directory: >
-    #       ${{ 
-    #         format('{0}', 
-    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path || 
-    #             format('{0}/{1}/{2}', 
+    #       ${{
+    #         format('{0}',
+    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+    #             format('{0}/{1}/{2}',
     #               inputs.source-directory == '' && github.workspace || inputs.source-directory,
     #               'artifacts',
     #               fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
     #             )
-    #         ) 
+    #         )
     #       }}
     #     output-directory: '${{ github.workspace }}/artifacts/${{ inputs.server-instance }}'
     #     prevent-dataloss: ${{ inputs.prevent-dataloss }}

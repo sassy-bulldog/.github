@@ -121,26 +121,26 @@ jobs:
         echo "matrix=$(printf '%s\n' "${test_array[@]}" | jq -c -s '{ "include": . }')" >> $GITHUB_OUTPUT
       env:
         matrix: ${{ inputs.matrix }}
-        
+
     - id: matrix-windows
       name: Windows
       if:  ${{ runner.os == 'Windows' }}
       run: |
         $test_array=@{include = @()};
-        if ('${{ inputs.branch }}' -match '${{ inputs.regex-dev }}') { 
+        if ('${{ inputs.branch }}' -match '${{ inputs.regex-dev }}') {
           $test_array["include"] += ('${{ inputs.matrix }}' | ConvertFrom-JSON).Development;
         }
-        if ('${{ inputs.branch }}' -match '${{ inputs.regex-qa }}') { 
+        if ('${{ inputs.branch }}' -match '${{ inputs.regex-qa }}') {
           $test_array["include"] += ('${{ inputs.matrix }}' | ConvertFrom-JSON).QA;
         }
-        if ('${{ inputs.branch }}' -match '${{ inputs.regex-model }}') { 
+        if ('${{ inputs.branch }}' -match '${{ inputs.regex-model }}') {
           $test_array["include"] += ('${{ inputs.matrix }}' | ConvertFrom-JSON).Model;
         }
-        if ('${{ inputs.branch }}' -match '${{ inputs.regex-prod }}') { 
+        if ('${{ inputs.branch }}' -match '${{ inputs.regex-prod }}') {
           $test_array["include"] += ('${{ inputs.matrix }}' | ConvertFrom-JSON).Production;
         }
         echo "matrix=$($test_array | ConvertTo-JSON -Depth 3 -Compress)" >> $env:GITHUB_OUTPUT;
-        
+
   verify-matrix:
     name: 'Verify Environment(s)'
     runs-on: ${{ fromJSON(inputs.runs-on) }}
@@ -151,4 +151,4 @@ jobs:
       name: Print matrix to console
       run: |
         echo '${{ needs.get-matrix.outputs.matrix }}' | ${{ runner.os == 'Windows' && 'ConvertFrom-JSON' || 'jq ''.''' }}
-  
+
