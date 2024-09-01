@@ -29,13 +29,13 @@ Ex. I'm always frustrated when ...
 
 ## Describe alternatives you've considered
 
-<!-- 
+<!--
 A clear and concise description of any alternative solutions or
 functionality you've considered
 -->
 
 ## Additional context
 
-<!-- 
+<!--
 Add any other context or screenshots about the feature request here
 -->
