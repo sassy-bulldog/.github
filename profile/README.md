@@ -68,7 +68,7 @@ We welcome contributions from the community. To contribute, please follow these 
 2. Request to be added as an external contributor by contacting us<!-- at [support@jaffamanagement.com](mailto:support@jaffamanagement.com)-->.
 3. Once granted permissions, create a new branch using our naming convention:
 `[type]/[purpose]` (e.g., `feat/add-login-feature` or `fix/bug-123`).
-4. Make your changes and commit them following the 
+4. Make your changes and commit them following the
 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
 standard (e.g., `feat: add login feature` or `fix: resolve bug 123`).
 5. Push to the branch (`git push origin feat/add-login-feature`).

@@ -16,7 +16,7 @@ demonstrate and validate my change(s)
 - [ ] I have tested and validated these changes using one or more of the
 provided `examples/*` or `.runsettings`
 <!---
-Users should start with an existing example as its written, deploy it, then 
+Users should start with an existing example as its written, deploy it, then
 check their changes against it.
 
 This will highlight breaking/disruptive changes.
