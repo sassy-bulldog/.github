@@ -97,7 +97,7 @@ labels:
 
   - name: 🔧 Github Configuration
     description: Indicates the change is related to github settings
-    color: 555555
+    color: '555555'
 
   - name: 💻 Source
     description: Indicates the scope is related to the own service logic
