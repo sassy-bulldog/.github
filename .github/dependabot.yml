@@ -3,11 +3,11 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/.github/workflows'
     schedule:
-      interval: 'weekly'
+      interval: 'daily'
     labels:
       - '📦 Dependencies'
       - '🚀 CI/CD'
     assignee:
       - 'jaffa-nj/tsc'
     commit-message:
-      prefix: 'chore(deps-ci): Update GitHub Actions workflows'
+      prefix: 'chore(deps-ci): Update GHA Dependencies'
