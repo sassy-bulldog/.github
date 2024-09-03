@@ -24,7 +24,7 @@ settings:
 labels:
   - name: bug
     description: Bug identified
-    color: F4D03F # d73a4a
+    color: D73A4A
     new_name: 🐞 Bug
 
   - name: documentation
@@ -34,12 +34,12 @@ labels:
 
   - name: duplicate
     description: This issue or pull request already exists
-    color: 17202A # cfd3d7
+    color: 7A5901 # cfd3d7
     new_name: 💩 Duplicate
 
   - name: enhancement
     description: Feature added in the PR
-    color: F10505 # a2eeef
+    color: A2EEEF
     new_name: ✅ Feature
 
   - name: 'good first issue'
@@ -54,17 +54,17 @@ labels:
 
   - name: invalid
     description: This doesn't seem right
-    color: e4e669
+    color: E4E669
     new_name: 🚫 Invalid
 
   - name: question
     description: Further information is requested
-    color: d876e3
+    color: D876E3
     new_name: ❓ Question
 
   - name: wontfix
     description: This will not be worked on
-    color: ffffff
+    color: FFFFFF
     new_name: 🙅‍♂️ Wontfix
 
   - name: ⚠️ Breaking Change
@@ -85,7 +85,7 @@ labels:
 
   - name: 📦 Dependencies
     description: Pull requests that update a dependency file
-    color: 95A5A6
+    color: 228AFF
 
   - name: 👀 Feature Requested
     description: Request for a feature
@@ -129,7 +129,7 @@ labels:
 
   - name: ignore-for-release
     description: Ignore pull request for a new release
-    color: 9C28FC
+    color: EDEDED
 
   - name: 'autorelease: tagged'
     description: Used by release-please to indicate a release has been tagged
