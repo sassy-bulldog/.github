@@ -265,4 +265,113 @@ common words. Examples include:
 - **global-api-auth-py**: A global Python repository for API authentication logic.
 - **project-frontend-website-js**: A JavaScript repository for the frontend of
 the "Website" project.
-- **team-infra
+- **team-infra-aws**: A repository for AWS infrastructure code managed by a
+specific team.
+- **personal-scripts-python**: A personal repository containing Python scripts.
+
+### 4. Best Practices
+
+- **Consistency**: Always adhere to the structure to ensure consistency across
+all repositories.
+- **Simplicity**: Keep names concise yet descriptive enough to convey their
+purpose clearly.
+- **Avoid Redundancy**: Do not include unnecessary components. If a project is
+clear from the context, omit it from the name.
+
+### 5. Conclusion
+
+Adhering to this repository naming strategy will enable easier navigation and
+management of repositories, especially in environments with limited search
+capabilities.
+Ensure all team members are familiar with and apply this strategy when creating
+new repositories.
+
+## Standards of Practice: Repository Workflows
+
+To maintain consistency, quality, and efficiency across all repositories, certain
+workflows must be implemented and managed centrally.
+These workflows ensure that code reviews, pull requests, and other critical
+processes are handled in a standardized manner.
+All workflows should be maintained through the `standardized-workflows` folder
+of the [.github](https://github.com/jaffa-nj/.github) repository.
+
+In general, there should be five workflows in every repository:
+
+1. [Codeowners](#1-codeowners)
+2. [PR Controls](#2-pr-controls)
+3. [Stale](#3-stale)
+4. [Release](#4-release)
+5. [Unit Tests](#5-unit-tests)
+
+Each of these workflows serves a specific purpose and must be tailored or
+standardized as outlined below.
+
+Additionally, each repository should have configuration files for:
+
+1. [Pre-commit Workflow](#1-pre-commit)
+
+### Workflows
+
+#### 1. Codeowners
+
+**Standard:** All repositories must implement a `CODEOWNERS` workflow.  
+**Purpose:** To ensure that designated code owners have the appropriate
+permissions to review and approve pull requests (PRs).  
+**Rationale:** This practice maintains code quality and consistency by ensuring
+that only authorized individuals can approve changes to the codebase.
+
+#### 2. PR Controls
+
+**Standard:** A `PR-controls` workflow is required in every repository.  
+**Purpose:** To enforce the use of descriptive and standardized PR titles, as
+defined by the [Conventional Commits](https://www.conventionalcommits.org/)
+specification.  
+**Rationale:** This standard promotes a clear and consistent commit history,
+which is crucial for maintaining an understandable and maintainable codebase.
+
+#### 3. Stale
+
+**Standard:** Repositories must include a `stale` workflow.  
+**Purpose:** To automatically close pull requests and issues that have remained
+inactive for a predefined period.  
+**Rationale:** This workflow helps keep the repository focused on active,
+relevant work and reduces clutter from outdated or irrelevant tasks.
+
+#### 4. Release
+
+<!-- 
+It might be nice to figure out if we can have release please:
+- Build / Compile Code
+- Run Unit Tests
+- Then perform release
+
+This would eliminate #5 from being a separate workflow and standardize it
+such that every repo can use the same release action, but have different configs
+much like the pre-commit config works
+-->
+**Standard:** A `release` workflow must be implemented in all repositories.  
+**Purpose:** To automate the creation of GitHub releases and manage the
+promotion and deployment of code to appropriate environments.  
+**Rationale:** This workflow streamlines the release process, ensuring that new
+versions of the software are consistently and reliably deployed.
+
+#### 5. Unit Tests
+
+**Standard:** Repositories must include a `unit-tests` workflow.  
+**Purpose:** To automatically run tests that verify the correctness of the code.
+**Rationale:** Automated testing is essential for catching bugs and ensuring
+that new changes do not break existing functionality.
+
+### Configuration Files
+
+#### 1. Pre-commit
+
+`.pre-commit-config.yaml`
+
+**Standard:** Each repository should have a unique `pre-commit` workflow
+tailored to its specific needs.  
+**Purpose:** To enforce code linting, formatting, and validation before commits
+are accepted.  
+**Rationale:** By ensuring that code meets the project's standards before it is
+committed, this practice helps maintain a high level of code quality and reduces
+the likelihood of introducing errors.
