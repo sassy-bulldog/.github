@@ -315,32 +315,32 @@ Additionally, each repository should have configuration files for:
 
 #### 1. Codeowners
 
-**Standard:** All repositories must implement a `CODEOWNERS` workflow.  
+**Standard:** All repositories must implement a `CODEOWNERS` workflow.
 **Purpose:** To ensure that designated code owners have the appropriate
-permissions to review and approve pull requests (PRs).  
+permissions to review and approve pull requests (PRs).
 **Rationale:** This practice maintains code quality and consistency by ensuring
 that only authorized individuals can approve changes to the codebase.
 
 #### 2. PR Controls
 
-**Standard:** A `PR-controls` workflow is required in every repository.  
+**Standard:** A `PR-controls` workflow is required in every repository.
 **Purpose:** To enforce the use of descriptive and standardized PR titles, as
 defined by the [Conventional Commits](https://www.conventionalcommits.org/)
-specification.  
+specification.
 **Rationale:** This standard promotes a clear and consistent commit history,
 which is crucial for maintaining an understandable and maintainable codebase.
 
 #### 3. Stale
 
-**Standard:** Repositories must include a `stale` workflow.  
+**Standard:** Repositories must include a `stale` workflow.
 **Purpose:** To automatically close pull requests and issues that have remained
-inactive for a predefined period.  
+inactive for a predefined period.
 **Rationale:** This workflow helps keep the repository focused on active,
 relevant work and reduces clutter from outdated or irrelevant tasks.
 
 #### 4. Release
 
-<!-- 
+<!--
 It might be nice to figure out if we can have release please:
 - Build / Compile Code
 - Run Unit Tests
@@ -350,15 +350,15 @@ This would eliminate #5 from being a separate workflow and standardize it
 such that every repo can use the same release action, but have different configs
 much like the pre-commit config works
 -->
-**Standard:** A `release` workflow must be implemented in all repositories.  
+**Standard:** A `release` workflow must be implemented in all repositories.
 **Purpose:** To automate the creation of GitHub releases and manage the
-promotion and deployment of code to appropriate environments.  
+promotion and deployment of code to appropriate environments.
 **Rationale:** This workflow streamlines the release process, ensuring that new
 versions of the software are consistently and reliably deployed.
 
 #### 5. Unit Tests
 
-**Standard:** Repositories must include a `unit-tests` workflow.  
+**Standard:** Repositories must include a `unit-tests` workflow.
 **Purpose:** To automatically run tests that verify the correctness of the code.
 **Rationale:** Automated testing is essential for catching bugs and ensuring
 that new changes do not break existing functionality.
@@ -370,9 +370,9 @@ that new changes do not break existing functionality.
 `.pre-commit-config.yaml`
 
 **Standard:** Each repository should have a unique `pre-commit` workflow
-tailored to its specific needs.  
+tailored to its specific needs.
 **Purpose:** To enforce code linting, formatting, and validation before commits
-are accepted.  
+are accepted.
 **Rationale:** By ensuring that code meets the project's standards before it is
 committed, this practice helps maintain a high level of code quality and reduces
 the likelihood of introducing errors.
