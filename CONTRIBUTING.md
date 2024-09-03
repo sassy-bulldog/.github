@@ -19,6 +19,7 @@ To ensure a smooth and efficient workflow, please follow these guidelines.
     - [Windows Subsystem for Linux (WSL)](#windows-subsystem-for-linux-wsl)
     - [Pre-commit Hooks](#pre-commit-hooks)
 5. [Repository Naming Strategy](#repository-naming-strategy)
+6. [Standards of Practice: Repository Workflows](#standards-of-practice-repository-workflows)
 
 ## Setting Up Your Development Environment
 
