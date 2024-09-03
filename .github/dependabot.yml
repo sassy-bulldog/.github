@@ -7,7 +7,7 @@ updates:
     labels:
       - '📦 Dependencies'
       - '🚀 CI/CD'
-    assignee:
+    assignees:
       - 'tsc'
     commit-message:
       prefix: 'chore(deps-ci): Update GHA Dependencies'
