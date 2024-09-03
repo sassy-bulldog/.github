@@ -1,4 +1,4 @@
-name: 'Conventional Commits'
+name: 'Controls to Standardize Pull Requests'
 
 on:
   workflow_call:
@@ -19,38 +19,36 @@ permissions:
   contents: read # for checkout
 
 jobs:
-  get-app-token:
-    name: Get GitHub App Token
-    uses: ./.github/workflows/get-app-token.yml
-    with:
-      runs-on: ${{ inputs.runs-on || '[ "ubuntu-latest" ]' }}
-      client-id: ${{ vars.GOV_APP_CLIENT_ID }}
-      installation-id: ${{ vars.GOV_APP_INSTALLATION_ID }}
-    secrets: inherit
+  # get-app-token:
+  #   name: Get GitHub App Token
+  #   uses: ./.github/workflows/get-app-token.yml
+  #   with:
+  #     runs-on: ${{ inputs.runs-on || '[ "ubuntu-latest" ]' }}
+  #     client-id: ${{ vars.GOV_APP_CLIENT_ID }}
+  #     installation-id: ${{ vars.GOV_APP_INSTALLATION_ID }}
+  #   secrets: inherit
 
   pr_title:
     name: Verify PR Title per Governance
-    needs: get-app-token
+    # needs: get-app-token
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]' ) }}
     steps:
       #TODO: Deprecated NodeJS Version
       - name: Clean Agent Workspace
         uses: tiacsys/clean-after-action@v3.0.0
 
-      - name: Decrypt Token
-        uses: cloudposse/github-action-secret-outputs@0.1.2
-        id: decrypt-token
-        with:
-          ## PASSWORD is a gpg passphrase stored in Github Secrets.
-          secret: ${{ secrets.GOV_APP_PASSWORD }}
-          op: decode
-          in: ${{ needs.get-app-token.outputs.encrypted-token }}
+      # - name: Decrypt Token
+      #   uses: cloudposse/github-action-secret-outputs@0.1.2
+      #   id: decrypt-token
+      #   with:
+      #     ## PASSWORD is a gpg passphrase stored in Github Secrets.
+      #     secret: ${{ secrets.GOV_APP_PASSWORD }}
+      #     op: decode
+      #     in: ${{ needs.get-app-token.outputs.encrypted-token }}
 
       # Please look up the latest version from
       # https://github.com/amannn/action-semantic-pull-request/releases
       - uses: amannn/action-semantic-pull-request@v5.2.0
-        env:
-          GITHUB_TOKEN: ${{ steps.decrypt-token.outputs.out }}
         with:
           # Configure which types are allowed.
           # Default: https://github.com/commitizen/conventional-commit-types
@@ -87,3 +85,35 @@ jobs:
           # Related to `validateSingleCommit` you can opt-in to validate that the PR
           # title matches a single commit to avoid confusion.
           validateSingleCommitMatchesPrTitle: true
+
+  pr_labels:
+    name: Apply Scoping Labels to PR
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]' ) }}
+    steps:
+      #TODO: Deprecated NodeJS Version
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: 'Add labels to PR 🧧'
+        uses: actions/labeler@v5
+        with:
+          configuration-path: .github/pr-scope-labeler.yml
+
+      - name: 'Check PR Size 🏯'
+        uses: codelytv/pr-size-labeler@v1
+        with:
+          xs_label: '🤩 size/xs'
+          xs_max_size: '10'
+          s_label: '🥳 size/s'
+          s_max_size: '100'
+          m_label: '😎 size/m'
+          m_max_size: '500'
+          l_label: '😖 size/l'
+          l_max_size: '1000'
+          xl_label: '🤯 size/xl'
+          fail_if_xl: 'false'
+          message_if_xl: >
+            This PR exceeds the recommended size of 1000 lines.
+            Please make sure you are NOT addressing multiple issues with one PR.
+            Note this PR might be rejected due to its size.
+          files_to_ignore: 'package-lock.json *.lock docs/* dist/*'
