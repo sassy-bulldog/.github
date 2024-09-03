@@ -62,7 +62,7 @@
           - .github/dependabot.yml
           - .github/pr-scope-labeler.yml
 
-🏠 Github Configuration:
+🔧 Github Configuration:
   - changed-files:
       - any-glob-to-any-file:
           - .github/ISSUE_TEMPLATE/**
