@@ -18,7 +18,7 @@ To ensure a smooth and efficient workflow, please follow these guidelines.
 4. [Supporting Tools](#supporting-tools)
     - [Windows Subsystem for Linux (WSL)](#windows-subsystem-for-linux-wsl)
     - [Pre-commit Hooks](#pre-commit-hooks)
-5. [Repository Naming Strategy](#Rep)
+5. [Repository Naming Strategy](#Repository Naming Strategy)
 
 ## Setting Up Your Development Environment
 
