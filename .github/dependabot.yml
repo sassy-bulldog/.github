@@ -8,6 +8,6 @@ updates:
       - '📦 Dependencies'
       - '🚀 CI/CD'
     assignee:
-      - 'jaffa-nj/tsc'
+      - 'tsc'
     commit-message:
       prefix: 'chore(deps-ci): Update GHA Dependencies'
