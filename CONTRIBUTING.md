@@ -18,7 +18,7 @@ To ensure a smooth and efficient workflow, please follow these guidelines.
 4. [Supporting Tools](#supporting-tools)
     - [Windows Subsystem for Linux (WSL)](#windows-subsystem-for-linux-wsl)
     - [Pre-commit Hooks](#pre-commit-hooks)
-5. [Repository Naming Strategy](#Repository Naming Strategy)
+5. [Repository Naming Strategy](#repository-naming-strategy)
 
 ## Setting Up Your Development Environment
 
@@ -238,14 +238,16 @@ repository.
 The identifiers should be unique and easily searchable to avoid conflicts with
 common words. Examples include:
 
+- **dotnet**: .NET
+  - **ssdt**: SQL Server Data Tools
+  - **ssis**: SQL Server Integration Services
+- **r-lang**: R (to avoid conflict with the letter "R" in common words)
 - **py**: Python
 - **js**: JavaScript
 - **java**: Java
 - **csharp**: C# (or **cs**)
-- **dotnet**: .NET
 - **golang**: Go (to avoid confusion with common words)
 - **rb**: Ruby
-- **r-lang**: R (to avoid conflict with the letter "R" in common words)
 - **cpp**: C++
 - **ts**: TypeScript
 - **php**: PHP
