@@ -56,7 +56,7 @@ jobs:
         submodules: recursive
 
     - name: Setup MsBuild
-      uses: microsoft/setup-msbuild@v1.3.1 # last version before NodeJS 20
+      uses: microsoft/setup-msbuild@v2.0.0 # last version before NodeJS 20
       # uses: actions/setup-dotnet@v2
       # uses: timheuer/bootstrap-dotnet@v1
       # with:
