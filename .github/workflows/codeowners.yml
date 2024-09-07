@@ -45,7 +45,7 @@ jobs:
           ref: ${{ github.base_ref }}
 
       - name: Check for CODEOWNERS file
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3.0.0
         id: check_codeowners
         with:
           files: '**/CODEOWNERS'
