@@ -54,7 +54,7 @@ jobs:
 
       - name: Setup .NET Core SDKs
         # v3+ definitely has issue
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4.0.1
         with:
           dotnet-version: |
             6.0.x
@@ -92,7 +92,7 @@ jobs:
           flatten-directories: '${{ inputs.flatten-directories }}'
 
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: ${{ inputs.artifact-name }}
           path: '${{ inputs.working-directory }}artifacts'
