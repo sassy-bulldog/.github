@@ -22,8 +22,10 @@ We welcome contributions from the community. To contribute, please follow these 
    If you hear a bark, it means it worked.
 6. Create a new Pull Request. Add a funny GIF to make our day.
 
-Please make sure to follow our [Code of Conduct](CODE_OF_CONDUCT.md) and
-[Contributing Guidelines](CONTRIBUTING.md). We take our code seriously, but not ourselves.
+Please make sure to follow our
+[Code of Conduct](https://github.com/sassy-bulldog/.github/CODE_OF_CONDUCT.md) and
+[Contributing Guidelines](https://github.com/sassy-bulldog/.github/CONTRIBUTING.md).
+We take our code seriously, but not ourselves.
 
 ## Contact Us
 
