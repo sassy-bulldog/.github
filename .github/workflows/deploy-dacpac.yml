@@ -150,7 +150,7 @@ jobs:
         if_no_artifact_found: fail
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v4.0.1
       with:
         dotnet-version: 6.0.x
 
@@ -192,7 +192,7 @@ jobs:
 
     - name: Artifact
       id: make-artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v4.4.0
       with:
         name: ${{ inputs.server-instance }}
         path: '${{ github.workspace }}/artifacts/${{ inputs.server-instance }}'
