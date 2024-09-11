@@ -27,20 +27,20 @@ the workflows in this repository, and if we enhance the governance
 The following workflows should be included in every
 Repository in this organization:
 
-1. [![Issue & PR Maintenance](https://github.com/jaffa-nj/.github/actions/workflows/stale.yml/badge.svg)](https://github.com/jaffa-nj/.github/actions/workflows/stale.yml)
+1. [![Issue & PR Maintenance](https://github.com/sassy-bulldog/.github/actions/workflows/stale.yml/badge.svg)](https://github.com/sassy-bulldog/.github/actions/workflows/stale.yml)
     - This automates marking, locking, and eventually
     closing stale Issues and Pull-Requests every night for a repository
-2. [![Repository Governance](https://github.com/jaffa-nj/.github/actions/workflows/repo-gov.yml/badge.svg)](https://github.com/jaffa-nj/.github/actions/workflows/repo-gov.yml)
+2. [![Repository Governance](https://github.com/sassy-bulldog/.github/actions/workflows/repo-gov.yml/badge.svg)](https://github.com/sassy-bulldog/.github/actions/workflows/repo-gov.yml)
     - Ensures that Governance standards for the repository and
     branch-protection rules have been followed.
-3. [!['Code-Owners are Team(s)'](https://github.com/jaffa-nj/.github/actions/workflows/codeowners.yml/badge.svg)](https://github.com/jaffa-nj/.github/actions/workflows/codeowners.yml)
+3. [!['Code-Owners are Team(s)'](https://github.com/sassy-bulldog/.github/actions/workflows/codeowners.yml/badge.svg)](https://github.com/sassy-bulldog/.github/actions/workflows/codeowners.yml)
     - Requires that the [CODEOWNERS](CODEOWNERS) file contains
     references to organizational teams - **not individual users**
-4. [!['Conventional Commits'](https://github.com/jaffa-nj/.github/actions/workflows/conventional-commits.yml/badge.svg)](https://github.com/jaffa-nj/.github/actions/workflows/conventional-commits.yml)
+4. [!['Conventional Commits'](https://github.com/sassy-bulldog/.github/actions/workflows/conventional-commits.yml/badge.svg)](https://github.com/sassy-bulldog/.github/actions/workflows/conventional-commits.yml)
     - Requires that all Pull requests follow
     [Conventional Commit Standards](https://www.conventionalcommits.org/en/v1.0.0/)
-5. [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/jaffa-nj/.github/main.svg)](https://results.pre-commit.ci/latest/github/jaffa-nj/.github/main)
-6. [![Release](https://github.com/jaffa-nj/.github/actions/workflows/release.yml/badge.svg)](https://github.com/jaffa-nj/.github/actions/workflows/release.yml)
+5. [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/sassy-bulldog/.github/main.svg)](https://results.pre-commit.ci/latest/github/sassy-bulldog/.github/main)
+6. [![Release](https://github.com/sassy-bulldog/.github/actions/workflows/release.yml/badge.svg)](https://github.com/sassy-bulldog/.github/actions/workflows/release.yml)
     - If the all commits have followed
     [Conventional Commit Standards](https://www.conventionalcommits.org/en/v1.0.0/),
     this automates updating the [CHANGELOG](CHANGELOG.MD)

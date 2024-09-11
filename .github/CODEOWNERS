@@ -5,7 +5,7 @@
 # the repo. Unless a later match takes precedence,
 # @global-owner1 and @global-owner2 will be requested for
 # review when someone opens a pull request.
-*       @jaffa-nj/tsc
+*       @sassy-bulldog/tsc
 
 # Order is important; the last matching pattern takes the most
 # precedence. When someone opens a pull request that only
@@ -26,19 +26,19 @@
 
 # Terraform Files
 # *.tf	@Cloud-Team/platform-reliability-engineers @Cloud-Team/solutions-engineers
-*.tf                                    @jaffa-nj/terraform-language
-.terraform-docs.yaml                    @jaffa-nj/terraform-language
+*.tf                                    @sassy-bulldog/terraform-language
+.terraform-docs.yaml                    @sassy-bulldog/terraform-language
 
 # SQL Files
-*.sql @jaffa-nj/sql-language
-*.sqlproj @jaffa-nj/sql-language
+*.sql @sassy-bulldog/sql-language
+*.sqlproj @sassy-bulldog/sql-language
 
 # SSIS Files
-*.dtsx @jaffa-nj/ssis-user
-*.params @jaffa-nj/ssis-user
-*.conmgr @jaffa-nj/ssis-user
-*.database @jaffa-nj/ssis-user
-*.dtproj @jaffa-nj/ssis-user
+*.dtsx @sassy-bulldog/ssis-user
+*.params @sassy-bulldog/ssis-user
+*.conmgr @sassy-bulldog/ssis-user
+*.database @sassy-bulldog/ssis-user
+*.dtproj @sassy-bulldog/ssis-user
 
 # In this example, @doctocat owns any files in the build/logs
 # directory at the root of the repository and any of its
@@ -77,14 +77,14 @@
 # Technical Steering Committee should be in charge of reviewing any changes
 # to automations (because they should be centralized, shared, and standardized)
 # as well as changes to key governance and control files or documents
-.github/ISSUE_TEMPLATE/* @jaffa-nj/tsc
-.github/settings.yml @jaffa-nj/tsc
-.github/workflows/ @jaffa-nj/tsc
-pull_request_template.md @jaffa-nj/tsc
-CODEOWNERS @jaffa-nj/tsc
-CONTRIBUTING.md @jaffa-nj/tsc
-GOVERNANCE.md @jaffa-nj/tsc
-SECURITY.md @jaffa-nj/tsc
-SUPPORT.md @jaffa-nj/tsc
-CODE_OF_CONDUCT.md @jaffa-nj/tsc
-.pre-commit-config.yaml @jaffa-nj/tsc
+.github/ISSUE_TEMPLATE/* @sassy-bulldog/tsc
+.github/settings.yml @sassy-bulldog/tsc
+.github/workflows/ @sassy-bulldog/tsc
+pull_request_template.md @sassy-bulldog/tsc
+CODEOWNERS @sassy-bulldog/tsc
+CONTRIBUTING.md @sassy-bulldog/tsc
+GOVERNANCE.md @sassy-bulldog/tsc
+SECURITY.md @sassy-bulldog/tsc
+SUPPORT.md @sassy-bulldog/tsc
+CODE_OF_CONDUCT.md @sassy-bulldog/tsc
+.pre-commit-config.yaml @sassy-bulldog/tsc

@@ -294,7 +294,7 @@ workflows must be implemented and managed centrally.
 These workflows ensure that code reviews, pull requests, and other critical
 processes are handled in a standardized manner.
 All workflows should be maintained through the `standardized-workflows` folder
-of the [.github](https://github.com/jaffa-nj/.github) repository.
+of the [.github](https://github.com/sassy-bulldog/.github) repository.
 
 In general, there should be five workflows in every repository:
 

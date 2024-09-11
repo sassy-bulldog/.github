@@ -8,7 +8,7 @@ updates:
       - '📦 Dependencies'
       - '🚀 CI/CD'
     assignee:
-      - 'jaffa-nj/tsc'
+      - 'sassy-bulldog/tsc'
     commit-message:
       prefix: 'chore(deps-ci): Update GitHub Actions workflows'
   - package-ecosystem: 'terraform'
@@ -19,6 +19,6 @@ updates:
       - '📦 Dependencies'
       - '🚀 CI/CD'
     assignee:
-      - 'jaffa-nj/tsc'
+      - 'sassy-bulldog/tsc'
     commit-message:
       prefix: 'chore(deps-tf): Update Modules'
