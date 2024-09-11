@@ -15,9 +15,6 @@ on:
       - synchronize
       - reopened
 
-permissions:
-  contents: read # for checkout
-
 jobs:
   # get-app-token:
   #   name: Get GitHub App Token
@@ -87,6 +84,8 @@ jobs:
 
   pr_labels:
     name: Apply Scoping Labels to PR
+    permissions:
+      pull-requests: write
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]' ) }}
     steps:
       #TODO: Deprecated NodeJS Version
