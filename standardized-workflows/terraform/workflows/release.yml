@@ -32,8 +32,8 @@ permissions:
 jobs:
   release:
     name: Shared Workflow
-    if: ${{ github.repository_owner == 'jaffa-nj' }}
-    uses: jaffa-nj/.github/.github/workflows/release.yml@v0.2.0 # x-release-please-version
+    if: ${{ github.repository_owner == 'sassy-bulldog' }}
+    uses: sassy-bulldog/.github/.github/workflows/release.yml@v0.2.0 # x-release-please-version
     with:
       dry_run: ${{ inputs.dry_run || false }}
     secrets: inherit

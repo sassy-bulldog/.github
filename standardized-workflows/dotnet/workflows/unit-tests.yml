@@ -20,7 +20,7 @@ on:
 jobs:
   test:
     name: Shared Workflow
-    uses: jaffa-nj/.github/.github/workflows/units-dotnet.yml@v0.2.0 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/units-dotnet.yml@v0.2.0 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'
       working-directory: "./"
