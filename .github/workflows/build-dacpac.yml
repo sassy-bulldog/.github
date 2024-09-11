@@ -1,0 +1,133 @@
+name: Build DACPACs
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      artifact-name:
+        description: 'Name of the artifact to build; this is what is displayed on the workflow and becomes the zip/folder names for use in other workflows'
+        type: string
+        required: false
+        default: 'DACPACS'
+      platform:
+        description: 'Specifies the target architecture.'
+        type: string
+        required: false
+        default: Any CPU
+      build-config:
+        description: 'Build Configuration'
+        type: string
+        required: false
+        default: Debug
+      verbosity:
+        description: 'Verbosity of the tools used in this workflow'
+        type: string
+        required: false
+        default: minimal
+    outputs:
+      run-id:
+        description: 'ID of the run that was just completed; this is what is used to download the artifact in other workflows'
+        value: ${{ github.run_id }}
+      artifact-id:
+        description: 'ID of the artifact built and stored on GitHub as part of this workflow; this is what is used to download the artifact in other workflows'
+        value: ${{ jobs.build.outputs.artifact-id }}
+      artifact-name:
+        description: 'Name of the artifact built; this is what is displayed on the workflow and becomes the zip/folder names for use in other workflows'
+        value: ${{ inputs.artifact-name }}
+
+jobs:
+  build:
+    name: Building
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    outputs:
+      artifact-id: ${{ steps.make-artifact.outputs.artifact_id }}
+
+    steps:
+    #TODO: Deprecated NodeJS Version
+    - name: Schedule Post-Deployment Cleanup
+      uses: tiacsys/clean-after-action@v3.0.0
+
+    - name: Checkout Repo
+      uses: actions/checkout@v4.1.7
+      with:
+        submodules: recursive
+
+    - name: Setup MsBuild
+      uses: microsoft/setup-msbuild@v2.0.0 # last version before NodeJS 20
+      # uses: actions/setup-dotnet@v2
+      # uses: timheuer/bootstrap-dotnet@v1
+      # with:
+      #   dotnet-version: 6.0.x
+      #   vstest: false #this one is not part of setup-dotnet if you revert back (Windows only)
+
+    # - name: Add NuGet sources
+    #   run: dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
+
+    #    dotnet add package Microsoft.Data.Tools.Msbuild
+    #    dotnet new --install MSBuild.Sdk.SqlProj.Templates
+    # - name: Add SqlPackage
+    #   run: |
+    #     try {
+    #       dotnet tool update -g microsoft.sqlpackage
+    #     }
+    #     catch {
+    #       dotnet tool install -g microsoft.sqlpackage
+    #     }
+    #     $env:PATH +=  ";$($env:USERPROFILE)\.dotnet\tools";
+    #     where.exe sqlpackage.exe; # Verify it can be found
+    #     echo $env:PATH;
+    #     # dotnet add package Microsoft.Build.Sql --version 0.1.3-preview
+
+    # - name: Restore dependencies
+    #   run: dotnet restore
+    #   env:
+    #     NUGET_USERNAME: ${{ vars.NUGET_USERNAME }}
+    #     NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
+
+    # Can not use dotnet build because: error MSB4019: The imported project "C:\Program Files\dotnet\sdk\8.0.101\Microsoft\VisualStudio\v11.0\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" was not found.
+    # Can not use --arch with dotnet build because DACPACS are Any CPU
+    # dotnet build --configuration ${{ inputs.build-config || 'Debug' }} --verbosity:${{ inputs.verbosity }};
+    - name: Compile
+      run: |
+        msbuild /nologo /p:platform="${{ inputs.platform }}" /p:configuration="${{ inputs.build-config }}" -restore -verbosity:${{ inputs.verbosity }};
+      env:
+        NUGET_USERNAME: ${{ vars.NUGET_USERNAME }}
+        NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
+
+    - name: 'Consolidate Artifact(s)'
+      id: copy-data
+      uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
+      with:
+        source-directory: '${{ github.workspace }}'
+        destination-directory: '${{ github.workspace }}/artifacts'
+        file-filter: '^.*\.(dacpac|dll|pdb|xml)'
+        flatten-directories: true
+
+    - name: 'Copy SQLCMD Variables'
+      id: copy-vars
+      uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
+      with:
+        source-directory: '${{ github.workspace }}'
+        destination-directory: '${{ github.workspace }}/artifacts'
+        file-filter: 'sqlcmd\.vars'
+        flatten-directories: true
+
+    - name: Artifact
+      id: make-artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: '${{ github.workspace }}/artifacts'
+
+  createBug:
+    name: Create Bug
+    needs: [build]
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'DACPAC Build Failed'
+      job: ${{ needs.build.name }}
+      status: ${{ needs.build.outcome }}

@@ -1,0 +1,101 @@
+name: Repository Governance
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
+      repos:
+        description: List of Repositories to apply governance to.
+        required: false
+        type: string
+        default: '["self"]'
+      settings_files:
+        description: Settings file to apply to the repositories.
+        required: false
+        type: string
+        default: '[ ".github/settings.yml" ]'
+      action:
+        description: |
+          What action to take with this action. One of validate, check, or apply.
+          - Validate will validate your settings file, but not touch your repo.
+          - Check will check your repo with your settings file and output a report of any drift.
+          - Apply will apply the settings in your settings file to your repo.
+        required: false
+        type: string
+        default: check
+
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      repos:
+        description: List of Repositories to apply governance to.
+        required: true
+        type: string
+      settings_files:
+        description: Settings file to apply to the repositories.
+        required: true
+        type: string
+      action:
+        description: |
+          What action to take with this action. One of validate, check, or apply.
+          - Validate will validate your settings file, but not touch your repo.
+          - Check will check your repo with your settings file and output a report of any drift.
+          - Apply will apply the settings in your settings file to your repo.
+        required: true
+        type: string
+
+  push:
+    paths:
+      - '.github/settings.yml'
+      - '.github/workflows/repo-gov.yml'
+
+  schedule:
+    # Everyday @ 0000 - https://crontab.cronhub.io/
+    - cron: '0 0 * * *'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "repo-manager"
+  repo-manager:
+    concurrency:
+      group: ${{ matrix.repo }}-${{ matrix.settings_file}}
+      cancel-in-progress: true
+    strategy:
+      matrix:
+        repo: ${{ fromJSON( inputs.repos || '[ "self" ]' ) }}
+        settings_file: ${{ fromJSON( inputs.settings_files || '[ ".github/settings.yml" ]' ) }}
+      fail-fast: false
+
+    name: ${{ matrix.repo }} - ${{ matrix.settings_file }}
+    if: ${{ inputs.action != 'skip' && inputs.repos != '[]' }}
+    # The type of runner that the job will run on
+    runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]' ) }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      #TODO: Deprecated NodeJS Version
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v4.1.7
+
+      # Runs a single command using the runners shell
+      - name: Run RepoManager
+        if: '!cancelled()' # This is a workaround for a bug in the cancel-in-progress feature
+        uses: actuarysailor/gha-repo-manager@v2.2.3
+        with:
+          repo: ${{ matrix.repo || 'self' }}
+          action: ${{ inputs.action || (github.ref_name == 'main' && 'apply') || 'check' }}
+          settings_file: ${{ matrix.settings_file }}
+          app_id: ${{ vars.GOV_APP_CLIENT_ID }}
+          private_key: ${{ secrets.GOV_APP_PVT_KEY }}

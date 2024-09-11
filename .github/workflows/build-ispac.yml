@@ -1,0 +1,87 @@
+name: Build ISPACs
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      artifact-name:
+        description: 'Name of the artifact to build; this is what is displayed on the workflow and becomes the zip/folder names for use in other workflows'
+        type: string
+        required: false
+        default: 'ISPACS'
+      build-config:
+        description: 'Build Configuration'
+        type: string
+        required: false
+        default: Debug
+    outputs:
+      artifact-id:
+        description: 'ID of the artifact built and stored on GitHub as part of this workflow; this is what is used to download the artifact in other workflows'
+        value: ${{ jobs.build.outputs.artifact-id }}
+      artifact-name:
+        description: 'Name of the artifact built; this is what is displayed on the workflow and becomes the zip/folder names for use in other workflows'
+        value: ${{ inputs.artifact-name }}
+
+jobs:
+  build:
+    name: Building
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    outputs:
+      artifact-id: ${{ steps.make-artifact.outputs.artifact-id }}
+
+    steps:
+      #TODO: Deprecated NodeJS Version
+    - name: Clean Agent Workspace
+      uses: tiacsys/clean-after-action@v3.0.0
+
+    - name: Checkout
+      uses: actions/checkout@v4.1.7
+      with:
+        submodules: true
+
+    # - name: Compile
+    #   id: build-ispac
+    #   # TODO: Create an action on marketplace to build and deploy ISPACs
+    #   uses: actuarysailor/
+    #   with:
+    #     ssis-action: 'build'
+    #     source-directory: '${{ github.workspace }}'
+    #     destination-directory: '${{ github.workspace }}/artifacts'
+    #     build-config: ${{ inputs.build-config }}
+
+    - name: 'Add Script(s)'
+      id: copy-data
+      uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
+      with:
+        source-directory: '${{ github.workspace }}\SQL'
+        destination-directory: '${{ github.workspace }}/artifacts/SQL'
+        file-filter: '^.*\.sql'
+
+    - name: 'Add Configuration(s)'
+      id: copy-config
+      uses: actuarysailor/github-action-nodejs-local-file-copy@v0.11.1
+      with:
+        source-directory: '${{ github.workspace }}\Config'
+        destination-directory: '${{ github.workspace }}/artifacts/Config'
+        file-filter: '^.*\.json'
+
+    - name: Artifact
+      id: make-artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: '${{ github.workspace }}/artifacts'
+
+  createBug:
+    name: Create Bug
+    needs: [build]
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'ISPAC Build Failed'
+      job: ${{ needs.build.name }}
+      status: ${{ needs.build.outcome }}

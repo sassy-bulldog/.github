@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: 'github-actions'
+    directory: '/.github/workflows'
+    schedule:
+      interval: 'daily'
+    labels:
+      - '📦 Dependencies'
+      - '🚀 CI/CD'
+    assignees:
+      - 'tsc'
+    commit-message:
+      prefix: 'chore(deps-ci): Update GHA Dependencies'

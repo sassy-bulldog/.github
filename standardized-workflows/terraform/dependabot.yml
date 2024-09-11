@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: 'github-actions'
+    directory: '/.github/workflows'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - '📦 Dependencies'
+      - '🚀 CI/CD'
+    assignee:
+      - 'sassy-bulldog/tsc'
+    commit-message:
+      prefix: 'chore(deps-ci): Update GitHub Actions workflows'
+  - package-ecosystem: 'terraform'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - '📦 Dependencies'
+      - '🚀 CI/CD'
+    assignee:
+      - 'sassy-bulldog/tsc'
+    commit-message:
+      prefix: 'chore(deps-tf): Update Modules'

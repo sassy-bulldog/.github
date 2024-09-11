@@ -1,0 +1,208 @@
+name: Deploy DACPACs
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      environment:
+        description: 'Environment to deploy to'
+        type: string
+        required: true
+        default: 'Development'
+      source-directory:  # id of input
+        description: 'Source directory containing the dacpac file(s) to deploy'
+        type: string
+        required: false
+        default: ''
+      run_id:
+        description: |
+          Optional, will use specified workflow run use github.event.workflow_run.id when your action runs in a workflow_run event
+          and wants to download from the triggering workflow run"
+        type: string
+        required: true
+      artifact-name:
+        description: 'Name of the artifact to download and deploy; this is what becomes the zip/folder names in the artifacts directory'
+        type: string
+        required: false
+        default: 'DACPACS'
+      nuget-username:
+        description: 'Username for the NuGet server'
+        type: string
+        required: false
+        default: username
+      server-instance:
+        description: 'MS SQL Server to deploy the DACPAC to'
+        type: string
+        required: true
+      target-database:
+        description: 'Name of the target database to download and deploy'
+        type: string
+        required: true
+      output-directory:  # id of input
+        description: 'Directory to write output files to; only useful for deployreport and script actions'
+        type: string
+        required: false
+        default: ''
+      prevent-dataloss:  # id of input
+        description: 'Boolean True/False indicating whether to cease SQL actions if data loss may occur'
+        type: string
+        required: false
+        default: '$true'
+      drop-constraints:  # id of input
+        description: 'Boolean value to whether or not to drop data constraints not in the DACPAC but that are on the Server'
+        type: string
+        required: false
+        default: '$true'
+      drop-dmlTriggers:  # id of input
+        description: 'Boolean value to whether or not to drop DML Triggers not in the DACPAC but that are on the Server'
+        type: string
+        required: false
+        default: '$true'
+      drop-extendedProperties:  # id of input
+        description: 'Boolean value to whether or not to drop Extended Properties not in the DACPAC but that are on the Server'
+        type: string
+        required: false
+        default: '$true'
+      drop-indexes:  # id of input
+        description: 'Boolean value to whether or not to drop Indexes not in the DACPAC but that are on the Server'
+        type: string
+        required: false
+        default: '$true'
+      drop-objects:  # id of input
+        description: 'Boolean value to whether or not to drop Objects not in the DACPAC but that are on the Server'
+        type: string
+        required: false
+        default: '$true'
+      protected-objects:  # id of input
+        description: 'Semi-Colon separated list of object types to protect from being dropped when they do not exist in the DACPAC'
+        type: string
+        required: false
+        default: 'Logins;Certificates;RoleMembership;DatabaseRoles;Users;LinkedServers;ServerRoleMembership;Permissions'
+      excluded-objects:  # id of input
+        description: 'Semi-Colon separated list of object types to ignore when comparing the DACPAC to the Server Database; e.g. not even compared/deployed'
+        type: string
+        required: false
+        default: ''
+      ignore-filegrouppath:  # id of input
+        description: 'Boolean value to whether or not to alter file-groups if not placed identically with the DACPAC'
+        type: string
+        required: false
+        default: '$true'
+      ignore-partitionschemes:  # id of input
+        description: 'Boolean value to whether or not to alter partition-schemes if not identically defined with the DACPAC'
+        type: string
+        required: false
+        default: '$true'
+      include-compositeObjects:  # id of input
+        description: 'Boolean value to whether or not to alter Composite Objects if not identically defined with the DACPAC'
+        type: string
+        required: false
+        default: '$true'
+
+jobs:
+  deploy:
+    name: ${{ inputs.server-instance }} - ${{ inputs.target-database }}
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    environment: ${{ inputs.environment }}
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
+
+    steps:
+      #TODO: Deprecated NodeJS Version
+    - name: Schedule Post-Deployment Cleanup
+      uses: tiacsys/clean-after-action@v3.0.0
+
+    - name: Checkout Repo
+      uses: actions/checkout@v4.1.7
+      with:
+        submodules: false
+
+    - name: 'Download artifact(s)'
+      id: download-current-artifacts
+      if: contains(github.workflow_ref, 'build.yml')
+      uses: actions/download-artifact@v4.1.8
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: >
+          ${{
+            format('{0}/artifacts/{1}',
+            inputs.source-directory == '' && github.workspace || inputs.source-directory,
+            inputs.artifact-name == '' && 'DACPACS' || inputs.artifact-name)
+          }}
+
+    - name: 'Download artifact(s)'
+      id: download-recent-artifact
+      if: ${{ !contains(github.workflow_ref, 'build.yml') }}
+      uses: dawidd6/action-download-artifact@v6
+      with:
+        workflow: build.yml
+        workflow_conclusion: 'success'
+        run_id: ${{ inputs.run_id }}
+        name: ${{ inputs.artifact-name }}
+        path: >
+          ${{
+            format('{0}/artifacts/{1}',
+            inputs.source-directory == '' && github.workspace || inputs.source-directory,
+            inputs.artifact-name == '' && 'DACPACS' || inputs.artifact-name)
+          }}
+        if_no_artifact_found: fail
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4.0.1
+      with:
+        dotnet-version: 6.0.x
+
+    # - name: Publishing DACPACs
+    #   id: sql-dacpac
+    #   # TODO: Create an action on marketplace to build and deploy DACPACs
+    #   uses: actuarysailor/
+    #   env:
+    #     NUGET_USERNAME: ${{ vars.NUGET_USERNAME }}
+    #     NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
+    #   with:
+    #     server-instance: ${{ inputs.server-instance }}
+    #     target-database: ${{ inputs.target-database }}
+    #     deployment-action: 'Publish'
+    #     source-directory: >
+    #       ${{
+    #         format('{0}',
+    #           contains(github.workflow_ref, 'build.yml') && steps.download-current-artifacts.outputs.download-path ||
+    #             format('{0}/{1}/{2}',
+    #               inputs.source-directory == '' && github.workspace || inputs.source-directory,
+    #               'artifacts',
+    #               fromJSON(steps.download-recent-artifact.outputs.artifacts)[0]['name']
+    #             )
+    #         )
+    #       }}
+    #     output-directory: '${{ github.workspace }}/artifacts/${{ inputs.server-instance }}'
+    #     prevent-dataloss: ${{ inputs.prevent-dataloss }}
+    #     drop-constraints: ${{ inputs.drop-constraints }}
+    #     drop-dmlTriggers: ${{ inputs.drop-constraints }}
+    #     drop-extendedProperties: ${{ inputs.drop-extendedProperties }}
+    #     drop-indexes: ${{ inputs.drop-indexes }}
+    #     drop-objects: ${{ inputs.drop-objects }}
+    #     protected-objects: ${{ inputs.protected-objects }}
+    #     excluded-objects: ${{ inputs.excluded-objects }}
+    #     ignore-filegrouppath: ${{ inputs.ignore-filegrouppath }}
+    #     ignore-partitionschemes: ${{ inputs.ignore-partitionschemes }}
+    #     include-compositeObjects: ${{ inputs.include-compositeObjects }}
+    #     sqlcmd-variables: ${{ toJson(vars) }} # is there a way to merge? ${{ toJson(secrets) }}
+
+    - name: Artifact
+      id: make-artifact
+      uses: actions/upload-artifact@v4.4.0
+      with:
+        name: ${{ inputs.server-instance }}
+        path: '${{ github.workspace }}/artifacts/${{ inputs.server-instance }}'
+
+  createBug:
+    name: Create Bug
+    needs: [deploy]
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'DACPAC Deployment Failed'
+      job: ${{ needs.deploy.name }}
+      status: ${{ needs.deploy.outcome }}
