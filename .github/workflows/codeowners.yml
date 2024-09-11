@@ -8,16 +8,6 @@ on:
         required: true
         type: string
   push:
-    # Sequence of patterns matched against refs/heads
-    branches:
-      - 'releases/**'
-      - main
-      - rc/*
-      - rc
-      - beta/*
-      - beta
-      - alpha/*
-      - alpha
     paths:
       - '.github/workflows/codeowners.yml'
       - CODEOWNERS
@@ -55,8 +45,8 @@ jobs:
         if: steps.check_codeowners.outputs.files_exists
         with:
           checks: "owners,duppatterns,syntax"
-          GITHUB_APP_ID: ${{ vars.GOV_APP_CLIENT_ID }}
-          GITHUB_APP_INSTALLATION_ID: ${{ vars.GOV_APP_INSTALLATION_ID }}
-          GITHUB_APP_PRIVATE_KEY: ${{ secrets.GOV_APP_PVT_KEY }}
+          # GITHUB_APP_ID: ${{ vars.GOV_APP_CLIENT_ID }}
+          # GITHUB_APP_INSTALLATION_ID: ${{ vars.GOV_APP_INSTALLATION_ID }}
+          # GITHUB_APP_PRIVATE_KEY: ${{ secrets.GOV_APP_PVT_KEY }}
           owner_checker_owners_must_be_teams: true
           # owner_checker_ignored_owners:
