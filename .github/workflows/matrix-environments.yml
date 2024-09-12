@@ -56,8 +56,9 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        required: true
+        required: false
         type: string
+        default: '[ "ubuntu-latest" ]'
       branch:
         description: Branch name to use in determining the applicable environments.
         required: true

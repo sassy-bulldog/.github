@@ -19,7 +19,6 @@ on:
         description: Additional required tags for the pipeline agents to use.
         required: true
         type: string
-        default: '["ubuntu-latest"]'
       dry_run:
         description: 'When set to true it does not actually publish the version, but rather writes the info for the release to the agent output'
         required: false
@@ -30,8 +29,9 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        required: true
+        required: false
         type: string
+        default: '["ubuntu-latest"]'
       dry_run:
         description: 'When set to true it does not actually publish the version, but rather writes the info for the release to the agent output'
         required: false
