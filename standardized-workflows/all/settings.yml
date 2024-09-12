@@ -55,8 +55,8 @@ batch_file_operations:
   - target_branch: main
     commit_msg: 'ci(standards): Update Standard Workflows'
     files:
-      - src_file: CODEOWNERS
-        dest_file: CODEOWNERS
+      - src_file: .github/CODEOWNERS
+        dest_file: .github/CODEOWNERS
       - src_file: standardized-workflows/all/workflows/codeowners.yml
         dest_file: .github/workflows/codeowners.yml
       - src_file: standardized-workflows/all/workflows/conventional-commits.yml
