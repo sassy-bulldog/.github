@@ -57,9 +57,11 @@ batch_file_operations:
     files:
       - src_file: .github/CODEOWNERS
         dest_file: .github/CODEOWNERS
+      - src_file: .github/pr-scope-labeler.yml
+        dest_file: .github/pr-scope-labeler.yml
       - src_file: standardized-workflows/all/workflows/codeowners.yml
         dest_file: .github/workflows/codeowners.yml
-      - src_file: standardized-workflows/all/workflows/conventional-commits.yml
-        dest_file: .github/workflows/conventional-commits.yml
+      - src_file: standardized-workflows/all/workflows/pr-controls.yml
+        dest_file: .github/workflows/pr-controls.yml
       - src_file: standardized-workflows/all/workflows/stale.yml
         dest_file: .github/workflows/stale.yml
