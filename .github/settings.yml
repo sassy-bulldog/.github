@@ -152,7 +152,7 @@ branch_protections:
       required_status_checks:
         strict: true
         checks:
-          - 'Verify PR Title per Governance'
+          - 'Check PR Title 📝'
           - 'pre-commit.ci - pr'
       require_conversation_resolution: true
       enforce_admins: true

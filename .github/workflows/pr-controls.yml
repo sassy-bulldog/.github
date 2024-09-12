@@ -5,8 +5,9 @@ on:
     inputs:
       runs-on:
         description: Additional required tags for the pipeline agents to use.
-        required: true
+        required: false
         type: string
+        default: '[ "ubuntu-latest" ]'
 
   pull_request_target:
     types:
@@ -17,7 +18,7 @@ on:
 
 jobs:
   pr_title:
-    name: Verify PR Title per Governance
+    name: Check PR Title 📝
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]' ) }}
     steps:
       #TODO: Deprecated NodeJS Version
