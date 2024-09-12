@@ -65,3 +65,5 @@ batch_file_operations:
         dest_file: .github/workflows/pr-controls.yml
       - src_file: standardized-workflows/all/workflows/stale.yml
         dest_file: .github/workflows/stale.yml
+      - src_file: standardized-workflows/all/workflows/release.yml
+        dest_file: .github/workflows/release.yml
