@@ -5,13 +5,13 @@ on:
     # Sequence of patterns matched against refs/heads
     branches:
       - 'releases/**'
-      - main
-      - rc/*
-      - rc
-      - beta/*
-      - beta
-      - alpha/*
-      - alpha
+      - 'main'
+      - 'rc/*'
+      - 'rc'
+      - 'beta/*'
+      - 'beta'
+      - 'alpha/*'
+      - 'alpha'
 
   workflow_dispatch:
     inputs:
@@ -88,9 +88,8 @@ jobs:
     secrets: inherit
 
   release:
+    name: 'Create Release PR 🚀'
     needs: get-app-token
-    # it may be nice to use a different switch and use release please in other repos; but never got to that
-    if: ${{ github.repository == 'sassy-bulldog/.github' }}
     runs-on: ${{ fromJSON(inputs.runs-on || '["ubuntu-latest"]') }}
     steps:
       #TODO: Deprecated NodeJS Version
@@ -112,7 +111,7 @@ jobs:
           op: decode
           in: ${{ needs.get-app-token.outputs.encrypted-token }}
 
-      - name: Create Release PR
+      - name: Release Please 🎉
         uses: googleapis/release-please-action@v4.1.3
         with:
           token: ${{ steps.decrypt-token.outputs.out || github.token }}
