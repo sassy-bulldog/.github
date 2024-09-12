@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/sassy-bulldog/.github/compare/v0.2.1...v0.2.2) (2024-09-12)
+
+
+### Bug Fixes
+
+* Runs-on as optional parameter ([#38](https://github.com/sassy-bulldog/.github/issues/38)) ([63873bd](https://github.com/sassy-bulldog/.github/commit/63873bdf88e8d76baf2e89f42b966d2c921deda0))
+
 ## [0.2.1](https://github.com/sassy-bulldog/.github/compare/v0.2.0...v0.2.1) (2024-09-12)
 
 
