@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/sassy-bulldog/.github/compare/v0.2.0...v0.2.1) (2024-09-12)
+
+
+### Bug Fixes
+
+* Parameters on workflow calls ([#39](https://github.com/sassy-bulldog/.github/issues/39)) ([f740486](https://github.com/sassy-bulldog/.github/commit/f740486d9a9b3c3b9e8a151b30f42e3eb7b299dd))
+
 ## [0.2.0](https://github.com/sassy-bulldog/.github/compare/v0.1.1...v0.2.0) (2024-09-01)
 
 
