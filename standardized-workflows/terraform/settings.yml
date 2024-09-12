@@ -17,8 +17,9 @@ branch_protections:
       required_status_checks:
         strict: true
         checks:
-          - Shared Workflow / Verify PR Title per Governance
+          - 'Controls to Standardize Pull Requests / Check PR Title 📝'
           - terraform / Lint @ Max Version
+          - 'pre-commit.ci - pr'
       require_conversation_resolution: true
       enforce_admins: true
       require_linear_history: true

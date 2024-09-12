@@ -18,7 +18,7 @@ on:
 
 jobs:
   pr_title:
-    name: Verify PR Title per Governance
+    name: Check PR Title 📝
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]' ) }}
     steps:
       #TODO: Deprecated NodeJS Version
