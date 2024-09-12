@@ -90,8 +90,6 @@ jobs:
   release:
     name: 'Create Release PR 🚀'
     needs: get-app-token
-    # it may be nice to use a different switch and use release please in other repos; but never got to that
-    if: ${{ github.repository == 'sassy-bulldog/.github' }}
     runs-on: ${{ fromJSON(inputs.runs-on || '["ubuntu-latest"]') }}
     steps:
       #TODO: Deprecated NodeJS Version
