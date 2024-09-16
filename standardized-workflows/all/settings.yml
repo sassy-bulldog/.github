@@ -55,6 +55,8 @@ batch_file_operations:
   - target_branch: main
     commit_msg: 'ci(standards): Update Standard Workflows'
     files:
+      - src_file: .gitignore
+        dest_file: .gitignore
       - src_file: .github/CODEOWNERS
         dest_file: .github/CODEOWNERS
       - src_file: .github/pr-scope-labeler.yml
