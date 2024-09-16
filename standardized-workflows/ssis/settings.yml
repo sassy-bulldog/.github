@@ -21,6 +21,8 @@ batch_file_operations:
     files:
       - src_file: standardized-workflows/ssis/.pre-commit-config.yaml
         dest_file: .pre-commit-config.yaml
+      - src_file: standardized-workflows/ssis/dependabot.yml
+        dest_file: .github/dependabot.yml
       # - src_file: standardized-workflows/ssis/workflows/lint.yml
       #   dest_file: .github/workflows/lint.yml
       - src_file: standardized-workflows/ssis/workflows/release.yml

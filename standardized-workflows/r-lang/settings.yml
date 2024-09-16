@@ -16,3 +16,5 @@ batch_file_operations:
     files:
       - src_file: standardized-workflows/r-lang/.pre-commit-config.yaml
         dest_file: .pre-commit-config.yaml
+      - src_file: standardized-workflows/r-lang/dependabot.yml
+        dest_file: .github/dependabot.yml
