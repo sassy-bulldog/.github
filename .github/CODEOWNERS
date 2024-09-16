@@ -90,17 +90,5 @@ renv.lock                               @sassy-bulldog/r-language
 .mdl_style.rb               @sassy-bulldog/tsc
 .mdlrc                      @sassy-bulldog/tsc
 .pre-commit-config.yaml     @sassy-bulldog/tsc
-CODE_OF_CONDUCT             @sassy-bulldog/tsc
-CODE_OF_CONDUCT.md          @sassy-bulldog/tsc
-CODEOWNERS                  @sassy-bulldog/tsc
-CONTRIBUTING                @sassy-bulldog/tsc
-CONTRIBUTING.md             @sassy-bulldog/tsc
-GOVERNANCE                  @sassy-bulldog/tsc
-GOVERNANCE.md               @sassy-bulldog/tsc
 LICENSE                     @sassy-bulldog/tsc
 LICENSE.txt                 @sassy-bulldog/tsc
-pull_request_template.md    @sassy-bulldog/tsc
-SECURITY                    @sassy-bulldog/tsc
-SECURITY.md                 @sassy-bulldog/tsc
-SUPPORT                     @sassy-bulldog/tsc
-SUPPORT.md                  @sassy-bulldog/tsc
