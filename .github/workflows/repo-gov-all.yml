@@ -33,6 +33,9 @@ on:
       - '.github/workflows/repo-gov-matrixed.yml'
       - '.github/workflows/list-repos.yml'
       - '.github/workflows/repo-gov.yml'
+      - '.gitignore'
+      - '.github/CODEOWNERS'
+      - '.github/pr-scope-labeler.yml'
       - 'standardized-workflows/**'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
