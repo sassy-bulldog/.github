@@ -41,6 +41,7 @@ batch_file_operations:
         dest_file: .pre-commit-config.yaml
       - src_file: standardized-workflows/terraform/.terraform-docs.yaml
         dest_file: .terraform-docs.yaml
+        # Why isn't this the standard gitignore?
       - src_file: standardized-workflows/terraform/.gitignore
         dest_file: .gitignore
       # - src_file: standardized-workflows/terraform/workflows/lint.yml
