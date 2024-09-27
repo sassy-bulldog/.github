@@ -5,23 +5,62 @@ To ensure a smooth and efficient workflow, please follow these guidelines.
 
 ## Table of Contents
 
-1. [Setting Up Your Development Environment](#setting-up-your-development-environment)
-    - [Visual Studio Code](#installing-visual-studio-code)
-    - [Visual Studio](#installing-visual-studio)
+- [Contributing Guidelines](#contributing-guidelines)
+  - [Table of Contents](#table-of-contents)
+  - [Setting Up Your Development Environment](#setting-up-your-development-environment)
+    - [Installing Visual Studio Code](#installing-visual-studio-code)
+    - [Installing Visual Studio](#installing-visual-studio)
     - [R](#r)
     - [Python](#python)
-    - [.NET](#dotnet)
+    - [dotnet](#dotnet)
     - [Terraform](#terraform)
     - [OpenTofu](#opentofu)
-2. [Using Virtual Environments](#using-virtual-environments)
-3. [Environment Variables](#environment-variables)
-4. [Supporting Tools](#supporting-tools)
+  - [Using Virtual Environments](#using-virtual-environments)
+  - [Environment Variables](#environment-variables)
+  - [Supporting Tools](#supporting-tools)
     - [Windows Subsystem for Linux (WSL)](#windows-subsystem-for-linux-wsl)
     - [Pre-commit Hooks](#pre-commit-hooks)
-5. [Repository Naming Strategy](#repository-naming-strategy)
-6. [Standards of Practice: Repository Workflows](#standards-of-practice-repository-workflows)
+  - [Repository Naming Strategy](#repository-naming-strategy)
+    - [1. Naming Structure](#1-naming-structure)
+    - [2. Components of the Naming Structure](#2-components-of-the-naming-structure)
+      - [2.1 Scope](#21-scope)
+      - [2.2 Purpose](#22-purpose)
+      - [2.3 Project](#23-project)
+      - [2.4 Language](#24-language)
+    - [3. Examples](#3-examples)
+    - [4. Best Practices](#4-best-practices)
+    - [5. Conclusion](#5-conclusion)
+  - [Standards of Practice: Repository Workflows](#standards-of-practice-repository-workflows)
+    - [Workflows](#workflows)
+      - [1. Codeowners](#1-codeowners)
+      - [2. PR Controls](#2-pr-controls)
+      - [3. Stale](#3-stale)
+      - [4. Release](#4-release)
+      - [5. Unit Tests](#5-unit-tests)
+    - [Configuration Files](#configuration-files)
+      - [1. Pre-commit](#1-pre-commit)
 
 ## Setting Up Your Development Environment
+
+Before cloning any repos or doing any work locally,
+if you are running Windows it is recommended that you
+create a `source` directory in your User Profile (Home)
+directory and enable Linux style case-sensitivity for
+file names before working locally.
+
+All repos should be cloned to the `source` directory
+to ensure that Windows does not inadvertantly create new
+files on check-ins that are really just the original files
+with a different case in the file name.
+
+You can easily do this by running this code in your
+command prompt:
+
+```dos
+cd %USERPROFILE%
+md source
+fsutil.exe file setCaseSensitiveInfo "%USERPROFILE%\source" enable
+```
 
 ### Installing Visual Studio Code
 
