@@ -21,7 +21,7 @@ batch_file_operations:
     files:
       - src_file: standardized-workflows/python/.pre-commit-config.yaml
         dest_file: .pre-commit-config.yaml
-      - src_file: standardized-workflows/python/workflows/release.yml
-        dest_file: .github/workflows/release.yml
+      - src_file: standardized-workflows/python/dependabot.yml
+        dest_file: .github/dependabot.yml
       - src_file: standardized-workflows/python/workflows/unit-tests.yml
         dest_file: .github/workflows/unit-tests.yml

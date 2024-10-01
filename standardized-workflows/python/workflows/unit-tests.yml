@@ -1,8 +1,9 @@
 # Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
-name: 'Tests'
+name: 'Unit Tests'
 
 # Controls when the workflow will run
 on:
+  workflow_dispatch:
   push:
     # Sequence of patterns matched against refs/heads
     branches:
@@ -15,10 +16,6 @@ on:
       - alpha/*
       - alpha
   pull_request_target:
-    types:
-      - opened
-      - synchronize
-      - reopened
 
 jobs:
   test:

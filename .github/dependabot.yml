@@ -10,4 +10,4 @@ updates:
     assignees:
       - 'tsc'
     commit-message:
-      prefix: 'chore(deps-ci): Update GHA Dependencies'
+      prefix: 'chore(deps-ci)'

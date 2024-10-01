@@ -7,19 +7,7 @@ updates:
     labels:
       - '📦 Dependencies'
       - '🚀 CI/CD'
-    assignee:
+    assignees:
       - 'sassy-bulldog/tsc'
     commit-message:
       prefix: 'chore(deps-ci)'
-
-  - package-ecosystem: 'terraform'
-    directory: '/'
-    schedule:
-      interval: 'daily'
-    labels:
-      - '📦 Dependencies'
-      - '🚀 CI/CD'
-    assignee:
-      - 'sassy-bulldog/tsc'
-    commit-message:
-      prefix: 'chore(deps-tf)'
