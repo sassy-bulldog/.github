@@ -1,5 +1,9 @@
 fail_fast: false
 minimum_pre_commit_version: "2.6.0"
+ci:
+  autofix_commit_msg: 'chore(pre-commit.ci): Auto fixes [...]'
+  autoupdate_commit_msg: 'chore(pre-commit.ci): Auto update of pre-commit hooks'
+
 repos:
   # All available hooks: https://pre-commit.com/hooks.html
   # R specific hooks: https://github.com/lorenzwalthert/precommit
