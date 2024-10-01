@@ -23,9 +23,5 @@ batch_file_operations:
         dest_file: .pre-commit-config.yaml
       - src_file: standardized-workflows/ssdt/dependabot.yml
         dest_file: .github/dependabot.yml
-      # - src_file: standardized-workflows/ssdt/workflows/lint.yml
-      #   dest_file: .github/workflows/lint.yml
-      - src_file: standardized-workflows/ssdt/workflows/release.yml
-        dest_file: .github/workflows/release.yml
       - src_file: standardized-workflows/ssdt/workflows/unit-tests.yml
         dest_file: .github/workflows/unit-tests.yml
