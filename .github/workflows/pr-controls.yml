@@ -80,7 +80,7 @@ jobs:
           configuration-path: .github/pr-scope-labeler.yml
 
       - name: 'Check PR Size 🏯'
-        uses: codelytv/pr-size-labeler@v1.10.1
+        uses: codelytv/pr-size-labeler@v1.10.2
         with:
           xs_label: '🤩 size/xs'
           xs_max_size: '10'
