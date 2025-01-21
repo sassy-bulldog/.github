@@ -43,7 +43,7 @@ jobs:
           in: ${{ needs.get-app-token.outputs.encrypted-token }}
 
       - name: Stale Issues and PRs
-        uses: actions/stale@v9.0.0
+        uses: actions/stale@v9.1.0
         with:
           repo-token: ${{ steps.decrypt-token.outputs.out }}
           # Staling issues and PR's
