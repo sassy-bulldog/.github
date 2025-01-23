@@ -129,7 +129,7 @@ jobs:
     - name: 'Download artifact(s)'
       id: download-recent-artifact
       if: ${{ !contains(github.workflow_ref, 'build.yml') }}
-      uses: dawidd6/action-download-artifact@v6
+      uses: dawidd6/action-download-artifact@v8
       with:
         workflow: build.yml
         workflow_conclusion: 'success'
