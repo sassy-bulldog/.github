@@ -104,7 +104,7 @@ jobs:
 
       - name: Publish Test & Coverage Results
         if: '!cancelled()'
-        uses: bibipkins/dotnet-test-reporter@v1.4.1
+        uses: bibipkins/dotnet-test-reporter@v1.5.3
         with:
           github-token: ${{ steps.decrypt-token.outputs.out }}
           comment-title: 'Unit Test Results'
