@@ -3,8 +3,8 @@
 All github meta files are stored here; all workflows
 are automatically updated from here via a pull-request.
 
-You can read more about this feature and its supported functionality
-[here](https://docs.github.com/en/github/building-a-strong-community/creating-a-default-community-health-file#supported-file-types).
+[You can read more about this feature and its supported functionality
+here](https://docs.github.com/en/github/building-a-strong-community/creating-a-default-community-health-file#supported-file-types).
 
 ## Why?
 
