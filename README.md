@@ -36,7 +36,7 @@ Repository in this organization:
 3. [!['Code-Owners are Team(s)'](https://github.com/sassy-bulldog/.github/actions/workflows/codeowners.yml/badge.svg)](https://github.com/sassy-bulldog/.github/actions/workflows/codeowners.yml)
     - Requires that the [CODEOWNERS](CODEOWNERS) file contains
     references to organizational teams - **not individual users**
-4. [!['Conventional Commits'](https://github.com/sassy-bulldog/.github/actions/workflows/conventional-commits.yml/badge.svg)](https://github.com/sassy-bulldog/.github/actions/workflows/conventional-commits.yml)
+4. [!['Controls to Standardize Pull Requests'](https://github.com/sassy-bulldog/.github/actions/workflows/pr-controls.yml/badge.svg)](https://github.com/sassy-bulldog/.github/actions/workflows/pr-controls.yml)
     - Requires that all Pull requests follow
     [Conventional Commit Standards](https://www.conventionalcommits.org/en/v1.0.0/)
 5. [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/sassy-bulldog/.github/main.svg)](https://results.pre-commit.ci/latest/github/sassy-bulldog/.github/main)
