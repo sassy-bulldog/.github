@@ -72,7 +72,7 @@ jobs:
 
       - name: Download artifact
         id: download-artifact
-        uses: dawidd6/action-download-artifact@v6
+        uses: dawidd6/action-download-artifact@v11
         with:
           repo: ${{ inputs.repo }}
           branch: ${{ inputs.branch }}
@@ -128,7 +128,7 @@ jobs:
 
       - name: Publish Test & Coverage Results
         if: '!cancelled()'
-        uses: bibipkins/dotnet-test-reporter@v1.4.1
+        uses: bibipkins/dotnet-test-reporter@v1.5.4
         with:
           github-token: ${{ steps.decrypt-token.outputs.out }}
           comment-title: "Unit Test Results"
