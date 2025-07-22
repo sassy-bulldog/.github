@@ -112,7 +112,7 @@ jobs:
           in: ${{ needs.get-app-token.outputs.encrypted-token }}
 
       - name: Release Please 🎉
-        uses: googleapis/release-please-action@v4.1.3
+        uses: googleapis/release-please-action@v4.2.0
         with:
           token: ${{ steps.decrypt-token.outputs.out || github.token }}
           manifest-file: .github/.release-please-manifest.json
