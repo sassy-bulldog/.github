@@ -71,6 +71,9 @@ jobs:
     name: Lock issues and PRs that have been closed for 60-days
     needs: get-app-token
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
+    permissions:
+      contents: read
+      issues: write
     steps:
       #TODO: Deprecated NodeJS Version
       - name: Clean Agent Workspace
