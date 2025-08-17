@@ -83,6 +83,7 @@ jobs:
         run: |
           cd artifacts
           # Extract any compressed artifacts
+          shopt -s nullglob
           for file in *.tar.gz *.zip; do
             if [ -f "$file" ]; then
               if [[ "$file" == *.tar.gz ]]; then
