@@ -120,22 +120,14 @@ jobs:
         run: |
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for Rust binary"
-            cat > Dockerfile << 'EOF'
-          FROM debian:bookworm-slim
-          RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-          WORKDIR /app
-          COPY artifacts/* ./
-          RUN chmod +x ./* 2>/dev/null || true
-          RUN set -e; \
-            files=(*); \
-            if [ "${#files[@]}" -ne 1 ]; then \
-              echo "Error: Expected exactly one binary in /app, found ${#files[@]} files: ${files[*]}"; \
-              exit 1; \
-            fi; \
-            mv "${files[0]}" app
-          EXPOSE 8080
-          CMD ["./app"]
-          EOF
+            echo "FROM debian:bookworm-slim" > Dockerfile
+            echo "RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*" >> Dockerfile
+            echo "WORKDIR /app" >> Dockerfile
+            echo "COPY artifacts/* ./" >> Dockerfile
+            echo "RUN chmod +x ./* 2>/dev/null || true" >> Dockerfile
+            echo 'RUN bash -c '\''set -e; files=( * ); if [ "${#files[@]}" -ne 1 ]; then echo "Error: Expected exactly one binary in /app, found ${#files[@]} files: ${files[*]}"; exit 1; fi; mv "${files[0]}" app'\''' >> Dockerfile
+            echo "EXPOSE 8080" >> Dockerfile
+            echo 'CMD ["./app"]' >> Dockerfile
           fi
 
           docker build -t ${{ inputs.registry-url }}/rust-app:${{ inputs.version }} .
