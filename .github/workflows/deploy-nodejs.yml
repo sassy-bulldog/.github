@@ -44,6 +44,11 @@ on:
         type: string
         required: false
         default: 'server'
+      image-name:
+        description: Name of the Docker image to build and push
+        type: string
+        required: false
+        default: nodejs-app
 
     secrets:
       DEPLOY_TOKEN:
