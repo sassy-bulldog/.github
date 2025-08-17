@@ -19,7 +19,6 @@ on:
 
 jobs:
   test:
-    name: Unit Tests
-    run: |
-      echo "Needs to be configured!!!"
-      exit 1;
+    name: SSDT
+    uses: sassy-bulldog/.github/.github/workflows/units-dotnet.yml@v0.2.2 # x-release-please-version
+    secrets: inherit

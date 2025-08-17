@@ -20,6 +20,5 @@ on:
 jobs:
   test:
     name: Python
-    run: |
-      echo "Needs to be configured!!!"
-      exit 1;
+    uses: sassy-bulldog/.github/.github/workflows/units-python.yml@v0.2.2 # x-release-please-version
+    secrets: inherit
