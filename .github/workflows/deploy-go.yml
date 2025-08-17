@@ -76,7 +76,7 @@ jobs:
         if: inputs.deployment-target == 'serverless'
         uses: actions/setup-go@v5.2.0
         with:
-          go-version: '1.22'
+          go-version: ${{ inputs.go-version }}
 
       - name: Make all artifacts executable
         if: inputs.deployment-target == 'binary'
