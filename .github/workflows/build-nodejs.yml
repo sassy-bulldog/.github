@@ -133,7 +133,11 @@ jobs:
           shopt -s nullglob
           tgz_files=(*.tgz)
           if [ ${#tgz_files[@]} -gt 0 ]; then
-            mv "${tgz_files[@]}" dist/
+          tgz_files=$(ls *.tgz 2>/dev/null || true)
+          if [ -n "$tgz_files" ]; then
+            for f in $tgz_files; do
+              mv "$f" dist/
+            done
           else
             echo "Warning: No .tgz files found to move to dist/"
           fi
