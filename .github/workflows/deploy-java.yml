@@ -123,7 +123,7 @@ jobs:
           ENTRYPOINT ["java", "-jar", "app.jar"]
           EOF
           fi
-          
+
           docker build -t ${{ inputs.registry-url }}/java-app:${{ inputs.version }} .
           docker push ${{ inputs.registry-url }}/java-app:${{ inputs.version }}
         working-directory: "${{ inputs.working-directory }}"

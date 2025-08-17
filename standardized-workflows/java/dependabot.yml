@@ -18,7 +18,7 @@ updates:
       - "dependencies"
       - "java"
     target-branch: "main"
-    
+
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
