@@ -121,10 +121,6 @@ jobs:
           else
             echo "Warning: No .tgz files found to move to dist/"
           fi
-          # Copy build output if it exists
-          if [ -d build ]; then
-            cp -r build dist/
-          fi
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Upload artifacts
