@@ -109,7 +109,8 @@ jobs:
             cp target/${{ matrix.target }}/debug/* dist/${{ matrix.target }}/ 2>/dev/null || true
           fi
           # Remove non-executable files
-          find dist/${{ matrix.target }} -type f ! -executable -delete 2>/dev/null || true
+          # Remove non-executable files, but always keep .exe files (for Windows)
+          find dist/${{ matrix.target }} -type f ! -executable ! -name '*.exe' -delete 2>/dev/null || true
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Upload artifacts
