@@ -124,7 +124,6 @@ jobs:
             PROFILE_DIR=debug
           fi
 
-          # Copy only executable files and .exe files from the build profile directory
           # Copy only files with .exe extension (Windows) or files with no extension (Unix) from the build profile directory
           find target/${{ matrix.target }}/${PROFILE_DIR}/ -maxdepth 1 -type f \
             \( -name '*.exe' -o ! -name '*.*' \) \
