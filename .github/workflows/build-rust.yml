@@ -88,7 +88,12 @@ jobs:
 
       - name: Update version in Cargo.toml
         run: |
-          sed -i 's/^version = .*/version = "${{ inputs.version }}"/' Cargo.toml
+      - name: Install cargo-edit
+        run: cargo install cargo-edit
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Update version in Cargo.toml
+        run: cargo set-version "${{ inputs.version }}"
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Build for target
