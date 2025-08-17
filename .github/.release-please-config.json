@@ -16,8 +16,11 @@
       "prerelease": false,
       "include-component-in-tag": false,
       "extra-files": [
-        "standardized-workflows/**/*.yml",
-        "standardized-workflows/**/*.yaml"
+        ".github/workflows/codeowners.yml",
+        ".github/workflows/pr-controls.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/stale.yml",
+        "standardized-workflows/all/**/*"
       ]
     },
     "standardized-workflows/dotnet": {
@@ -30,7 +33,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/dotnet/**/*"
+        "standardized-workflows/dotnet/**/*",
+        ".github/workflows/build-dotnet.yml",
+        ".github/workflows/deploy-dotnet.yml",
+        ".github/workflows/units-dotnet.yml"
       ]
     },
     "standardized-workflows/python": {
@@ -43,7 +49,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/python/**/*"
+        "standardized-workflows/python/**/*",
+        ".github/workflows/build-python.yml",
+        ".github/workflows/deploy-python.yml",
+        ".github/workflows/units-python.yml"
       ]
     },
     "standardized-workflows/r-lang": {
@@ -56,7 +65,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/r-lang/**/*"
+        "standardized-workflows/r-lang/**/*",
+        ".github/workflows/build-r-lang.yml",
+        ".github/workflows/deploy-r-lang.yml",
+        ".github/workflows/units-r-lang.yml"
       ]
     },
     "standardized-workflows/ssdt": {
@@ -69,7 +81,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/ssdt/**/*"
+        "standardized-workflows/ssdt/**/*",
+        ".github/workflows/build-ssdt.yml",
+        ".github/workflows/deploy-ssdt.yml",
+        ".github/workflows/units-ssdt.yml"
       ]
     },
     "standardized-workflows/ssis": {
@@ -82,7 +97,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/ssis/**/*"
+        "standardized-workflows/ssis/**/*",
+        ".github/workflows/build-ssis.yml",
+        ".github/workflows/deploy-ssis.yml",
+        ".github/workflows/units-ssis.yml"
       ]
     },
     "standardized-workflows/terraform": {
@@ -95,7 +113,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/terraform/**/*"
+        "standardized-workflows/terraform/**/*",
+        ".github/workflows/build-terraform.yml",
+        ".github/workflows/deploy-terraform.yml",
+        ".github/workflows/units-terraform.yml"
       ]
     },
     "standardized-workflows/go": {
@@ -108,7 +129,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/go/**/*"
+        "standardized-workflows/go/**/*",
+        ".github/workflows/build-go.yml",
+        ".github/workflows/deploy-go.yml",
+        ".github/workflows/units-go.yml"
       ]
     },
     "standardized-workflows/java": {
@@ -121,7 +145,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/java/**/*"
+        "standardized-workflows/java/**/*",
+        ".github/workflows/build-java.yml",
+        ".github/workflows/deploy-java.yml",
+        ".github/workflows/units-java.yml"
       ]
     },
     "standardized-workflows/nodejs": {
@@ -134,7 +161,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/nodejs/**/*"
+        "standardized-workflows/nodejs/**/*",
+        ".github/workflows/build-nodejs.yml",
+        ".github/workflows/deploy-nodejs.yml",
+        ".github/workflows/units-nodejs.yml"
       ]
     },
     "standardized-workflows/rust": {
@@ -147,7 +177,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/rust/**/*"
+        "standardized-workflows/rust/**/*",
+        ".github/workflows/build-rust.yml",
+        ".github/workflows/deploy-rust.yml",
+        ".github/workflows/units-rust.yml"
       ]
     },
     "standardized-workflows/php": {
@@ -160,7 +193,10 @@
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/php/**/*"
+        "standardized-workflows/php/**/*",
+        ".github/workflows/build-php.yml",
+        ".github/workflows/deploy-php.yml",
+        ".github/workflows/units-php.yml"
       ]
     }
   },
