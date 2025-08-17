@@ -110,7 +110,7 @@ jobs:
           mkdir -p dist/${{ matrix.target }}
           if [ "${{ inputs.profile }}" = "release" ]; then
             # Copy only executable files and .exe files from release build
-            find target/${{ matrix.target }}/release/ -maxdepth 1 -type f \( -executable -o -name '*.exe' \) -exec cp {} dist/${{ matrix.target }}/ \; 2>/dev/null || true
+            find target/${{ matrix.target }}/release/ -maxdepth 1 -type f \( -executable -o -name '*.exe' \) -exec cp -t dist/${{ matrix.target }}/ {} + 2>/dev/null || true
           else
             # Copy only executable files and .exe files from debug build
             find target/${{ matrix.target }}/debug/ -maxdepth 1 -type f \( -executable -o -name '*.exe' \) -exec cp {} dist/${{ matrix.target }}/ \; 2>/dev/null || true
