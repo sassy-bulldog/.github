@@ -135,7 +135,7 @@ jobs:
               if [ "${file##*.}" = "exe" ]; then
                 files_found+=("$file")
               # Unix: executable files with no extension
-              elif [ -f "$file" ] && [ -x "$file" ] && [[ "$file" != *.* ]]; then
+              elif [ -f "$file" ] && [ -x "$file" ] && [[ "$file" != *'.'* ]]; then
                 files_found+=("$file")
               fi
             done
