@@ -1,4 +1,5 @@
-# x-release-please-version
+# x-release-please-version v0.2.2
+---
 name: Build
 
 on:
@@ -11,7 +12,7 @@ on:
 jobs:
   build:
     name: Dotnet Build
-    uses: sassy-bulldog/.github/.github/workflows/build-dotnet.yml@dotnet-v1.0.0 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/build-dotnet.yml@v0.2.2 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'
       artifact-name: 'dotnet-build-artifacts'

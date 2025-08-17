@@ -1,4 +1,5 @@
-# x-release-please-version
+# x-release-please-version v0.2.2
+---
 # TODO: Need to make sure secrets are secure
 name: 'List Environment Variables'
 

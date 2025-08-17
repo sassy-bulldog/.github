@@ -1,14 +1,14 @@
 {
   ".": "0.2.2",
-  "repo-governance/dotnet": "0.0.1",
-  "repo-governance/python": "0.0.1",
-  "repo-governance/R-lang": "0.0.1",
-  "repo-governance/SSDT": "0.0.1",
-  "repo-governance/SSIS": "0.0.1",
-  "repo-governance/terraform": "0.0.1",
-  "repo-governance/go": "0.0.1",
-  "repo-governance/java": "0.0.1",
-  "repo-governance/nodejs": "0.0.1",
-  "repo-governance/rust": "0.0.1",
-  "repo-governance/php": "0.0.1"
+  "repo-governance/dotnet": "0.0.0",
+  "repo-governance/python": "0.0.0",
+  "repo-governance/R-lang": "0.0.0",
+  "repo-governance/SSDT": "0.0.0",
+  "repo-governance/SSIS": "0.0.0",
+  "repo-governance/terraform": "0.0.0",
+  "repo-governance/go": "0.0.0",
+  "repo-governance/java": "0.0.0",
+  "repo-governance/nodejs": "0.0.0",
+  "repo-governance/rust": "0.0.0",
+  "repo-governance/php": "0.0.0"
 }

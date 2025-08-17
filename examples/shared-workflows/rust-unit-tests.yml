@@ -1,4 +1,5 @@
-# x-release-please-version
+# x-release-please-version v0.2.2
+---
 # Name as it appears on the Actions tab of GitHub (for current repo; this gets ignored if called from another repo)
 name: 'Unit Tests'
 
