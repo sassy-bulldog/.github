@@ -116,7 +116,7 @@ jobs:
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for Java application"
             cat > Dockerfile << 'EOF'
-          FROM openjdk:17-jre-slim
+          FROM openjdk:${{ inputs.java-version }}-jre-slim
           WORKDIR /app
           COPY artifacts/*.jar app.jar
           EXPOSE 8080
