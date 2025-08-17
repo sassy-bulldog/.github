@@ -114,7 +114,14 @@ jobs:
           mkdir -p dist
           mv *.tgz dist/ || true
           # Also copy build output if it exists
-          cp -r build dist/ 2>/dev/null || true
+          shopt -s nullglob
+          tgz_files=(*.tgz)
+          if [ ${#tgz_files[@]} -gt 0 ]; then
+            mv "${tgz_files[@]}" dist/
+          else
+            echo "Warning: No .tgz files found to move to dist/"
+          fi
+          # Copy build output if it exists
           if [ -d build ]; then
             cp -r build dist/
           fi
