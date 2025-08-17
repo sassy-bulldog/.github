@@ -153,7 +153,7 @@ jobs:
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for R application"
             cat > Dockerfile << 'EOF'
-          FROM rocker/r-ver:4.3.0
+          FROM rocker/r-ver:${{ inputs.r-version }}
 
           # Install system dependencies
           RUN apt-get update && apt-get install -y \
