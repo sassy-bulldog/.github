@@ -134,35 +134,14 @@ jobs:
         run: |
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for PHP application"
-            cat > Dockerfile << 'EOF'
-          FROM php:8.2-apache
-
-          # Install system dependencies
-          RUN apt-get update && apt-get install -y \
-              libpng-dev \
-              libjpeg62-turbo-dev \
-              libfreetype6-dev \
-              zip \
-              unzip \
-              && docker-php-ext-configure gd --with-freetype --with-jpeg \
-              && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql \
-              && rm -rf /var/lib/apt/lists/*
-
-          # Install Composer
-          COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-          # Copy application files
-          COPY artifacts/ /var/www/html/
-
-          # Set proper permissions
-          RUN chown -R www-data:www-data /var/www/html \
-              && chmod -R 755 /var/www/html
-
-          # Install production dependencies
-          WORKDIR /var/www/html
-          RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader --no-interaction; fi
-
-          EXPOSE 80
+            echo "FROM php:8.2-apache" > Dockerfile
+            echo "RUN apt-get update && apt-get install -y libpng-dev libjpeg62-turbo-dev libfreetype6-dev zip unzip && docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-install -j\$(nproc) gd pdo pdo_mysql && rm -rf /var/lib/apt/lists/*" >> Dockerfile
+            echo "COPY --from=composer:latest /usr/bin/composer /usr/bin/composer" >> Dockerfile
+            echo "COPY artifacts/ /var/www/html/" >> Dockerfile
+            echo "RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html" >> Dockerfile
+            echo "WORKDIR /var/www/html" >> Dockerfile
+            echo 'RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader --no-interaction; fi' >> Dockerfile
+            echo "EXPOSE 80" >> Dockerfile
             echo "Copying Dockerfile template for PHP application"
           fi
 
