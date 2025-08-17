@@ -131,7 +131,7 @@ jobs:
       # NOTE: A Dockerfile must exist in the specified working directory for Docker deployment.
       # The Dockerfile should define how to build your Rust application container image.
       # Example minimal Dockerfile:
-      #   FROM rust:1.70
+      #   FROM rust:latest
       #   WORKDIR /app
       #   COPY . .
       #   RUN cargo build --release
