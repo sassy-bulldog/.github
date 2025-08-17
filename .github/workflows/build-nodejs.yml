@@ -129,7 +129,8 @@ jobs:
           if [ ${#tgz_files[@]} -gt 0 ]; then
             mv "${tgz_files[@]}" dist/
           else
-            echo "Warning: No .tgz files found to move to dist/"
+            echo "Error: No .tgz files found to move to dist/"
+            exit 1
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Upload artifacts
