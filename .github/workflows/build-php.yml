@@ -85,7 +85,7 @@ jobs:
 
       - name: Run build script if exists
         run: |
-          if composer show-platform | grep -q "composer-script build"; then
+          if composer run-script --list | grep -qE "^[[:space:]]*build($|:)"; then
             composer run-script build
           fi
         working-directory: "${{ inputs.working-directory }}"
