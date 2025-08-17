@@ -1,0 +1,185 @@
+name: 'Deploy Go'
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for deployment'
+        type: string
+        required: false
+        default: ./
+      environment:
+        description: Environment to deploy to (dev, staging, prod)
+        type: string
+        required: true
+      artifact-name:
+        description: Name of the artifact to download from build
+        type: string
+        required: true
+      version:
+        description: Semantic version being deployed
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      registry-url:
+        description: Container registry URL for Docker deployments
+        type: string
+        required: false
+        default: ''
+      deployment-target:
+        description: Deployment target (binary, docker, k8s, serverless)
+        type: string
+        required: false
+        default: 'binary'
+      go-version:
+        description: Go version for serverless deployments
+        type: string
+        required: false
+        default: '1.23'
+      image-name:
+        description: Docker image name (e.g., my-app)
+        type: string
+        required: false
+        default: ${{ github.event.repository.name }}
+
+    secrets:
+      DEPLOY_TOKEN:
+        description: Token for deployment authentication
+        required: false
+      REGISTRY_PASSWORD:
+        description: Container registry password
+        required: false
+
+jobs:
+  deploy:
+    name: Deploy Go application
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ./artifacts
+
+      - name: Set up Go
+        if: inputs.deployment-target == 'serverless'
+        uses: actions/setup-go@v5.2.0
+        with:
+          go-version: ${{ inputs.go-version }}
+
+      - name: Make all artifacts executable
+        if: inputs.deployment-target == 'binary'
+        run: |
+          # Assume all files in artifacts/ are Go binaries
+          chmod +x ./artifacts/*
+          ls -la ./artifacts/
+
+      - name: Deploy binary artifacts
+        if: inputs.deployment-target == 'binary'
+        run: |
+          echo "Deploying Go binaries to ${{ inputs.environment }}"
+          # Add your binary deployment logic here
+          # Examples: scp to servers, upload to S3, etc.
+          for binary in ./artifacts/*; do
+            if [ -f "$binary" ]; then
+              echo "Would deploy: $(basename $binary) to ${{ inputs.environment }}"
+              # Actual deployment commands would go here
+            fi
+          done
+
+      - name: Log in to Container Registry
+        if: inputs.deployment-target == 'docker' && inputs.registry-url != ''
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ inputs.registry-url }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker image
+        if: inputs.deployment-target == 'docker'
+        run: |
+          # Assume all files in artifacts/ are Go binaries, pick the first as entrypoint
+          # Check if artifacts directory contains at least one file
+          if ! find artifacts -maxdepth 1 -type f -print -quit | grep -q .; then
+            echo "No binaries found in artifacts directory. Aborting Docker build."
+            exit 1
+          fi
+          BINARY_NAME=$(find artifacts -maxdepth 1 -type f | head -n 1 | xargs -n1 basename)
+          if [ -z "$BINARY_NAME" ]; then
+            echo "No binary found in artifacts directory."
+            exit 1
+          fi
+          if [ ! -f Dockerfile ]; then
+            echo "Creating minimal Dockerfile for Go binary: $BINARY_NAME"
+            echo 'FROM alpine:latest' > Dockerfile
+            echo 'RUN apk --no-cache add ca-certificates' >> Dockerfile
+            echo 'WORKDIR /root/' >> Dockerfile
+            echo 'COPY artifacts/* ./' >> Dockerfile
+            echo "RUN chmod +x ./$BINARY_NAME" >> Dockerfile
+            echo "CMD [\"./$BINARY_NAME\"]" >> Dockerfile
+          fi
+
+          IMAGE_TAG="${{ inputs.image-name }}:${{ inputs.version }}"
+          if [ -n "${{ inputs.registry-url }}" ]; then
+            IMAGE_TAG="${{ inputs.registry-url }}/$IMAGE_TAG"
+          fi
+          docker build -t "$IMAGE_TAG" .
+
+          if [ -n "${{ inputs.registry-url }}" ]; then
+            docker push "$IMAGE_TAG"
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Deploy to Kubernetes
+        if: inputs.deployment-target == 'k8s'
+        run: |
+          echo "Deploying to Kubernetes cluster for ${{ inputs.environment }}"
+          # Add kubectl deployment logic here
+          # kubectl apply -f k8s/
+          # kubectl set image deployment/go-app go-app=${{ inputs.registry-url }}/go-app:${{ inputs.version }}
+
+      - name: Deploy serverless function
+        if: inputs.deployment-target == 'serverless'
+        run: |
+          echo "Deploying Go serverless function to ${{ inputs.environment }}"
+          # Add serverless deployment logic here
+          # Examples: AWS Lambda, Google Cloud Functions, Azure Functions
+
+      - name: Health check
+        run: |
+          echo "Performing health check for ${{ inputs.environment }} deployment"
+          # Add health check logic here
+          sleep 5
+          echo "Health check passed"
+
+      - name: Notify deployment success
+        run: |
+          echo "Successfully deployed Go application version ${{ inputs.version }} to ${{ inputs.environment }}"
+          echo "Deployment target: ${{ inputs.deployment-target }}"
+
+  createBug:
+    name: Create Bug
+    needs: [deploy]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Go Deployment Failed'
+      job: 'deploy'
+      status: 'failure'

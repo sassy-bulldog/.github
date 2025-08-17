@@ -1,0 +1,17 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Node.js Build
+    uses: sassy-bulldog/.github/.github/workflows/build-nodejs.yml@v0.2.2 # x-release-please-version
+    with:
+      runs-on: '["ubuntu-latest"]'
+      artifact-name: 'nodejs-build-artifacts'
+      version: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1-alpha' }}

@@ -1,0 +1,36 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      deployment-target:
+        description: 'Deployment target'
+        required: true
+        default: 'jar'
+        type: choice
+        options:
+          - jar
+          - war
+          - docker
+          - k8s
+          - serverless
+
+jobs:
+  deploy:
+    name: Java Deploy
+    uses: sassy-bulldog/.github/.github/workflows/deploy-java.yml@v3.6.1 # x-release-please-version
+    with:
+      runs-on: '["ubuntu-latest"]'
+      environment: ${{ inputs.environment }}
+      artifact-name: 'java-build-artifacts'
+      deployment-target: ${{ inputs.deployment-target }}
+      version: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1-alpha' }}

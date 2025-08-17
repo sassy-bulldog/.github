@@ -1,0 +1,207 @@
+name: 'Deploy Node.js'
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for deployment'
+        type: string
+        required: false
+        default: ./
+      environment:
+        description: Environment to deploy to (dev, staging, prod)
+        type: string
+        required: true
+      artifact-name:
+        description: Name of the artifact to download from build
+        type: string
+        required: true
+      version:
+        description: Semantic version being deployed
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      node-version:
+        description: Node.js version for deployment
+        type: string
+        required: false
+        default: '20'
+      registry-url:
+        description: Container registry URL for Docker deployments
+        type: string
+        required: false
+        default: ''
+      deployment-target:
+        description: Deployment target (static, server, docker, k8s, serverless)
+        type: string
+        required: false
+        default: 'server'
+      image-name:
+        description: Name of the Docker image to build and push
+        type: string
+        required: false
+        default: nodejs-app
+
+    secrets:
+      DEPLOY_TOKEN:
+        description: Token for deployment authentication
+        required: false
+      REGISTRY_PASSWORD:
+        description: Container registry password
+        required: false
+
+jobs:
+  deploy:
+    name: Deploy Node.js application
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ./artifacts
+
+      - name: Extract and prepare artifacts
+        run: |
+          cd artifacts
+          # Extract any compressed artifacts
+          shopt -s nullglob
+          for file in *.tar.gz *.tgz; do
+            if [ -f "$file" ]; then
+              tar -xzf "$file"
+            fi
+          done
+          shopt -u nullglob
+
+          # List contents for debugging
+          echo "Artifact contents:"
+          ls -la
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Deploy static files
+        if: inputs.deployment-target == 'static'
+        run: |
+          echo "Deploying static files to ${{ inputs.environment }}"
+          # Deploy static build (dist/, build/, public/)
+          for dir in artifacts/dist artifacts/build artifacts/public artifacts/out; do
+            if [ -d "$dir" ]; then
+              echo "Would deploy static files from: $dir"
+              # Add your static deployment logic here
+              # Examples: AWS S3, Netlify, Vercel, CDN upload
+            fi
+          done
+
+      - name: Deploy server application
+        if: inputs.deployment-target == 'server'
+        run: |
+          echo "Deploying Node.js server to ${{ inputs.environment }}"
+
+          # Check for package.json and install dependencies if needed
+          if [ -f artifacts/package.json ]; then
+            cd artifacts
+            npm ci --production
+            cd ..
+          fi
+
+          # Add your server deployment logic here
+          echo "Would deploy Node.js server application"
+          # Examples: PM2 deployment, systemd service, process manager
+
+      - name: Log in to Container Registry
+        if: inputs.deployment-target == 'docker' && inputs.registry-url != ''
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ inputs.registry-url }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker image
+        if: inputs.deployment-target == 'docker'
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "ERROR: No Dockerfile found in the working directory."
+            echo "Please provide a reviewed, static Dockerfile in your repository or artifact."
+            exit 1
+          fi
+
+          if [ -n "${{ inputs.registry-url }}" ]; then
+            IMAGE_TAG="${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }}"
+          else
+            IMAGE_TAG="${{ inputs.image-name }}:${{ inputs.version }}"
+          fi
+          docker build -t "$IMAGE_TAG" .
+          if [ -n "${{ inputs.registry-url }}" ]; then
+            docker push "$IMAGE_TAG"
+          else
+            echo "No registry-url provided, skipping docker push."
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Deploy to Kubernetes
+        if: inputs.deployment-target == 'k8s'
+        run: |
+          echo "Deploying to Kubernetes cluster for ${{ inputs.environment }}"
+          # Add kubectl deployment logic here
+          # kubectl apply -f k8s/
+          # kubectl set image deployment/nodejs-app nodejs-app=${{ inputs.registry-url }}/nodejs-app:${{ inputs.version }}
+
+      - name: Deploy serverless function
+        if: inputs.deployment-target == 'serverless'
+        run: |
+          echo "Deploying Node.js serverless function to ${{ inputs.environment }}"
+          # Add serverless deployment logic here
+          # Examples: AWS Lambda, Vercel Functions, Netlify Functions
+
+      - name: Install dependencies for runtime
+        if: inputs.deployment-target == 'serverless'
+        run: |
+          if [ -f artifacts/package.json ]; then
+            cd artifacts
+            echo "Installing production dependencies"
+            npm ci --production
+          fi
+
+      - name: Health check
+        run: |
+          echo "Performing health check for ${{ inputs.environment }} deployment"
+          # Add health check logic here
+          # Examples: curl health endpoint, check application startup
+          sleep 5
+          echo "Health check passed"
+
+      - name: Notify deployment success
+        run: |
+          echo "Successfully deployed Node.js application version ${{ inputs.version }} to ${{ inputs.environment }}"
+          echo "Deployment target: ${{ inputs.deployment-target }}"
+
+  createBug:
+    name: Create Bug
+    needs: [deploy]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Node.js Deployment Failed'
+      job: 'deploy'
+      status: 'failure'

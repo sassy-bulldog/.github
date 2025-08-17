@@ -1,4 +1,4 @@
-# Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
+# Name as it appears on the Actions tab of GitHub (for current repo; this gets ignored if called from another repo)
 name: Unit Tests
 
 # Controls when the workflow will run
@@ -15,10 +15,10 @@ on:
       - beta
       - alpha/*
       - alpha
-  pull_request_target:
+  pull_request:
 
 jobs:
   test:
-    name: Python
-    uses: sassy-bulldog/.github/.github/workflows/units-python.yml@v0.2.2 # x-release-please-version
+    name: Java
+    uses: sassy-bulldog/.github/.github/workflows/units-java.yml@v0.2.2 # x-release-please-version
     secrets: inherit

@@ -1,0 +1,76 @@
+name: 'Unit Tests: Node.js'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
+      node-version:
+        description: Node.js version to use for testing
+        required: false
+        type: string
+        default: '["18", "20", "22"]'
+      working-directory:
+        description: 'Directory to use for running the unit tests'
+        type: string
+        required: false
+        default: ./
+
+jobs:
+  test:
+    name: Testing Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ${{ fromJSON(inputs.runs-on) }}
+        node-version: ${{ fromJson(inputs.node-version) }}
+      fail-fast: false
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Run linting
+        run: npm run lint --if-present
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Run tests
+        run: npm test
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.6.0
+        if: matrix.node-version == '20' && matrix.os == 'ubuntu-latest'
+        with:
+          working-directory: ${{ inputs.working-directory }}
+
+  createBug:
+    name: Create Bug
+    needs: [test]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Node.js Tests Failed'
+      job: 'test'
+      status: 'failure'

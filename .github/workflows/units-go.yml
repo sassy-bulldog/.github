@@ -1,0 +1,85 @@
+name: 'Unit Tests: Go'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
+      go-version:
+        description: Go version to use for testing
+        required: false
+        type: string
+        default: '1.23'
+      working-directory:
+        description: 'Directory to use for running the unit tests'
+        type: string
+        required: false
+        default: ./
+      test-timeout:
+        description: 'Timeout for go test'
+        type: string
+        required: false
+        default: '10m'
+
+jobs:
+  test:
+    name: Testing Go ${{ matrix.go-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ${{ fromJSON(inputs.runs-on) }}
+        go-version: ${{ fromJson(format('["{0}"]', inputs.go-version)) }}
+      fail-fast: false
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5.0.2
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Download dependencies
+        run: go mod download
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Verify dependencies
+        run: go mod verify
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Run go vet
+        run: go vet ./...
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Run tests
+        run: go test -v -race -timeout ${{ inputs.test-timeout }} -coverprofile=coverage.out ./...
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.6.0
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          file: ${{ inputs.working-directory }}/coverage.out
+          flags: unittests
+          name: codecov-umbrella
+
+  createBug:
+    name: Create Bug
+    needs: [test]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Go Tests Failed'
+      job: 'test'
+      status: 'failure'
