@@ -14,19 +14,153 @@
       "bump-patch-for-minor-pre-major": false,
       "draft": false,
       "prerelease": false,
-      "exclude-paths": [".github"],
       "include-component-in-tag": false,
       "extra-files": [
-        "standardized-workflows/all/workflows/codeowners.yml",
-        "standardized-workflows/all/workflows/pr-controls.yml",
-        "standardized-workflows/all/workflows/release.yml",
-        "standardized-workflows/all/workflows/stale.yml",
-        "standardized-workflows/dotnet/workflows/unit-tests.yml",
-        "standardized-workflows/python/workflows/unit-tests.yml",
-        "standardized-workflows/ssdt/workflows/unit-tests.yml",
-        "standardized-workflows/ssis/workflows/unit-tests.yml",
-        "standardized-workflows/terraform/workflows/lint.yml",
-        "standardized-workflows/terraform/workflows/unit-tests.yml"
+        "standardized-workflows/**/*.yml",
+        "standardized-workflows/**/*.yaml"
+      ]
+    },
+    "standardized-workflows/dotnet": {
+      "pull-request-title-pattern": "chore${scope}: Release dotnet v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/dotnet/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "dotnet",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/dotnet/**/*"
+      ]
+    },
+    "standardized-workflows/python": {
+      "pull-request-title-pattern": "chore${scope}: Release python v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/python/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "python",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/python/**/*"
+      ]
+    },
+    "standardized-workflows/r-lang": {
+      "pull-request-title-pattern": "chore${scope}: Release r-lang v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/r-lang/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "R",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/r-lang/**/*"
+      ]
+    },
+    "standardized-workflows/ssdt": {
+      "pull-request-title-pattern": "chore${scope}: Release ssdt v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/ssdt/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "SSDT",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/ssdt/**/*"
+      ]
+    },
+    "standardized-workflows/ssis": {
+      "pull-request-title-pattern": "chore${scope}: Release ssis v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/ssis/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "SSIS",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/ssis/**/*"
+      ]
+    },
+    "standardized-workflows/terraform": {
+      "pull-request-title-pattern": "chore${scope}: Release terraform v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/terraform/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "terraform",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/terraform/**/*"
+      ]
+    },
+    "standardized-workflows/go": {
+      "pull-request-title-pattern": "chore${scope}: Release go v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/go/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "go",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/go/**/*"
+      ]
+    },
+    "standardized-workflows/java": {
+      "pull-request-title-pattern": "chore${scope}: Release java v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/java/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "java",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/java/**/*"
+      ]
+    },
+    "standardized-workflows/nodejs": {
+      "pull-request-title-pattern": "chore${scope}: Release nodejs v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/nodejs/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "nodejs",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/nodejs/**/*"
+      ]
+    },
+    "standardized-workflows/rust": {
+      "pull-request-title-pattern": "chore${scope}: Release rust v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/rust/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "rust",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/rust/**/*"
+      ]
+    },
+    "standardized-workflows/php": {
+      "pull-request-title-pattern": "chore${scope}: Release php v${version}",
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "standardized-workflows/php/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "php",
+      "include-component-in-tag": true,
+      "extra-files": [
+        "standardized-workflows/all/**/*",
+        "standardized-workflows/php/**/*"
       ]
     }
   },
