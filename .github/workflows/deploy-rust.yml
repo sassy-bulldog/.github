@@ -132,7 +132,29 @@ jobs:
         if: inputs.deployment-target == 'docker'
         run: |
           if [ ! -f Dockerfile ]; then
-            echo "ERROR: No Dockerfile found in $(pwd). Please provide a reviewed, static Dockerfile in your repository or artifact."
+      # NOTE: A Dockerfile must exist in the specified working directory for Docker deployment.
+      # The Dockerfile should define how to build your Rust application container image.
+      # Example minimal Dockerfile:
+      #   FROM rust:1.70
+      #   WORKDIR /app
+      #   COPY . .
+      #   RUN cargo build --release
+      #   CMD ["./target/release/your-binary"]
+      - name: Build and push Docker image
+        if: inputs.deployment-target == 'docker'
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "ERROR: No Dockerfile found in $(pwd)."
+            echo ""
+            echo "A Dockerfile is required in the working directory (${PWD}) to build the Docker image."
+            echo "Please provide a reviewed, static Dockerfile that defines how to build your Rust application."
+            echo ""
+            echo "Example minimal Dockerfile:"
+            echo "  FROM rust:1.70"
+            echo "  WORKDIR /app"
+            echo "  COPY . ."
+            echo "  RUN cargo build --release"
+            echo "  CMD [\"./target/release/your-binary\"]"
             exit 1
           fi
 
