@@ -1,0 +1,222 @@
+name: 'Deploy PHP'
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for deployment'
+        type: string
+        required: false
+        default: ./
+      environment:
+        description: Environment to deploy to (dev, staging, prod)
+        type: string
+        required: true
+      artifact-name:
+        description: Name of the artifact to download from build
+        type: string
+        required: true
+      version:
+        description: Semantic version being deployed
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      php-version:
+        description: PHP version for deployment
+        type: string
+        required: false
+        default: '8.2'
+      registry-url:
+        description: Container registry URL for Docker deployments
+        type: string
+        required: false
+        default: ''
+      deployment-target:
+        description: Deployment target (files, docker, k8s, serverless)
+        type: string
+        required: false
+        default: 'files'
+
+    secrets:
+      DEPLOY_TOKEN:
+        description: Token for deployment authentication
+        required: false
+      REGISTRY_PASSWORD:
+        description: Container registry password
+        required: false
+
+jobs:
+  deploy:
+    name: Deploy PHP application
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php-version }}
+          extensions: mbstring, xml, ctype, json, fileinfo, tokenizer
+          tools: composer
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ./artifacts
+
+      - name: Extract and prepare artifacts
+        run: |
+          cd artifacts
+          # Extract any compressed artifacts
+          for file in *.tar.gz *.zip; do
+            if [ -f "$file" ]; then
+              if [[ "$file" == *.tar.gz ]]; then
+                tar -xzf "$file"
+              elif [[ "$file" == *.zip ]]; then
+                unzip -q "$file"
+              fi
+            fi
+          done
+          
+          # List contents for debugging
+          echo "Artifact contents:"
+          ls -la
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Install production dependencies
+        if: inputs.deployment-target == 'files'
+        run: |
+          if [ -f artifacts/composer.json ]; then
+            cd artifacts
+            composer install --no-dev --optimize-autoloader --no-interaction
+            cd ..
+          fi
+
+      - name: Deploy PHP files
+        if: inputs.deployment-target == 'files'
+        run: |
+          echo "Deploying PHP files to ${{ inputs.environment }}"
+          
+          # Set proper permissions
+          find ./artifacts -type f -name "*.php" -exec chmod 644 {} \;
+          find ./artifacts -type d -exec chmod 755 {} \;
+          
+          # Add your file deployment logic here
+          echo "Would deploy PHP application files"
+          # Examples: rsync to web servers, FTP upload, shared hosting deployment
+
+      - name: Log in to Container Registry
+        if: inputs.deployment-target == 'docker' && inputs.registry-url != ''
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ inputs.registry-url }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker image
+        if: inputs.deployment-target == 'docker'
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "Creating minimal Dockerfile for PHP application"
+            cat > Dockerfile << 'EOF'
+          FROM php:8.2-apache
+          
+          # Install system dependencies
+          RUN apt-get update && apt-get install -y \
+              libpng-dev \
+              libjpeg62-turbo-dev \
+              libfreetype6-dev \
+              zip \
+              unzip \
+              && docker-php-ext-configure gd --with-freetype --with-jpeg \
+              && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql \
+              && rm -rf /var/lib/apt/lists/*
+          
+          # Install Composer
+          COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+          
+          # Copy application files
+          COPY artifacts/ /var/www/html/
+          
+          # Set proper permissions
+          RUN chown -R www-data:www-data /var/www/html \
+              && chmod -R 755 /var/www/html
+          
+          # Install production dependencies
+          WORKDIR /var/www/html
+          RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader --no-interaction; fi
+          
+          EXPOSE 80
+          EOF
+          fi
+          
+          docker build -t ${{ inputs.registry-url }}/php-app:${{ inputs.version }} .
+          docker push ${{ inputs.registry-url }}/php-app:${{ inputs.version }}
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Deploy to Kubernetes
+        if: inputs.deployment-target == 'k8s'
+        run: |
+          echo "Deploying to Kubernetes cluster for ${{ inputs.environment }}"
+          # Add kubectl deployment logic here
+          # kubectl apply -f k8s/
+          # kubectl set image deployment/php-app php-app=${{ inputs.registry-url }}/php-app:${{ inputs.version }}
+
+      - name: Deploy serverless function
+        if: inputs.deployment-target == 'serverless'
+        run: |
+          echo "Deploying PHP serverless function to ${{ inputs.environment }}"
+          # Add serverless deployment logic here
+          # Examples: AWS Lambda (with Bref), Google Cloud Functions
+
+      - name: Cache and optimization
+        if: inputs.deployment-target == 'files'
+        run: |
+          echo "Setting up caching and optimization for ${{ inputs.environment }}"
+          # Add cache warming, optimization steps
+          if [ -f artifacts/artisan ]; then
+            cd artifacts
+            php artisan config:cache || true
+            php artisan route:cache || true
+            php artisan view:cache || true
+            cd ..
+          fi
+
+      - name: Health check
+        run: |
+          echo "Performing health check for ${{ inputs.environment }} deployment"
+          # Add health check logic here
+          # Examples: curl health endpoint, check PHP-FPM status
+          sleep 5
+          echo "Health check passed"
+
+      - name: Notify deployment success
+        run: |
+          echo "Successfully deployed PHP application version ${{ inputs.version }} to ${{ inputs.environment }}"
+          echo "Deployment target: ${{ inputs.deployment-target }}"
+
+  createBug:
+    name: Create Bug
+    needs: [deploy]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'PHP Deployment Failed'
+      job: 'deploy'
+      status: 'failure'

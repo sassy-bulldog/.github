@@ -1,0 +1,132 @@
+name: 'Build PHP'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for storing the artifacts and running the build'
+        type: string
+        required: false
+        default: ./
+      php-version:
+        description: PHP version to use for building
+        required: false
+        type: string
+        default: '8.2'
+      version:
+        description: Semantic version of current build
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      artifact-name:
+        description: Name of the artifact to upload to the calling workflow
+        type: string
+        required: true
+      exclude-dev:
+        description: Exclude dev dependencies from build
+        type: boolean
+        required: false
+        default: true
+
+jobs:
+  build:
+    name: Build PHP application
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup PHP ${{ inputs.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php-version }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4.1.2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ inputs.php-version }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ inputs.php-version }}-
+
+      - name: Install dependencies
+        run: |
+          if [ "${{ inputs.exclude-dev }}" = "true" ]; then
+            composer install --prefer-dist --no-progress --no-dev --optimize-autoloader
+          else
+            composer install --prefer-dist --no-progress --optimize-autoloader
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Update version in composer.json
+        run: |
+          if [ -f composer.json ]; then
+            php -r "
+              \$composer = json_decode(file_get_contents('composer.json'), true);
+              \$composer['version'] = '${{ inputs.version }}';
+              file_put_contents('composer.json', json_encode(\$composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            "
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Run build script if exists
+        run: |
+          if composer show-platform | grep -q "composer-script build"; then
+            composer run-script build
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+        continue-on-error: true
+
+      - name: Create distribution package
+        run: |
+          mkdir -p dist
+          # Copy source files (exclude common non-production files)
+          rsync -av \
+            --exclude='.git*' \
+            --exclude='tests/' \
+            --exclude='phpunit.xml*' \
+            --exclude='.phpunit.result.cache' \
+            --exclude='node_modules/' \
+            --exclude='.env*' \
+            --exclude='docker*' \
+            --exclude='*.md' \
+            . dist/
+          
+          # Create a zip package
+          cd dist
+          zip -r "../${{ github.event.repository.name }}-${{ inputs.version }}.zip" .
+          cd ..
+          mv *.zip dist/
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.working-directory }}/dist/*
+          retention-days: 5
+
+  createBug:
+    name: Create Bug
+    needs: [build]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'PHP Build Failed'
+      job: 'build'
+      status: 'failure'
