@@ -141,7 +141,7 @@ jobs:
         run: |
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for Node.js application"
-            echo "FROM node:20-alpine" > Dockerfile
+            echo "FROM node:${{ inputs.node-version }}-alpine" > Dockerfile
             echo "WORKDIR /app" >> Dockerfile
             if ls artifacts/package*.json 1> /dev/null 2>&1; then
               echo "COPY artifacts/package*.json ./" >> Dockerfile
