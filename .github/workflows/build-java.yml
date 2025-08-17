@@ -90,7 +90,7 @@ jobs:
         if: inputs.build-tool == 'maven'
         run: |
           mkdir -p dist
-          cp target/*.jar dist/ || true
+          if ls target/*.jar 1> /dev/null 2>&1; then cp target/*.jar dist/; else echo "No JAR files found in target/. Build may have failed." && exit 1; fi
           find target -name '*.war' -exec cp {} dist/ \;
         working-directory: "${{ inputs.working-directory }}"
 
