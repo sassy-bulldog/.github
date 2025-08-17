@@ -116,7 +116,13 @@ jobs:
           safe_repo_name=$(echo "${{ github.event.repository.name }}" | sed 's/[^A-Za-z0-9_-]/_/g')
           cd ..
           # Sanitize repository name for safe filenames: allow only alphanumeric, hyphen, and underscore; remove all others
+          # Sanitize repository name for safe filenames: allow only alphanumeric, hyphen, and underscore; replace all others with underscores
           safe_repo_name=$(echo "${{ github.event.repository.name }}" | sed 's/[^A-Za-z0-9_-]/_/g')
+          
+          
+          
+          
+          
           # Create zip file with sanitized repo name and version if available
           zip_name="${safe_repo_name}-${{ inputs.version }}.zip"
           cd ..
