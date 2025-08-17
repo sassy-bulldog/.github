@@ -108,30 +108,10 @@ jobs:
           done
           eval rsync -av $rsync_excludes . dist/
 
-          # Create a zip package
-          cd dist
-          # Sanitize repository name for safe filenames: replace all non-alphanumeric, non-hyphen, non-underscore chars with underscores
-          safe_repo_name=$(echo "${{ github.event.repository.name }}" | sed 's/[^A-Za-z0-9._-]/_/g')
-          # Sanitize repository name for safe filenames: allow only alphanumeric, hyphen, and underscore; remove all others
-          safe_repo_name=$(echo "${{ github.event.repository.name }}" | sed 's/[^A-Za-z0-9_-]/_/g')
-          cd ..
-          # Sanitize repository name for safe filenames: allow only alphanumeric, hyphen, and underscore; remove all others
           # Sanitize repository name for safe filenames: allow only alphanumeric, hyphen, and underscore; replace all others with underscores
           safe_repo_name=$(echo "${{ github.event.repository.name }}" | sed 's/[^A-Za-z0-9_-]/_/g')
-
-
-
-
-
-          # Create zip file with sanitized repo name and version if available
           zip_name="${safe_repo_name}-${{ inputs.version }}.zip"
-          cd ..
           (cd dist && zip -r "../$zip_name" .)
-          # Sanitize repository name for safe filenames: allow only alphanumeric, hyphen, and underscore; remove all others
-          safe_repo_name=$(echo "${{ github.event.repository.name }}" | sed 's/[^A-Za-z0-9_-]/_/g')
-          # Create zip file with sanitized repo name and version if available
-          zip_name="${safe_repo_name}-${{ inputs.version }}.zip"
-          zip -r "dist/$zip_name" dist
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Upload artifacts
