@@ -127,7 +127,17 @@ jobs:
             echo '  echo "Error: Expected exactly one binary in /app, found ${#files[@]} files: ${files[*]}"' >> entrypoint.sh
             echo '  exit 1' >> entrypoint.sh
             echo 'fi' >> entrypoint.sh
-            echo 'mv "${files[0]}" app' >> entrypoint.sh
+            echo 'count=0' >> entrypoint.sh
+            echo 'for f in *; do' >> entrypoint.sh
+            echo '  [ -f "$f" ] || continue' >> entrypoint.sh
+            echo '  file="$f"' >> entrypoint.sh
+            echo '  count=$((count + 1))' >> entrypoint.sh
+            echo 'done' >> entrypoint.sh
+            echo 'if [ "$count" -ne 1 ]; then' >> entrypoint.sh
+            echo '  echo "Error: Expected exactly one binary in /app, found $count files."' >> entrypoint.sh
+            echo '  exit 1' >> entrypoint.sh
+            echo 'fi' >> entrypoint.sh
+            echo 'mv "$file" app' >> entrypoint.sh
             echo 'exec ./app' >> entrypoint.sh
             chmod +x entrypoint.sh
             echo "FROM debian:bookworm-slim" > Dockerfile
