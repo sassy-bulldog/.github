@@ -106,7 +106,7 @@ jobs:
         run: |
           echo "Publishing to PyPI"
           if [ -n "${{ secrets.PYPI_TOKEN }}" ]; then
-            twine upload --repository pypi ./artifacts/* -u __token__ -p ${{ secrets.PYPI_TOKEN }}
+            TWINE_PASSWORD="${{ secrets.PYPI_TOKEN }}" twine upload --repository pypi ./artifacts/* -u __token__
           else
             echo "PYPI_TOKEN not provided, skipping publish"
           fi
