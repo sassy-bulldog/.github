@@ -23,6 +23,11 @@ on:
           - k8s
           - serverless
           - crates
+      version:
+        description: 'Semantic version to deploy'
+        required: false
+        default: '0.0.1'
+        type: string
 
 jobs:
   deploy:

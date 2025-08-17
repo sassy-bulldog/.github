@@ -124,26 +124,29 @@ jobs:
             PROFILE_DIR=debug
           fi
 
-          # Find only .exe files (Windows) or files with no extension (Unix)
-          if [ -d "target/${{ matrix.target }}/${PROFILE_DIR}/" ]; then
-            files_found=""
-            for file in target/${{ matrix.target }}/${PROFILE_DIR}/*; do
+          ARTIFACT_DIR="target/${{ matrix.target }}/${PROFILE_DIR}"
+
+          files_found=()
+          if [ -d "$ARTIFACT_DIR" ]; then
+            for file in "$ARTIFACT_DIR"/*; do
               # Skip if no files matched
               [ -e "$file" ] || continue
+              # Windows: .exe files
               if [ "${file##*.}" = "exe" ]; then
-                files_found="$files_found $file"
-              elif [ -f "$file" ] && [ -x "$file" ] && [ "${file##*.}" = "$(basename "$file")" ]; then
-                files_found="$files_found $file"
+                files_found+=("$file")
+              # Unix: executable files with no extension
+              elif [ -f "$file" ] && [ -x "$file" ] && [[ "$file" != *.* ]]; then
+                files_found+=("$file")
               fi
             done
-          else
-            files_found=""
           fi
 
-          if [ -z "$files_found" ]; then
-            echo "::warning::No build artifacts found in target/${{ matrix.target }}/${PROFILE_DIR}/"
+          if [ ${#files_found[@]} -eq 0 ]; then
+            echo "::warning::No build artifacts found in $ARTIFACT_DIR"
           else
-            echo "$files_found" | xargs -I{} cp {} dist/${{ matrix.target }}/
+            for file in "${files_found[@]}"; do
+              cp "$file" dist/${{ matrix.target }}/
+            done
           fi
 
           echo "Copied files to dist/${{ matrix.target }}:"
