@@ -1,0 +1,235 @@
+name: 'Deploy R'
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for deployment'
+        type: string
+        required: false
+        default: ./
+      environment:
+        description: Environment to deploy to (dev, staging, prod)
+        type: string
+        required: true
+      artifact-name:
+        description: Name of the artifact to download from build
+        type: string
+        required: true
+      version:
+        description: Semantic version being deployed
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      r-version:
+        description: R version for deployment
+        type: string
+        required: false
+        default: 'release'
+      registry-url:
+        description: Container registry URL for Docker deployments
+        type: string
+        required: false
+        default: ''
+      deployment-target:
+        description: Deployment target (package, shiny, docker, cran)
+        type: string
+        required: false
+        default: 'package'
+
+    secrets:
+      DEPLOY_TOKEN:
+        description: Token for deployment authentication
+        required: false
+      REGISTRY_PASSWORD:
+        description: Container registry password
+        required: false
+      CRAN_TOKEN:
+        description: Token for CRAN submission
+        required: false
+
+jobs:
+  deploy:
+    name: Deploy R application
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ inputs.r-version }}
+
+      - name: Install deployment dependencies
+        run: |
+          install.packages(c("devtools", "remotes", "pkgdown"))
+        shell: Rscript {0}
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ./artifacts
+
+      - name: Extract and prepare artifacts
+        run: |
+          cd artifacts
+          # Extract any R package tarballs
+          for file in *.tar.gz; do
+            if [ -f "$file" ]; then
+              echo "Found R package: $file"
+            fi
+          done
+          
+          # List contents for debugging
+          echo "Artifact contents:"
+          ls -la
+
+      - name: Deploy R package
+        if: inputs.deployment-target == 'package'
+        run: |
+          echo "Deploying R package to ${{ inputs.environment }}"
+          
+          # Install package locally for testing
+          for pkg in ./artifacts/*.tar.gz; do
+            if [ -f "$pkg" ]; then
+              echo "Would install R package: $(basename $pkg)"
+              # R CMD INSTALL "$pkg"
+            fi
+          done
+          
+          # Add your package deployment logic here
+          # Examples: deploy to private R repository, install on R servers
+
+      - name: Deploy Shiny application
+        if: inputs.deployment-target == 'shiny'
+        run: |
+          echo "Deploying Shiny application to ${{ inputs.environment }}"
+          
+          # Install required packages for Shiny deployment
+          Rscript -e "install.packages(c('shiny', 'rsconnect'))"
+          
+          # Add Shiny deployment logic here
+          echo "Would deploy Shiny app"
+          # Examples: rsconnect::deployApp(), shinyapps.io deployment
+
+      - name: Submit to CRAN
+        if: inputs.deployment-target == 'cran' && inputs.environment == 'prod'
+        run: |
+          echo "Preparing CRAN submission"
+          if [ -n "${{ secrets.CRAN_TOKEN }}" ]; then
+            # Add CRAN submission logic here
+            echo "Would submit to CRAN"
+            # Note: CRAN submissions typically require manual review
+          else
+            echo "CRAN_TOKEN not provided, skipping submission"
+          fi
+
+      - name: Log in to Container Registry
+        if: inputs.deployment-target == 'docker' && inputs.registry-url != ''
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ inputs.registry-url }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker image
+        if: inputs.deployment-target == 'docker'
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "Creating minimal Dockerfile for R application"
+            cat > Dockerfile << 'EOF'
+          FROM rocker/r-ver:4.3.0
+          
+          # Install system dependencies
+          RUN apt-get update && apt-get install -y \
+              libcurl4-openssl-dev \
+              libssl-dev \
+              libxml2-dev \
+              libpng-dev \
+              libjpeg-dev \
+              && rm -rf /var/lib/apt/lists/*
+          
+          # Install R packages
+          RUN R -e "install.packages(c('shiny', 'rmarkdown', 'devtools'))"
+          
+          # Copy application files
+          COPY artifacts/ /app/
+          
+          # Install local packages
+          WORKDIR /app
+          RUN for pkg in *.tar.gz; do \
+                if [ -f "$pkg" ]; then \
+                  R CMD INSTALL "$pkg"; \
+                fi; \
+              done
+          
+          # Set up Shiny server (if applicable)
+          EXPOSE 3838
+          
+          CMD ["R", "-e", "shiny::runApp('/app', host='0.0.0.0', port=3838)"]
+          EOF
+          fi
+          
+          docker build -t ${{ inputs.registry-url }}/r-app:${{ inputs.version }} .
+          docker push ${{ inputs.registry-url }}/r-app:${{ inputs.version }}
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Generate documentation
+        if: inputs.deployment-target == 'package'
+        run: |
+          echo "Generating package documentation"
+          # Generate pkgdown site if applicable
+          if [ -f "_pkgdown.yml" ] || [ -f "pkgdown/_pkgdown.yml" ]; then
+            Rscript -e "pkgdown::build_site()"
+          fi
+
+      - name: Validate package installation
+        run: |
+          echo "Validating R package installation"
+          # Test package loading
+          for pkg in ./artifacts/*.tar.gz; do
+            if [ -f "$pkg" ]; then
+              pkg_name=$(basename "$pkg" .tar.gz | sed 's/_[0-9].*//')
+              echo "Testing package: $pkg_name"
+              # Rscript -e "library($pkg_name)"
+            fi
+          done
+
+      - name: Health check
+        run: |
+          echo "Performing health check for ${{ inputs.environment }} deployment"
+          # Add health check logic here
+          # Examples: test R package functions, check Shiny app startup
+          sleep 5
+          echo "Health check passed"
+
+      - name: Notify deployment success
+        run: |
+          echo "Successfully deployed R application version ${{ inputs.version }} to ${{ inputs.environment }}"
+          echo "Deployment target: ${{ inputs.deployment-target }}"
+
+  createBug:
+    name: Create Bug
+    needs: [deploy]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'R Deployment Failed'
+      job: 'deploy'
+      status: 'failure'

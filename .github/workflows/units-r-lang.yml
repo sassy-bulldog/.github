@@ -1,0 +1,81 @@
+name: 'Unit Tests: R'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
+      r-version:
+        description: R versions to use for testing
+        required: false
+        type: string
+        default: '["4.3", "4.4"]'
+      working-directory:
+        description: 'Directory to use for running the unit tests'
+        type: string
+        required: false
+        default: ./
+
+jobs:
+  test:
+    name: Testing R ${{ matrix.r-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ${{ fromJSON(inputs.runs-on) }}
+        r-version: ${{ fromJson(inputs.r-version) }}
+      fail-fast: false
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup R ${{ matrix.r-version }}
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.r-version }}
+          use-public-rspm: true
+
+      - name: Setup R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: ${{ inputs.working-directory }}
+          extra-packages: any::rcmdcheck, any::covr
+          needs: check
+
+      - name: Check R package
+        uses: r-lib/actions/check-r-package@v2
+        with:
+          working-directory: ${{ inputs.working-directory }}
+          upload-snapshots: true
+
+      - name: Test coverage
+        if: matrix.r-version == '4.4' && matrix.os == 'ubuntu-latest'
+        run: |
+          covr::codecov(
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(Sys.getenv("RUNNER_TEMP"), "package")
+          )
+        shell: Rscript {0}
+        working-directory: ${{ inputs.working-directory }}
+
+  createBug:
+    name: Create Bug
+    needs: [test]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'R Tests Failed'
+      job: 'test'
+      status: 'failure'
