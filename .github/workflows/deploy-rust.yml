@@ -43,6 +43,11 @@ on:
         description: Docker image name for container builds
         type: string
         required: false
+      publish-environments:
+        description: "Comma-separated list of environments where crates.io publishing is allowed"
+        type: string
+        required: false
+        default: "prod"
 
     secrets:
       DEPLOY_TOKEN:
@@ -106,14 +111,29 @@ jobs:
           done
 
       - name: Publish to crates.io
-        if: inputs.deployment-target == 'crates' && inputs.environment == 'prod'
+        if: inputs.deployment-target == 'crates'
         run: |
           echo "Publishing to crates.io"
-          if [ -n "${{ secrets.CRATES_IO_TOKEN }}" ]; then
-            cargo login ${{ secrets.CRATES_IO_TOKEN }}
-            cargo publish
+          # Split publish-environments into array and check if current environment is allowed
+          IFS=',' read -ra ALLOWED_ENVS <<< "${{ inputs['publish-environments'] }}"
+          PUBLISH_ALLOWED=false
+          for env in "${ALLOWED_ENVS[@]}"; do
+            if [ "$env" = "${{ inputs.environment }}" ]; then
+              PUBLISH_ALLOWED=true
+              break
+            fi
+          done
+
+          if [ "$PUBLISH_ALLOWED" = true ]; then
+            if [ -n "${{ secrets.CRATES_IO_TOKEN }}" ]; then
+              cargo login ${{ secrets.CRATES_IO_TOKEN }}
+              cargo publish
+            else
+              echo "CRATES_IO_TOKEN not provided, skipping publish"
+            fi
           else
-            echo "CRATES_IO_TOKEN not provided, skipping publish"
+            echo "Publishing to crates.io is not enabled for environment '${{ inputs.environment }}'."
+            echo "Allowed environments: ${{ inputs['publish-environments'] }}"
           fi
         working-directory: "${{ inputs.working-directory }}"
         env:

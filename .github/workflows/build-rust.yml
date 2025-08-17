@@ -113,6 +113,8 @@ jobs:
 
       - name: Prepare artifacts
         run: |
+          set -e
+
           mkdir -p dist/${{ matrix.target }}
 
           # Determine the build profile directory
@@ -124,31 +126,27 @@ jobs:
 
           ARTIFACT_DIR="target/${{ matrix.target }}/${PROFILE_DIR}"
 
+          # Find all files that are either:
+          #   - Executable (Unix, regardless of extension)
+          #   - Have a .exe extension (Windows)
+          # This approach does NOT exclude files with dots in their names.
           files_found=()
           if [ -d "$ARTIFACT_DIR" ]; then
-            for file in "$ARTIFACT_DIR"/*; do
-              # Skip if no files matched
-              [ -e "$file" ] || continue
-              # Windows: .exe files
-              if [ "${file##*.}" = "exe" ]; then
-                files_found+=("$file")
-              # Unix: executable files with no extension
-              elif [ -f "$file" ] && [ -x "$file" ] && [[ "$file" != *'.'* ]]; then
-                files_found+=("$file")
-              fi
-            done
+            while IFS= read -r -d '' file; do
+              files_found+=("$file")
+            done < <(find "$ARTIFACT_DIR" -maxdepth 1 -type f \( -executable -o -iname '*.exe' \) -print0)
           fi
 
           if [ ${#files_found[@]} -eq 0 ]; then
             echo "::warning::No build artifacts found in $ARTIFACT_DIR"
           else
             for file in "${files_found[@]}"; do
-              cp "$file" dist/${{ matrix.target }}/
+              cp "$file" "dist/${{ matrix.target }}/"
             done
           fi
 
           echo "Copied files to dist/${{ matrix.target }}:"
-          ls -la dist/${{ matrix.target }}
+          ls -la "dist/${{ matrix.target }}"
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Upload artifacts
