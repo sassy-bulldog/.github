@@ -94,7 +94,7 @@ jobs:
           for wheel in ./artifacts/*.whl; do
             if [ -f "$wheel" ]; then
               echo "Would install: $(basename $wheel)"
-              # pip install "$wheel"
+              pip install "$wheel"
             fi
           done
 
