@@ -152,37 +152,14 @@ jobs:
         run: |
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for R application"
-            cat > Dockerfile << 'EOF'
-          FROM rocker/r-ver:${{ inputs.r-version }}
-
-          # Install system dependencies
-          RUN apt-get update && apt-get install -y \
-              libcurl4-openssl-dev \
-              libssl-dev \
-              libxml2-dev \
-              libpng-dev \
-              libjpeg-dev \
-              && rm -rf /var/lib/apt/lists/*
-
-          # Install R packages
-          RUN R -e "install.packages(c('shiny', 'rmarkdown', 'devtools'))"
-
-          # Copy application files
-          COPY artifacts/ /app/
-
-          # Install local packages
-          WORKDIR /app
-          RUN for pkg in *.tar.gz; do \
-                if [ -f "$pkg" ]; then \
-                  R CMD INSTALL "$pkg"; \
-                fi; \
-              done
-
-          # Set up Shiny server (if applicable)
-          EXPOSE 3838
-
-          CMD ["R", "-e", "shiny::runApp('/app', host='0.0.0.0', port=3838)"]
-          EOF
+            echo "FROM rocker/r-ver:${{ inputs.r-version }}" > Dockerfile
+            echo "RUN apt-get update && apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libpng-dev libjpeg-dev && rm -rf /var/lib/apt/lists/*" >> Dockerfile
+            echo 'RUN R -e "install.packages(c(\'shiny\', \'rmarkdown\', \'devtools\'))"' >> Dockerfile
+            echo "COPY artifacts/ /app/" >> Dockerfile
+            echo "WORKDIR /app" >> Dockerfile
+            echo 'RUN for pkg in *.tar.gz; do if [ -f "$pkg" ]; then R CMD INSTALL "$pkg"; fi; done' >> Dockerfile
+            echo "EXPOSE 3838" >> Dockerfile
+            echo 'CMD ["R", "-e", "shiny::runApp(\"/app\", host=\"0.0.0.0\", port=3838)"]' >> Dockerfile
           fi
 
           docker build -t ${{ inputs.registry-url }}/r-app:${{ inputs.version }} .
