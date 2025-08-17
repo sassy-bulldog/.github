@@ -89,7 +89,7 @@ jobs:
         if: inputs.deployment-target == 'package'
         run: |
           echo "Deploying Python package to ${{ inputs.environment }}"
-          
+
           # Install the package locally for testing
           for wheel in ./artifacts/*.whl; do
             if [ -f "$wheel" ]; then
@@ -97,7 +97,7 @@ jobs:
               # pip install "$wheel"
             fi
           done
-          
+
           # Add your package deployment logic here
           # Examples: upload to private package repository, deploy to application servers
 
@@ -126,39 +126,39 @@ jobs:
             echo "Creating minimal Dockerfile for Python application"
             cat > Dockerfile << 'EOF'
           FROM python:3.11-slim
-          
+
           # Set environment variables
           ENV PYTHONDONTWRITEBYTECODE=1
           ENV PYTHONUNBUFFERED=1
-          
+
           # Install system dependencies
           RUN apt-get update && apt-get install -y \
               gcc \
               && rm -rf /var/lib/apt/lists/*
-          
+
           # Set work directory
           WORKDIR /app
-          
+
           # Install Python dependencies
           COPY artifacts/requirements.txt* ./
           RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
-          
+
           # Copy application
           COPY artifacts/ .
-          
+
           # Install built packages
           RUN find . -name "*.whl" -exec pip install {} \;
-          
+
           # Create non-root user
           RUN groupadd -r appuser && useradd -r -g appuser appuser
           RUN chown -R appuser:appuser /app
           USER appuser
-          
+
           EXPOSE 8000
           CMD ["python", "-m", "app"]
           EOF
           fi
-          
+
           docker build -t ${{ inputs.registry-url }}/python-app:${{ inputs.version }} .
           docker push ${{ inputs.registry-url }}/python-app:${{ inputs.version }}
         working-directory: "${{ inputs.working-directory }}"
@@ -182,18 +182,18 @@ jobs:
         if: inputs.deployment-target == 'package'
         run: |
           echo "Installing Python application for ${{ inputs.environment }}"
-          
+
           # Create virtual environment for deployment
           python -m venv deploy_env
           source deploy_env/bin/activate
-          
+
           # Install wheels
           for wheel in ./artifacts/*.whl; do
             if [ -f "$wheel" ]; then
               pip install "$wheel"
             fi
           done
-          
+
           # Run any post-installation scripts
           echo "Application installed successfully"
 

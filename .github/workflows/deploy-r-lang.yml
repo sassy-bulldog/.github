@@ -94,7 +94,7 @@ jobs:
               echo "Found R package: $file"
             fi
           done
-          
+
           # List contents for debugging
           echo "Artifact contents:"
           ls -la
@@ -103,7 +103,7 @@ jobs:
         if: inputs.deployment-target == 'package'
         run: |
           echo "Deploying R package to ${{ inputs.environment }}"
-          
+
           # Install package locally for testing
           for pkg in ./artifacts/*.tar.gz; do
             if [ -f "$pkg" ]; then
@@ -111,7 +111,7 @@ jobs:
               # R CMD INSTALL "$pkg"
             fi
           done
-          
+
           # Add your package deployment logic here
           # Examples: deploy to private R repository, install on R servers
 
@@ -119,10 +119,10 @@ jobs:
         if: inputs.deployment-target == 'shiny'
         run: |
           echo "Deploying Shiny application to ${{ inputs.environment }}"
-          
+
           # Install required packages for Shiny deployment
           Rscript -e "install.packages(c('shiny', 'rsconnect'))"
-          
+
           # Add Shiny deployment logic here
           echo "Would deploy Shiny app"
           # Examples: rsconnect::deployApp(), shinyapps.io deployment
@@ -154,7 +154,7 @@ jobs:
             echo "Creating minimal Dockerfile for R application"
             cat > Dockerfile << 'EOF'
           FROM rocker/r-ver:4.3.0
-          
+
           # Install system dependencies
           RUN apt-get update && apt-get install -y \
               libcurl4-openssl-dev \
@@ -163,13 +163,13 @@ jobs:
               libpng-dev \
               libjpeg-dev \
               && rm -rf /var/lib/apt/lists/*
-          
+
           # Install R packages
           RUN R -e "install.packages(c('shiny', 'rmarkdown', 'devtools'))"
-          
+
           # Copy application files
           COPY artifacts/ /app/
-          
+
           # Install local packages
           WORKDIR /app
           RUN for pkg in *.tar.gz; do \
@@ -177,14 +177,14 @@ jobs:
                   R CMD INSTALL "$pkg"; \
                 fi; \
               done
-          
+
           # Set up Shiny server (if applicable)
           EXPOSE 3838
-          
+
           CMD ["R", "-e", "shiny::runApp('/app', host='0.0.0.0', port=3838)"]
           EOF
           fi
-          
+
           docker build -t ${{ inputs.registry-url }}/r-app:${{ inputs.version }} .
           docker push ${{ inputs.registry-url }}/r-app:${{ inputs.version }}
         working-directory: "${{ inputs.working-directory }}"
