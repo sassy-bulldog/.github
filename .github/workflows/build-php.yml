@@ -112,7 +112,8 @@ jobs:
           cd dist
           # Sanitize repository name for safe filenames: replace all non-alphanumeric, non-hyphen, non-underscore chars with underscores
           safe_repo_name=$(echo "${{ github.event.repository.name }}" | sed 's/[^A-Za-z0-9._-]/_/g')
-          zip -r "../${safe_repo_name}-${{ inputs.version }}.zip" .
+          # Sanitize repository name for safe filenames: allow only alphanumeric, hyphen, and underscore; remove all others
+          safe_repo_name=$(echo "${{ github.event.repository.name }}" | sed 's/[^A-Za-z0-9_-]/_/g')
           cd ..
           mv *.zip dist/
         working-directory: "${{ inputs.working-directory }}"
