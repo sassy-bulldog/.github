@@ -104,7 +104,6 @@ jobs:
       - name: Copy Gradle WAR artifacts
         if: inputs.build-tool == 'gradle'
         run: |
-          mkdir -p dist
           find build/libs -name '*.war' -exec cp {} dist/ \;
         working-directory: "${{ inputs.working-directory }}"
       - name: Upload artifacts
