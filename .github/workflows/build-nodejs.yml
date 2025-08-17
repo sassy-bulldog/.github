@@ -132,6 +132,7 @@ jobs:
           else
             echo "Warning: No package files found to move to dist/. Check build configuration if packages are expected."
           fi
+          shopt -u nullglob
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Upload artifacts
