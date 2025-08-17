@@ -1,0 +1,137 @@
+name: 'Build Node.js'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for storing the artifacts and running the build'
+        type: string
+        required: false
+        default: ./
+      node-version:
+        description: Node.js version to use for building
+        required: false
+        type: string
+        default: '20'
+      version:
+        description: Semantic version of current build
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      artifact-name:
+        description: Name of the artifact to upload to the calling workflow
+        type: string
+        required: true
+      package-manager:
+        description: Package manager to use (npm, yarn, or pnpm)
+        type: string
+        required: false
+        default: 'npm'
+      build-script:
+        description: npm script to run for building
+        type: string
+        required: false
+        default: 'build'
+
+jobs:
+  build:
+    name: Build Node.js application
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Use Node.js ${{ inputs.node-version }}
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: ${{ inputs.package-manager }}
+          cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+
+      - name: Setup pnpm
+        if: inputs.package-manager == 'pnpm'
+        uses: pnpm/action-setup@v4.0.0
+        with:
+          version: latest
+
+      - name: Install dependencies with npm
+        if: inputs.package-manager == 'npm'
+        run: npm ci
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Install dependencies with yarn
+        if: inputs.package-manager == 'yarn'
+        run: yarn install --frozen-lockfile
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Install dependencies with pnpm
+        if: inputs.package-manager == 'pnpm'
+        run: pnpm install --frozen-lockfile
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Set version in package.json
+        run: |
+          if [ "${{ inputs.package-manager }}" = "npm" ]; then
+            npm version ${{ inputs.version }} --no-git-tag-version
+          elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
+            yarn version --new-version ${{ inputs.version }} --no-git-tag-version
+          elif [ "${{ inputs.package-manager }}" = "pnpm" ]; then
+            pnpm version ${{ inputs.version }} --no-git-tag-version
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Build application
+        run: |
+          if [ "${{ inputs.package-manager }}" = "npm" ]; then
+            npm run ${{ inputs.build-script }}
+          elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
+            yarn ${{ inputs.build-script }}
+          elif [ "${{ inputs.package-manager }}" = "pnpm" ]; then
+            pnpm run ${{ inputs.build-script }}
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Package application
+        run: |
+          if [ "${{ inputs.package-manager }}" = "npm" ]; then
+            npm pack
+          elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
+            yarn pack
+          elif [ "${{ inputs.package-manager }}" = "pnpm" ]; then
+            pnpm pack
+          fi
+          mkdir -p dist
+          mv *.tgz dist/ || true
+          # Also copy build output if it exists
+          cp -r build dist/ 2>/dev/null || true
+          cp -r dist/build dist/output 2>/dev/null || true
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.working-directory }}/dist/*
+          retention-days: 5
+
+  createBug:
+    name: Create Bug
+    needs: [build]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Node.js Build Failed'
+      job: 'build'
+      status: 'failure'
