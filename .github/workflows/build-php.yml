@@ -110,7 +110,7 @@ jobs:
 
           # Sanitize repository name for safe filenames: allow only alphanumeric, hyphen, and underscore; replace all others with underscores.
           # Underscores are chosen as the replacement character to maintain readability and ensure compatibility with all common filesystems.
-          safe_repo_name=$(echo "${{ github.event.repository.name }}" | sed 's/[^A-Za-z0-9_-]/_/g')
+          safe_repo_name=$(echo "${{ github.repository }}" | awk -F'/' '{print $2}' | sed 's/[^A-Za-z0-9_-]/_/g')
           zip_name="${safe_repo_name}-${{ inputs.version }}.zip"
           (cd dist && zip -r "../$zip_name" .)
         working-directory: "${{ inputs.working-directory }}"
