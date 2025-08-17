@@ -97,7 +97,6 @@ jobs:
           shopt -u nullglob
 
           # [Future-proofing] If you add more glob-handling loops, use nullglob in a subshell to avoid side effects:
-          # (shopt -s nullglob; for f in *.phar; do echo "Found: $f"; done)
 
           # List contents for debugging
           echo "Artifact contents:"
