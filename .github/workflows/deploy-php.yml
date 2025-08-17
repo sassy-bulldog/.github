@@ -133,7 +133,7 @@ jobs:
         if: inputs.deployment-target == 'docker'
         run: |
           if [ ! -f Dockerfile ]; then
-            echo "ERROR: No Dockerfile found in the repository root. Please provide a Dockerfile for your PHP application." >&2
+            echo "ERROR: No Dockerfile found in the working directory ('${{ inputs.working-directory }}'). Please provide a Dockerfile for your PHP application in that directory." >&2
             exit 1
           fi
 
