@@ -146,7 +146,7 @@ jobs:
             echo "Please provide a reviewed, static Dockerfile that defines how to build your Rust application."
             echo ""
             echo "Example minimal Dockerfile:"
-            echo "  FROM rust:1.70"
+            echo "  FROM rust:latest"
             echo "  WORKDIR /app"
             echo "  COPY . ."
             echo "  RUN cargo build --release"
