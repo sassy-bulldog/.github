@@ -85,7 +85,7 @@ jobs:
     if: failure()
     uses: ./.github/workflows/create-bug.yml
     with:
-      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      runs-on: ${{ inputs.runs-on }}
       title: 'PHP Tests Failed'
       job: 'test'
       status: 'failure'
