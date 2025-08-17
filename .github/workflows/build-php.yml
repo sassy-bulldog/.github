@@ -110,7 +110,9 @@ jobs:
 
           # Create a zip package
           cd dist
-          zip -r "../${{ github.event.repository.name }}-${{ inputs.version }}.zip" .
+          # Sanitize repository name for safe filenames: replace all non-alphanumeric, non-hyphen, non-underscore chars with underscores
+          safe_repo_name=$(echo "${{ github.event.repository.name }}" | sed 's/[^A-Za-z0-9._-]/_/g')
+          zip -r "../${safe_repo_name}-${{ inputs.version }}.zip" .
           cd ..
           mv *.zip dist/
         working-directory: "${{ inputs.working-directory }}"
