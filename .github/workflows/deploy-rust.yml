@@ -151,7 +151,10 @@ jobs:
             echo "WORKDIR /app" >> Dockerfile
             echo "COPY entrypoint.sh /app/entrypoint.sh" >> Dockerfile
             echo "EXPOSE 8080" >> Dockerfile
+            echo "COPY entrypoint.sh /app/entrypoint.sh" >> Dockerfile
+            echo "EXPOSE 8080" >> Dockerfile
             echo 'ENTRYPOINT ["/app/entrypoint.sh"]' >> Dockerfile
+            chmod +x entrypoint.sh
           fi
 
           docker build -t ${{ inputs.registry-url }}/rust-app:${{ inputs.version }} .
