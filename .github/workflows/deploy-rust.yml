@@ -39,6 +39,11 @@ on:
         type: string
         required: false
         default: 'binary'
+      image-name:
+        description: Docker image name for container builds
+        type: string
+        required: false
+        default: rust-app
 
     secrets:
       DEPLOY_TOKEN:
@@ -77,12 +82,16 @@ jobs:
       - name: Make binaries executable
         if: inputs.deployment-target == 'binary'
         run: |
-          for binary in ./artifacts/*; do
-            if [ -f "$binary" ] && ([ -x "$binary" ] || [[ "$binary" == *.exe ]]); then
-              chmod +x "$binary" 2>/dev/null || true
-              echo "Binary: $(basename "$binary")"
-            fi
-          done
+          if compgen -G "./artifacts/*" > /dev/null; then
+            for binary in ./artifacts/*; do
+              if [ -f "$binary" ] && ([ -x "$binary" ] || [[ "$binary" == *.exe ]]); then
+                chmod +x "$binary" 2>/dev/null || true
+                echo "Binary: $(basename "$binary")"
+              fi
+            done
+          else
+            echo "No binaries found in ./artifacts/"
+          fi
           ls -la ./artifacts/
 
       - name: Deploy binary artifacts
@@ -125,8 +134,8 @@ jobs:
             exit 1
           fi
 
-          docker build -t ${{ inputs.registry-url }}/rust-app:${{ inputs.version }} .
-          docker push ${{ inputs.registry-url }}/rust-app:${{ inputs.version }}
+          docker build -t ${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }} .
+          docker push ${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }}
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Deploy to Kubernetes
