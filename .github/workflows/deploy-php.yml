@@ -135,7 +135,10 @@ jobs:
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for PHP application"
             echo "FROM php:8.2-apache" > Dockerfile
-            echo "RUN apt-get update && apt-get install -y libpng-dev libjpeg62-turbo-dev libfreetype6-dev zip unzip && docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-install -j\$(nproc) gd pdo pdo_mysql && rm -rf /var/lib/apt/lists/*" >> Dockerfile
+            echo "RUN apt-get update && apt-get install -y libpng-dev libjpeg62-turbo-dev libfreetype6-dev zip unzip \" >> Dockerfile
+            echo "    && docker-php-ext-configure gd --with-freetype --with-jpeg \" >> Dockerfile
+            echo "    && docker-php-ext-install -j\$(nproc) gd pdo pdo_mysql \" >> Dockerfile
+            echo "    && rm -rf /var/lib/apt/lists/*" >> Dockerfile
             echo "COPY --from=composer:latest /usr/bin/composer /usr/bin/composer" >> Dockerfile
             echo "COPY artifacts/ /var/www/html/" >> Dockerfile
             echo "RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html" >> Dockerfile

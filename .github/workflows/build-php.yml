@@ -34,6 +34,11 @@ on:
         type: boolean
         required: false
         default: true
+      exclude-patterns:
+        description: 'Space-separated patterns to exclude from the distribution package.'
+        type: string
+        required: false
+        default: ".git* tests/ phpunit.xml* .phpunit.result.cache node_modules/ .env* docker* *.md .phpcs.xml psalm.xml infection.json"
 
 jobs:
   build:
@@ -94,21 +99,14 @@ jobs:
       - name: Create distribution package
         run: |
           mkdir -p dist
-          # Copy source files (exclude common non-production files)
-          # [NOTE] Consider making these exclude patterns configurable for project-specific needs.
-          rsync -av \
-            --exclude='.git*' \
-            --exclude='tests/' \
-            --exclude='phpunit.xml*' \
-            --exclude='.phpunit.result.cache' \
-            --exclude='node_modules/' \
-            --exclude='.env*' \
-            --exclude='docker*' \
-            --exclude='*.md' \
-            --exclude='.phpcs.xml' \
-            --exclude='psalm.xml' \
-            --exclude='infection.json' \
-            . dist/
+          # Copy source files, excluding common non-production files and any user-specified patterns.
+          # To customize exclusions, set the 'exclude-patterns' workflow input as a space-separated list, e.g.:
+          # exclude-patterns: ".env* .phpcs.xml custom-file.txt"
+          rsync_excludes=""
+          for pattern in ${{ inputs.exclude-patterns }}; do
+            rsync_excludes+="--exclude='$pattern' "
+          done
+          eval rsync -av $rsync_excludes . dist/
 
           # Create a zip package
           cd dist
