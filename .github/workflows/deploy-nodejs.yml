@@ -90,7 +90,14 @@ jobs:
             if [ -f "$file" ]; then
               tar -xzf "$file"
             fi
+          # Extract any compressed artifacts
+          shopt -s nullglob
+          for file in *.tar.gz *.tgz; do
+            if [ -f "$file" ]; then
+              tar -xzf "$file"
+            fi
           done
+          shopt -u nullglob
 
           # List contents for debugging
           echo "Artifact contents:"
