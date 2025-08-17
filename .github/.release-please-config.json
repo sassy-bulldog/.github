@@ -32,10 +32,10 @@
       "component": "dotnet",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/dotnet/**/*",
-        ".github/workflows/build-dotnet.yml",
-        ".github/workflows/units-dotnet.yml"
+        "**/*",
+        "../all/**/*",
+        "../../.github/workflows/build-dotnet.yml",
+        "../../.github/workflows/units-dotnet.yml"
       ]
     },
     "standardized-workflows/python": {
@@ -47,11 +47,11 @@
       "component": "python",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/python/**/*",
-        ".github/workflows/build-python.yml",
-        ".github/workflows/deploy-python.yml",
-        ".github/workflows/units-python.yml"
+        "**/*",
+        "../all/**/*",
+        "../../.github/workflows/build-python.yml",
+        "../../.github/workflows/deploy-python.yml",
+        "../../.github/workflows/units-python.yml"
       ]
     },
     "standardized-workflows/R-lang": {
@@ -63,10 +63,10 @@
       "component": "R-lang",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/R-lang/**/*",
-        ".github/workflows/deploy-R-lang.yml",
-        ".github/workflows/units-R-lang.yml"
+        "**/*",
+        "../all/**/*",
+        "../../.github/workflows/deploy-R-lang.yml",
+        "../../.github/workflows/units-R-lang.yml"
       ]
     },
     "standardized-workflows/SSDT": {
@@ -78,11 +78,11 @@
       "component": "SSDT",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/SSDT/**/*",
-        ".github/workflows/build-dacpac.yml",
-        ".github/workflows/deploy-dacpac.yml",
-        ".github/workflows/plan-dacpac.yml"
+        "../../standardized-workflows/all/**/*",
+        "**/*",
+        "../../.github/workflows/build-dacpac.yml",
+        "../../.github/workflows/deploy-dacpac.yml",
+        "../../.github/workflows/plan-dacpac.yml"
       ]
     },
     "standardized-workflows/SSIS": {
@@ -94,11 +94,11 @@
       "component": "SSIS",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/SSIS/**/*",
-        ".github/workflows/build-ispac.yml",
-        ".github/workflows/deploy-ispac.yml",
-        ".github/workflows/units-ispac.yml"
+        "**/*",
+        "../all/**/*",
+        "../../.github/workflows/build-ispac.yml",
+        "../../.github/workflows/deploy-ispac.yml",
+        "../../.github/workflows/units-ispac.yml"
       ]
     },
     "standardized-workflows/terraform": {
@@ -110,10 +110,10 @@
       "component": "terraform",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/terraform/**/*",
-        ".github/workflows/lint-terraform.yml",
-        ".github/workflows/units-terraform.yml"
+        "**/*",
+        "../all/**/*",
+        "../../.github/workflows/lint-terraform.yml",
+        "../../.github/workflows/units-terraform.yml"
       ]
     },
     "standardized-workflows/go": {
@@ -125,11 +125,11 @@
       "component": "go",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/go/**/*",
-        ".github/workflows/build-go.yml",
-        ".github/workflows/deploy-go.yml",
-        ".github/workflows/units-go.yml"
+        "**/*",
+        "../all/**/*",
+        "../../.github/workflows/build-go.yml",
+        "../../.github/workflows/deploy-go.yml",
+        "../../.github/workflows/units-go.yml"
       ]
     },
     "standardized-workflows/java": {
@@ -141,11 +141,11 @@
       "component": "java",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/java/**/*",
-        ".github/workflows/build-java.yml",
-        ".github/workflows/deploy-java.yml",
-        ".github/workflows/units-java.yml"
+        "**/*",
+        "../all/**/*",
+        "../../.github/workflows/build-java.yml",
+        "../../.github/workflows/deploy-java.yml",
+        "../../.github/workflows/units-java.yml"
       ]
     },
     "standardized-workflows/nodejs": {
@@ -157,11 +157,11 @@
       "component": "nodejs",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/nodejs/**/*",
-        ".github/workflows/build-nodejs.yml",
-        ".github/workflows/deploy-nodejs.yml",
-        ".github/workflows/units-nodejs.yml"
+        "**/*",
+        "../all/**/*",
+        "../../.github/workflows/build-nodejs.yml",
+        "../../.github/workflows/deploy-nodejs.yml",
+        "../../.github/workflows/units-nodejs.yml"
       ]
     },
     "standardized-workflows/rust": {
@@ -173,11 +173,11 @@
       "component": "rust",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/rust/**/*",
-        ".github/workflows/build-rust.yml",
-        ".github/workflows/deploy-rust.yml",
-        ".github/workflows/units-rust.yml"
+        "**/*",
+        "../all/**/*",
+        "../../.github/workflows/build-rust.yml",
+        "../../.github/workflows/deploy-rust.yml",
+        "../../.github/workflows/units-rust.yml"
       ]
     },
     "standardized-workflows/php": {
@@ -189,11 +189,11 @@
       "component": "php",
       "include-component-in-tag": true,
       "extra-files": [
-        "standardized-workflows/all/**/*",
-        "standardized-workflows/php/**/*",
-        ".github/workflows/build-php.yml",
-        ".github/workflows/deploy-php.yml",
-        ".github/workflows/units-php.yml"
+        "**/*",
+        "../all/**/*",
+        "../../.github/workflows/build-php.yml",
+        "../../.github/workflows/deploy-php.yml",
+        "../../.github/workflows/units-php.yml"
       ]
     }
   },
