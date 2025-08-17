@@ -51,11 +51,6 @@ jobs:
 
       - name: Checkout Repo
         uses: actions/checkout@v5.0.0
-
-      - name: Use Node.js ${{ inputs.node-version }}
-        uses: actions/setup-node@v4.1.0
-        with:
-          node-version: ${{ inputs.node-version }}
       - name: Determine lockfile path
         id: set-lockfile-path
         run: |
