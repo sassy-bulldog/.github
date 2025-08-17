@@ -108,7 +108,8 @@ jobs:
           for pkg in ./artifacts/*.tar.gz; do
             if [ -f "$pkg" ]; then
               echo "Would install R package: $(basename $pkg)"
-              # R CMD INSTALL "$pkg"
+              echo "Installing R package: $(basename $pkg)"
+              R CMD INSTALL "$pkg"
             fi
           done
 
