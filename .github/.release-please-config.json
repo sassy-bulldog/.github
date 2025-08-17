@@ -16,49 +16,6 @@
       "prerelease": false,
       "include-component-in-tag": false,
       "extra-files": [
-        ".github/workflows/build-dacpac.yml",
-        ".github/workflows/build-dotnet.yml",
-        ".github/workflows/build-go.yml",
-        ".github/workflows/build-ispac.yml",
-        ".github/workflows/build-java.yml",
-        ".github/workflows/build-nodejs.yml",
-        ".github/workflows/build-php.yml",
-        ".github/workflows/build-python.yml",
-        ".github/workflows/build-rust.yml",
-        ".github/workflows/codeowners.yml",
-        ".github/workflows/create-bug.yml",
-        ".github/workflows/deploy-R-lang.yml",
-        ".github/workflows/deploy-dacpac.yml",
-        ".github/workflows/deploy-go.yml",
-        ".github/workflows/deploy-ispac.yml",
-        ".github/workflows/deploy-java.yml",
-        ".github/workflows/deploy-nodejs.yml",
-        ".github/workflows/deploy-php.yml",
-        ".github/workflows/deploy-python.yml",
-        ".github/workflows/deploy-rust.yml",
-        ".github/workflows/get-app-token.yml",
-        ".github/workflows/lint-terraform.yml",
-        ".github/workflows/list-env-variables.yml",
-        ".github/workflows/list-repos.yml",
-        ".github/workflows/matrix-environments.yml",
-        ".github/workflows/plan-dacpac.yml",
-        ".github/workflows/pr-controls.yml",
-        ".github/workflows/release.yml",
-        ".github/workflows/repo-gov-all.yml",
-        ".github/workflows/repo-gov-matrixed.yml",
-        ".github/workflows/repo-gov.yml",
-        ".github/workflows/stale.yml",
-        ".github/workflows/units-R-lang.yml",
-        ".github/workflows/units-dotnet.yml",
-        ".github/workflows/units-go.yml",
-        ".github/workflows/units-ispac.yml",
-        ".github/workflows/units-java.yml",
-        ".github/workflows/units-nodejs.yml",
-        ".github/workflows/units-php.yml",
-        ".github/workflows/units-powershell.yml",
-        ".github/workflows/units-python.yml",
-        ".github/workflows/units-rust.yml",
-        ".github/workflows/units-terraform.yml",
         "examples/shared-workflows/R-lang-build.yml",
         "examples/shared-workflows/R-lang-deploy.yml",
         "examples/shared-workflows/R-lang-unit-tests.yml",
@@ -104,16 +61,16 @@
       "component": "dotnet",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/dotnet/.pre-commit-config.yaml",
-        "repo-governance/dotnet/dependabot.yml",
-        "repo-governance/dotnet/settings.yml",
-        "repo-governance/dotnet/workflows/build.yml",
-        "repo-governance/dotnet/workflows/codeowners.yml",
-        "repo-governance/dotnet/workflows/deploy.yml",
-        "repo-governance/dotnet/workflows/pr-controls.yml",
-        "repo-governance/dotnet/workflows/release.yml",
-        "repo-governance/dotnet/workflows/stale.yml",
-        "repo-governance/dotnet/workflows/unit-tests.yml"
+        ".pre-commit-config.yaml",
+        "dependabot.yml",
+        "settings.yml",
+        "workflows/build.yml",
+        "workflows/codeowners.yml",
+        "workflows/deploy.yml",
+        "workflows/pr-controls.yml",
+        "workflows/release.yml",
+        "workflows/stale.yml",
+        "workflows/unit-tests.yml"
       ]
     },
     "repo-governance/python": {
@@ -125,16 +82,16 @@
       "component": "python",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/python/.pre-commit-config.yaml",
-        "repo-governance/python/dependabot.yml",
-        "repo-governance/python/settings.yml",
-        "repo-governance/python/workflows/build.yml",
-        "repo-governance/python/workflows/codeowners.yml",
-        "repo-governance/python/workflows/deploy.yml",
-        "repo-governance/python/workflows/pr-controls.yml",
-        "repo-governance/python/workflows/release.yml",
-        "repo-governance/python/workflows/stale.yml",
-        "repo-governance/python/workflows/unit-tests.yml"
+        ".pre-commit-config.yaml",
+        "dependabot.yml",
+        "settings.yml",
+        "workflows/build.yml",
+        "workflows/codeowners.yml",
+        "workflows/deploy.yml",
+        "workflows/pr-controls.yml",
+        "workflows/release.yml",
+        "workflows/stale.yml",
+        "workflows/unit-tests.yml"
       ]
     },
     "repo-governance/R-lang": {
@@ -146,13 +103,13 @@
       "component": "R-lang",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/R-lang/.pre-commit-config.yaml",
-        "repo-governance/R-lang/dependabot.yml",
-        "repo-governance/R-lang/settings.yml",
-        "repo-governance/R-lang/workflows/codeowners.yml",
-        "repo-governance/R-lang/workflows/pr-controls.yml",
-        "repo-governance/R-lang/workflows/release.yml",
-        "repo-governance/R-lang/workflows/stale.yml"
+        ".pre-commit-config.yaml",
+        "dependabot.yml",
+        "settings.yml",
+        "workflows/codeowners.yml",
+        "workflows/pr-controls.yml",
+        "workflows/release.yml",
+        "workflows/stale.yml"
       ]
     },
     "repo-governance/SSDT": {
@@ -164,13 +121,13 @@
       "component": "SSDT",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/SSDT/.pre-commit-config.yaml",
-        "repo-governance/SSDT/dependabot.yml",
-        "repo-governance/SSDT/settings.yml",
-        "repo-governance/SSDT/workflows/codeowners.yml",
-        "repo-governance/SSDT/workflows/pr-controls.yml",
-        "repo-governance/SSDT/workflows/release.yml",
-        "repo-governance/SSDT/workflows/stale.yml"
+        ".pre-commit-config.yaml",
+        "dependabot.yml",
+        "settings.yml",
+        "workflows/codeowners.yml",
+        "workflows/pr-controls.yml",
+        "workflows/release.yml",
+        "workflows/stale.yml"
       ]
     },
     "repo-governance/SSIS": {
@@ -182,13 +139,13 @@
       "component": "SSIS",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/SSIS/.pre-commit-config.yaml",
-        "repo-governance/SSIS/dependabot.yml",
-        "repo-governance/SSIS/settings.yml",
-        "repo-governance/SSIS/workflows/codeowners.yml",
-        "repo-governance/SSIS/workflows/pr-controls.yml",
-        "repo-governance/SSIS/workflows/release.yml",
-        "repo-governance/SSIS/workflows/stale.yml"
+  ".pre-commit-config.yaml",
+  "dependabot.yml",
+  "settings.yml",
+  "workflows/codeowners.yml",
+  "workflows/pr-controls.yml",
+  "workflows/release.yml",
+  "workflows/stale.yml"
       ]
     },
     "repo-governance/terraform": {
@@ -200,16 +157,16 @@
       "component": "terraform",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/terraform/.pre-commit-config.yaml",
-        "repo-governance/terraform/.terraform-docs.yaml",
-        "repo-governance/terraform/dependabot.yml",
-        "repo-governance/terraform/settings.yml",
-        "repo-governance/terraform/workflows/codeowners.yml",
-        "repo-governance/terraform/workflows/lint.yml",
-        "repo-governance/terraform/workflows/pr-controls.yml",
-        "repo-governance/terraform/workflows/release.yml",
-        "repo-governance/terraform/workflows/stale.yml",
-        "repo-governance/terraform/workflows/unit-tests.yml"
+        ".pre-commit-config.yaml",
+        ".terraform-docs.yaml",
+        "dependabot.yml",
+        "settings.yml",
+        "workflows/codeowners.yml",
+        "workflows/lint.yml",
+        "workflows/pr-controls.yml",
+        "workflows/release.yml",
+        "workflows/stale.yml",
+        "workflows/unit-tests.yml"
       ]
     },
     "repo-governance/go": {
@@ -221,16 +178,16 @@
       "component": "go",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/go/.pre-commit-config.yaml",
-        "repo-governance/go/dependabot.yml",
-        "repo-governance/go/settings.yml",
-        "repo-governance/go/workflows/build.yml",
-        "repo-governance/go/workflows/codeowners.yml",
-        "repo-governance/go/workflows/deploy.yml",
-        "repo-governance/go/workflows/pr-controls.yml",
-        "repo-governance/go/workflows/release.yml",
-        "repo-governance/go/workflows/stale.yml",
-        "repo-governance/go/workflows/unit-tests.yml"
+        ".pre-commit-config.yaml",
+        "dependabot.yml",
+        "settings.yml",
+        "workflows/build.yml",
+        "workflows/codeowners.yml",
+        "workflows/deploy.yml",
+        "workflows/pr-controls.yml",
+        "workflows/release.yml",
+        "workflows/stale.yml",
+        "workflows/unit-tests.yml"
       ]
     },
     "repo-governance/java": {
@@ -242,16 +199,16 @@
       "component": "java",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/java/.pre-commit-config.yaml",
-        "repo-governance/java/dependabot.yml",
-        "repo-governance/java/settings.yml",
-        "repo-governance/java/workflows/build.yml",
-        "repo-governance/java/workflows/codeowners.yml",
-        "repo-governance/java/workflows/deploy.yml",
-        "repo-governance/java/workflows/pr-controls.yml",
-        "repo-governance/java/workflows/release.yml",
-        "repo-governance/java/workflows/stale.yml",
-        "repo-governance/java/workflows/unit-tests.yml"
+        ".pre-commit-config.yaml",
+        "dependabot.yml",
+        "settings.yml",
+        "workflows/build.yml",
+        "workflows/codeowners.yml",
+        "workflows/deploy.yml",
+        "workflows/pr-controls.yml",
+        "workflows/release.yml",
+        "workflows/stale.yml",
+        "workflows/unit-tests.yml"
       ]
     },
     "repo-governance/nodejs": {
@@ -263,16 +220,16 @@
       "component": "nodejs",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/nodejs/.pre-commit-config.yaml",
-        "repo-governance/nodejs/dependabot.yml",
-        "repo-governance/nodejs/settings.yml",
-        "repo-governance/nodejs/workflows/build.yml",
-        "repo-governance/nodejs/workflows/codeowners.yml",
-        "repo-governance/nodejs/workflows/deploy.yml",
-        "repo-governance/nodejs/workflows/pr-controls.yml",
-        "repo-governance/nodejs/workflows/release.yml",
-        "repo-governance/nodejs/workflows/stale.yml",
-        "repo-governance/nodejs/workflows/unit-tests.yml"
+        ".pre-commit-config.yaml",
+        "dependabot.yml",
+        "settings.yml",
+        "workflows/build.yml",
+        "workflows/codeowners.yml",
+        "workflows/deploy.yml",
+        "workflows/pr-controls.yml",
+        "workflows/release.yml",
+        "workflows/stale.yml",
+        "workflows/unit-tests.yml"
       ]
     },
     "repo-governance/rust": {
@@ -284,16 +241,16 @@
       "component": "rust",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/rust/.pre-commit-config.yaml",
-        "repo-governance/rust/dependabot.yml",
-        "repo-governance/rust/settings.yml",
-        "repo-governance/rust/workflows/build.yml",
-        "repo-governance/rust/workflows/codeowners.yml",
-        "repo-governance/rust/workflows/deploy.yml",
-        "repo-governance/rust/workflows/pr-controls.yml",
-        "repo-governance/rust/workflows/release.yml",
-        "repo-governance/rust/workflows/stale.yml",
-        "repo-governance/rust/workflows/unit-tests.yml"
+        ".pre-commit-config.yaml",
+        "dependabot.yml",
+        "settings.yml",
+        "workflows/build.yml",
+        "workflows/codeowners.yml",
+        "workflows/deploy.yml",
+        "workflows/pr-controls.yml",
+        "workflows/release.yml",
+        "workflows/stale.yml",
+        "workflows/unit-tests.yml"
       ]
     },
     "repo-governance/php": {
@@ -305,16 +262,16 @@
       "component": "php",
       "include-component-in-tag": true,
       "extra-files": [
-        "repo-governance/php/.pre-commit-config.yaml",
-        "repo-governance/php/dependabot.yml",
-        "repo-governance/php/settings.yml",
-        "repo-governance/php/workflows/build.yml",
-        "repo-governance/php/workflows/codeowners.yml",
-        "repo-governance/php/workflows/deploy.yml",
-        "repo-governance/php/workflows/pr-controls.yml",
-        "repo-governance/php/workflows/release.yml",
-        "repo-governance/php/workflows/stale.yml",
-        "repo-governance/php/workflows/unit-tests.yml"
+  ".pre-commit-config.yaml",
+  "dependabot.yml",
+  "settings.yml",
+  "workflows/build.yml",
+  "workflows/codeowners.yml",
+  "workflows/deploy.yml",
+  "workflows/pr-controls.yml",
+  "workflows/release.yml",
+  "workflows/stale.yml",
+  "workflows/unit-tests.yml"
       ]
     }
   },
