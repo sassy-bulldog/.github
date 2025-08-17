@@ -35,7 +35,6 @@
         "standardized-workflows/all/**/*",
         "standardized-workflows/dotnet/**/*",
         ".github/workflows/build-dotnet.yml",
-        ".github/workflows/deploy-dotnet.yml",
         ".github/workflows/units-dotnet.yml"
       ]
     },
@@ -66,7 +65,6 @@
       "extra-files": [
         "standardized-workflows/all/**/*",
         "standardized-workflows/R-lang/**/*",
-        ".github/workflows/build-R-lang.yml",
         ".github/workflows/deploy-R-lang.yml",
         ".github/workflows/units-R-lang.yml"
       ]
@@ -82,9 +80,9 @@
       "extra-files": [
         "standardized-workflows/all/**/*",
         "standardized-workflows/SSDT/**/*",
-        ".github/workflows/build-SSDT.yml",
-        ".github/workflows/deploy-SSDT.yml",
-        ".github/workflows/units-SSDT.yml"
+        ".github/workflows/build-dacpac.yml",
+        ".github/workflows/deploy-dacpac.yml",
+        ".github/workflows/plan-dacpac.yml"
       ]
     },
     "standardized-workflows/SSIS": {
@@ -98,9 +96,9 @@
       "extra-files": [
         "standardized-workflows/all/**/*",
         "standardized-workflows/SSIS/**/*",
-        ".github/workflows/build-SSIS.yml",
-        ".github/workflows/deploy-SSIS.yml",
-        ".github/workflows/units-SSIS.yml"
+        ".github/workflows/build-ispac.yml",
+        ".github/workflows/deploy-ispac.yml",
+        ".github/workflows/units-ispac.yml"
       ]
     },
     "standardized-workflows/terraform": {
@@ -114,8 +112,7 @@
       "extra-files": [
         "standardized-workflows/all/**/*",
         "standardized-workflows/terraform/**/*",
-        ".github/workflows/build-terraform.yml",
-        ".github/workflows/deploy-terraform.yml",
+        ".github/workflows/lint-terraform.yml",
         ".github/workflows/units-terraform.yml"
       ]
     },
