@@ -124,42 +124,20 @@ jobs:
         run: |
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for Python application"
-            cat > Dockerfile << 'EOF'
-            PYTHON_VERSION="${{ inputs.python-version }}"
-            PYTHON_VERSION="${{ inputs.python-version }}"
-            cat > Dockerfile <<EOF
-          FROM python:${PYTHON_VERSION}-slim
-
-          # Set environment variables
-          ENV PYTHONDONTWRITEBYTECODE=1
-          ENV PYTHONUNBUFFERED=1
-
-          # Install system dependencies
-          RUN apt-get update && apt-get install -y \
-              gcc \
-              && rm -rf /var/lib/apt/lists/*
-
-          # Set work directory
-          WORKDIR /app
-
-          # Install Python dependencies
-          COPY artifacts/requirements.txt* ./
-          RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
-
-          # Copy application
-          COPY artifacts/ .
-
-          # Install built packages
-          RUN find . -name "*.whl" -exec pip install {} \;
-
-          # Create non-root user
-          RUN groupadd -r appuser && useradd -r -g appuser appuser
-          RUN chown -R appuser:appuser /app
-          USER appuser
-
-          EXPOSE 8000
-          CMD ["python", "-m", "app"]
-          EOF
+            echo "FROM python:${{ inputs.python-version }}-slim" > Dockerfile
+            echo "ENV PYTHONDONTWRITEBYTECODE=1" >> Dockerfile
+            echo "ENV PYTHONUNBUFFERED=1" >> Dockerfile
+            echo "RUN apt-get update && apt-get install -y gcc && rm -rf /var/lib/apt/lists/*" >> Dockerfile
+            echo "WORKDIR /app" >> Dockerfile
+            echo "COPY artifacts/requirements.txt* ./" >> Dockerfile
+            echo 'RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi' >> Dockerfile
+            echo "COPY artifacts/ ." >> Dockerfile
+            echo 'RUN find . -name "*.whl" -exec pip install {} \;' >> Dockerfile
+            echo "RUN groupadd -r appuser && useradd -r -g appuser appuser" >> Dockerfile
+            echo "RUN chown -R appuser:appuser /app" >> Dockerfile
+            echo "USER appuser" >> Dockerfile
+            echo "EXPOSE 8000" >> Dockerfile
+            echo 'CMD ["python", "-m", "app"]' >> Dockerfile
           fi
 
           docker build -t ${{ inputs.registry-url }}/python-app:${{ inputs.version }} .
