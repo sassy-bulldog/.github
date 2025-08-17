@@ -41,7 +41,6 @@ on:
         default: '["amd64", "arm64"]'
       version-package:
         description: Go package path for version variable (e.g., main, internal/version)
-        required: true
         required: false
         type: string
         default: main
