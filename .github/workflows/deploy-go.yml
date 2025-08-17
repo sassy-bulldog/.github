@@ -43,7 +43,7 @@ on:
         description: Go version for serverless deployments
         type: string
         required: false
-        default: '1.22'
+        default: '1.23'
       image-name:
         description: Docker image name (e.g., my-app)
         type: string
