@@ -33,7 +33,6 @@
       "include-component-in-tag": true,
       "extra-files": [
         "**/*",
-        "../all/**/*",
         "../../.github/workflows/build-dotnet.yml",
         "../../.github/workflows/units-dotnet.yml"
       ]
@@ -48,7 +47,6 @@
       "include-component-in-tag": true,
       "extra-files": [
         "**/*",
-        "../all/**/*",
         "../../.github/workflows/build-python.yml",
         "../../.github/workflows/deploy-python.yml",
         "../../.github/workflows/units-python.yml"
@@ -64,7 +62,6 @@
       "include-component-in-tag": true,
       "extra-files": [
         "**/*",
-        "../all/**/*",
         "../../.github/workflows/deploy-R-lang.yml",
         "../../.github/workflows/units-R-lang.yml"
       ]
@@ -78,7 +75,6 @@
       "component": "SSDT",
       "include-component-in-tag": true,
       "extra-files": [
-        "../../standardized-workflows/all/**/*",
         "**/*",
         "../../.github/workflows/build-dacpac.yml",
         "../../.github/workflows/deploy-dacpac.yml",
@@ -95,7 +91,6 @@
       "include-component-in-tag": true,
       "extra-files": [
         "**/*",
-        "../all/**/*",
         "../../.github/workflows/build-ispac.yml",
         "../../.github/workflows/deploy-ispac.yml",
         "../../.github/workflows/units-ispac.yml"
@@ -111,7 +106,6 @@
       "include-component-in-tag": true,
       "extra-files": [
         "**/*",
-        "../all/**/*",
         "../../.github/workflows/lint-terraform.yml",
         "../../.github/workflows/units-terraform.yml"
       ]
@@ -126,7 +120,6 @@
       "include-component-in-tag": true,
       "extra-files": [
         "**/*",
-        "../all/**/*",
         "../../.github/workflows/build-go.yml",
         "../../.github/workflows/deploy-go.yml",
         "../../.github/workflows/units-go.yml"
@@ -142,7 +135,6 @@
       "include-component-in-tag": true,
       "extra-files": [
         "**/*",
-        "../all/**/*",
         "../../.github/workflows/build-java.yml",
         "../../.github/workflows/deploy-java.yml",
         "../../.github/workflows/units-java.yml"
@@ -158,7 +150,6 @@
       "include-component-in-tag": true,
       "extra-files": [
         "**/*",
-        "../all/**/*",
         "../../.github/workflows/build-nodejs.yml",
         "../../.github/workflows/deploy-nodejs.yml",
         "../../.github/workflows/units-nodejs.yml"
@@ -174,7 +165,6 @@
       "include-component-in-tag": true,
       "extra-files": [
         "**/*",
-        "../all/**/*",
         "../../.github/workflows/build-rust.yml",
         "../../.github/workflows/deploy-rust.yml",
         "../../.github/workflows/units-rust.yml"
@@ -190,7 +180,6 @@
       "include-component-in-tag": true,
       "extra-files": [
         "**/*",
-        "../all/**/*",
         "../../.github/workflows/build-php.yml",
         "../../.github/workflows/deploy-php.yml",
         "../../.github/workflows/units-php.yml"
