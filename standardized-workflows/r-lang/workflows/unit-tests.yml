@@ -1,4 +1,4 @@
-# x-release-please-component-version r-lang
+# x-release-please-component-version R-lang
 # Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
 name: Unit Tests
 
@@ -21,5 +21,5 @@ on:
 jobs:
   test:
     name: R
-    uses: sassy-bulldog/.github/.github/workflows/units-r-lang.yml@v0.2.2 # x-release-please-component-version r-lang
+    uses: sassy-bulldog/.github/.github/workflows/units-r-lang.yml@v0.2.2 # x-release-please-component-version R-lang
     secrets: inherit

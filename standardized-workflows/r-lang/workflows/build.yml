@@ -1,4 +1,4 @@
-# x-release-please-component-version r-lang
+# x-release-please-component-version R-lang
 name: Build
 
 on:
@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: R Build
-    uses: sassy-bulldog/.github/.github/workflows/build-r.yml@R-v1.0.0 # x-release-please-component-version r-lang
+    uses: sassy-bulldog/.github/.github/workflows/build-r.yml@R-v1.0.0 # x-release-please-component-version R-lang
     with:
       runs-on: '["ubuntu-latest"]'
       artifact-name: 'r-build-artifacts'

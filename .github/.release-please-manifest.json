@@ -1,14 +1,14 @@
 {
   ".": "0.2.2",
-  "standardized-workflows/dotnet": "0.0.0",
-  "standardized-workflows/python": "0.0.0",
-  "standardized-workflows/r-lang": "0.0.0",
-  "standardized-workflows/ssdt": "0.0.0",
-  "standardized-workflows/ssis": "0.0.0",
-  "standardized-workflows/terraform": "0.0.0",
-  "standardized-workflows/go": "0.0.0",
-  "standardized-workflows/java": "0.0.0",
-  "standardized-workflows/nodejs": "0.0.0",
-  "standardized-workflows/rust": "0.0.0",
-  "standardized-workflows/php": "0.0.0"
+  "standardized-workflows/dotnet": "0.0.1",
+  "standardized-workflows/python": "0.0.1",
+  "standardized-workflows/r-lang": "0.0.1",
+  "standardized-workflows/ssdt": "0.0.1",
+  "standardized-workflows/ssis": "0.0.1",
+  "standardized-workflows/terraform": "0.0.1",
+  "standardized-workflows/go": "0.0.1",
+  "standardized-workflows/java": "0.0.1",
+  "standardized-workflows/nodejs": "0.0.1",
+  "standardized-workflows/rust": "0.0.1",
+  "standardized-workflows/php": "0.0.1"
 }
