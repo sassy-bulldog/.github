@@ -86,8 +86,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-mingw-w64-x86-64
 
-      - name: Update version in Cargo.toml
-        run: |
       - name: Install cargo-edit
         run: cargo install cargo-edit
         working-directory: "${{ inputs.working-directory }}"
@@ -113,8 +111,8 @@ jobs:
           else
             cp target/${{ matrix.target }}/debug/* dist/${{ matrix.target }}/ 2>/dev/null || true
           fi
-          # Remove non-executable files
           # Remove non-executable files, but always keep .exe files (for Windows)
+          # This will delete all non-executable files except those ending with .exe
           find dist/${{ matrix.target }} -type f ! -executable ! -name '*.exe' -delete 2>/dev/null || true
         working-directory: "${{ inputs.working-directory }}"
 
