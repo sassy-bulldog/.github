@@ -1,0 +1,87 @@
+name: 'Unit Tests: Rust'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
+      rust-version:
+        description: Rust version to use for testing
+        required: false
+        type: string
+        default: 'stable'
+      working-directory:
+        description: 'Directory to use for running the unit tests'
+        type: string
+        required: false
+        default: ./
+
+jobs:
+  test:
+    name: Testing Rust ${{ matrix.rust-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ${{ fromJSON(inputs.runs-on) }}
+        rust-version: ["${{ inputs.rust-version }}"]
+      fail-fast: false
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Install Rust ${{ matrix.rust-version }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.rust-version }}
+          components: rustfmt, clippy
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo index
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v4.1.2
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Run clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Run tests
+        run: cargo test --verbose
+        working-directory: "${{ inputs.working-directory }}"
+
+  createBug:
+    name: Create Bug
+    needs: [test]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ inputs.runs-on }}
+      title: 'Rust Tests Failed'
+      job: 'test'
+      status: 'failure'

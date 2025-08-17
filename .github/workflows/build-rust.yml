@@ -1,0 +1,168 @@
+name: 'Build Rust'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for storing the artifacts and running the build'
+        type: string
+        required: false
+        default: ./
+      rust-version:
+        description: Rust version to use for building
+        required: false
+        type: string
+        default: 'stable'
+      version:
+        description: Semantic version of current build
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      artifact-name:
+        description: Name of the artifact to upload to the calling workflow
+        type: string
+        required: true
+      target-triple:
+        description: Target triples for cross-compilation
+        type: string
+        required: false
+        default: '["x86_64-unknown-linux-gnu"]'
+      profile:
+        description: Cargo build profile
+        type: string
+        required: false
+        default: 'release'
+
+jobs:
+  build:
+    name: Build Rust ${{ matrix.target }}
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    strategy:
+      matrix:
+        target: ${{ fromJSON(inputs.target-triple) }}
+      fail-fast: false
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Install Rust ${{ inputs.rust-version }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ inputs.rust-version }}
+          targets: ${{ matrix.target }}
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo index
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v4.1.2
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo bin
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.cargo/bin
+          key: ${{ runner.os }}-cargo-bin-cargo-edit-v1
+
+      - name: Install cross-compilation tools
+        if: matrix.target == 'x86_64-pc-windows-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-mingw-w64-x86-64
+
+      - name: Update version in Cargo.toml
+        run: |
+          if cargo set-version --help > /dev/null 2>&1; then
+            cargo set-version "${{ inputs.version }}"
+          else
+            cargo install --locked cargo-edit
+            cargo set-version "${{ inputs.version }}"
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Build for target
+        run: |
+          if [ "${{ inputs.profile }}" = "release" ]; then
+            cargo build --release --target ${{ matrix.target }}
+          else
+            cargo build --target ${{ matrix.target }}
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Prepare artifacts
+        run: |
+          set -e
+
+          mkdir -p dist/${{ matrix.target }}
+
+          # Determine the build profile directory
+          if [ "${{ inputs.profile }}" = "release" ]; then
+            PROFILE_DIR=release
+          else
+            PROFILE_DIR=debug
+          fi
+
+          ARTIFACT_DIR="target/${{ matrix.target }}/${PROFILE_DIR}"
+
+          # Find all files that are either:
+          #   - Executable (Unix, regardless of extension)
+          #   - Have a .exe extension (Windows)
+          # This approach does NOT exclude files with dots in their names.
+          files_found=()
+          if [ -d "$ARTIFACT_DIR" ]; then
+            while IFS= read -r -d '' file; do
+              files_found+=("$file")
+            done < <(find "$ARTIFACT_DIR" -maxdepth 1 -type f \( -executable -o -iname '*.exe' \) -print0)
+          fi
+
+          if [ ${#files_found[@]} -eq 0 ]; then
+            echo "::warning::No build artifacts found in $ARTIFACT_DIR"
+          else
+            for file in "${files_found[@]}"; do
+              cp "$file" "dist/${{ matrix.target }}/"
+            done
+          fi
+
+          echo "Copied files to dist/${{ matrix.target }}:"
+          ls -la "dist/${{ matrix.target }}"
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{ inputs.artifact-name }}-${{ matrix.target }}
+          path: ${{ inputs.working-directory }}/dist/${{ matrix.target }}/*
+          retention-days: 5
+
+  createBug:
+    name: Create Bug
+    needs: [build]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ inputs.runs-on }}
+      title: 'Rust Build Failed'
+      job: 'build'
+      status: 'failure'
