@@ -126,7 +126,16 @@ jobs:
 
           # Find only .exe files (Windows) or files with no extension (Unix)
           if [ -d "target/${{ matrix.target }}/${PROFILE_DIR}/" ]; then
-            files_found=$(find target/${{ matrix.target }}/${PROFILE_DIR}/ -maxdepth 1 -type f \( -name '*.exe' -o \( -perm /u+x ! -name '*.*' \) \))
+            files_found=""
+            for file in target/${{ matrix.target }}/${PROFILE_DIR}/*; do
+              # Skip if no files matched
+              [ -e "$file" ] || continue
+              if [ "${file##*.}" = "exe" ]; then
+                files_found="$files_found $file"
+              elif [ -f "$file" ] && [ -x "$file" ] && [[ "$file" != *.* ]]; then
+                files_found="$files_found $file"
+              fi
+            done
           else
             files_found=""
           fi
