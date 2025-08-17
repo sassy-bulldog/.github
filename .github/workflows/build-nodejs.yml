@@ -57,7 +57,7 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
           cache: ${{ inputs.package-manager }}
-          cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+          cache-dependency-path: ${{ inputs.working-directory }}/${{ inputs.package-manager == 'npm' && 'package-lock.json' || inputs.package-manager == 'yarn' && 'yarn.lock' || inputs.package-manager == 'pnpm' && 'pnpm-lock.yaml' }}
 
       - name: Setup pnpm
         if: inputs.package-manager == 'pnpm'
