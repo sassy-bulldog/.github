@@ -15,7 +15,7 @@ on:
         description: Go version to use for testing
         required: false
         type: string
-        default: '1.21'
+        default: '1.23'
       working-directory:
         description: 'Directory to use for running the unit tests'
         type: string
