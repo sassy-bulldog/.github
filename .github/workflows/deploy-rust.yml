@@ -42,7 +42,6 @@ on:
       image-name:
         description: Docker image name for container builds
         type: string
-        required: false
         required: true
 
     secrets:
