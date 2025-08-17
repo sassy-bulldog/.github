@@ -1,4 +1,3 @@
-# v0.2.2 # x-release-please-version
 ---
 # TODO: Make this a pre-commit action
 name: 'Lint: Terraform'
