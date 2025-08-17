@@ -1,0 +1,18 @@
+# x-release-please-component-version terraform
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Terraform Build
+    uses: sassy-bulldog/.github/.github/workflows/build-terraform.yml@terraform-v1.0.0 # x-release-please-component-version terraform
+    with:
+      runs-on: '["ubuntu-latest"]'
+      artifact-name: 'terraform-build-artifacts'
+      version: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1-alpha' }}

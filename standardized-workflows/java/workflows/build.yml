@@ -1,3 +1,4 @@
+# x-release-please-component-version java
 name: Build
 
 on:
@@ -10,7 +11,7 @@ on:
 jobs:
   build:
     name: Java Build
-    uses: sassy-bulldog/.github/.github/workflows/build-java.yml@v3.6.1 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/build-java.yml@v0.2.2 # x-release-please-component-version java
     with:
       runs-on: '["ubuntu-latest"]'
       artifact-name: 'java-build-artifacts'

@@ -1,3 +1,4 @@
+# x-release-please-component-version java
 # Name as it appears on the Actions tab of GitHub (for current repo; this gets ignored if called from another repo)
 name: Unit Tests
 
@@ -20,5 +21,5 @@ on:
 jobs:
   test:
     name: Java
-    uses: sassy-bulldog/.github/.github/workflows/units-java.yml@v0.2.2 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/units-java.yml@v0.2.2 # x-release-please-component-version java
     secrets: inherit

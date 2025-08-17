@@ -1,3 +1,4 @@
+# x-release-please-component-version terraform
 # Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
 name: Lint Code
 
@@ -23,5 +24,5 @@ permissions:
 jobs:
   run-terraform-linters:
     name: terraform
-    uses: sassy-bulldog/.github/.github/workflows/lint-terraform.yml@v0.2.2 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/lint-terraform.yml@v0.2.2 # x-release-please-component-version terraform
     secrets: inherit
