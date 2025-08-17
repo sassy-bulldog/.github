@@ -115,7 +115,10 @@ jobs:
           mv *.tgz dist/ || true
           # Also copy build output if it exists
           cp -r build dist/ 2>/dev/null || true
-          cp -r dist/build dist/output 2>/dev/null || true
+          if [ -d build ]; then
+            cp -r build dist/
+            cp -r dist/build dist/output
+          fi
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Upload artifacts
