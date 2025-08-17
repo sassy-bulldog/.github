@@ -1,0 +1,17 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: PHP Build
+    uses: sassy-bulldog/.github/.github/workflows/build-php.yml@v3.6.1 # x-release-please-version
+    with:
+      runs-on: '["ubuntu-latest"]'
+      artifact-name: 'php-build-artifacts'
+      version: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1-alpha' }}

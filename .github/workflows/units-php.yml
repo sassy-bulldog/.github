@@ -1,0 +1,91 @@
+name: 'Unit Tests: PHP'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
+      php-version:
+        description: PHP versions to use for testing
+        required: false
+        type: string
+        default: '["8.1", "8.2", "8.3"]'
+      working-directory:
+        description: 'Directory to use for running the unit tests'
+        type: string
+        required: false
+        default: ./
+
+jobs:
+  test:
+    name: Testing PHP ${{ matrix.php-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ${{ fromJSON(inputs.runs-on) }}
+        php-version: ${{ fromJson(inputs.php-version) }}
+      fail-fast: false
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          coverage: xdebug
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4.1.2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ matrix.php-version }}-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Run PHP CS Fixer
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+        working-directory: "${{ inputs.working-directory }}"
+        continue-on-error: true
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --error-format=github
+        working-directory: "${{ inputs.working-directory }}"
+        continue-on-error: true
+
+      - name: Run tests
+        run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.6.0
+        if: matrix.php-version == '8.2' && matrix.os == 'ubuntu-latest'
+        with:
+          file: ${{ inputs.working-directory }}/coverage.xml
+
+  createBug:
+    name: Create Bug
+    needs: [test]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ inputs.runs-on }}
+      title: 'PHP Tests Failed'
+      job: 'test'
+      status: 'failure'
