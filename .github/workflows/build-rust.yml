@@ -33,7 +33,7 @@ on:
         description: Target triples for cross-compilation
         type: string
         required: false
-        default: '["x86_64-unknown-linux-gnu", "x86_64-pc-windows-gnu"]'
+        default: '["x86_64-unknown-linux-gnu"]'
       profile:
         description: Cargo build profile
         type: string
