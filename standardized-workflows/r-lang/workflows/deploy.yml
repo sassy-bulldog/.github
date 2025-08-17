@@ -1,3 +1,4 @@
+# x-release-please-component-version r-lang
 name: Deploy
 
 on:
@@ -26,7 +27,7 @@ on:
 jobs:
   deploy:
     name: R Deploy
-    uses: sassy-bulldog/.github/.github/workflows/deploy-r-lang.yml@v3.6.1 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/deploy-r-lang.yml@v0.2.2 # x-release-please-component-version r-lang
     with:
       runs-on: '["ubuntu-latest"]'
       environment: ${{ inputs.environment }}

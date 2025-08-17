@@ -1,4 +1,4 @@
-# x-release-please-component-version rust
+# x-release-please-component-version python
 name: Deploy
 
 on:
@@ -23,7 +23,6 @@ on:
           - docker
           - k8s
           - serverless
-          - crates
       version:
         description: 'Semantic version to deploy'
         required: false
@@ -32,11 +31,11 @@ on:
 
 jobs:
   deploy:
-    name: Rust Deploy
-    uses: sassy-bulldog/.github/.github/workflows/deploy-rust.yml@v0.2.2 # x-release-please-component-version rust
+    name: Python Deploy
+    uses: sassy-bulldog/.github/.github/workflows/deploy-python.yml@python-v1.0.0 # x-release-please-component-version python
     with:
       runs-on: '["ubuntu-latest"]'
-      environment: ${{ inputs.environment }}
-      artifact-name: 'rust-build-artifacts'
-      deployment-target: ${{ inputs.deployment-target }}
-      version: ${{ inputs.version }}
+      environment: ${{ github.event.inputs.environment }}
+      artifact-name: 'python-build-artifacts'
+      version: ${{ github.event.inputs.version }}
+      deployment-target: ${{ github.event.inputs.deployment-target }}

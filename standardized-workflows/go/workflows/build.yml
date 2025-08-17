@@ -1,3 +1,4 @@
+# x-release-please-component-version go
 name: Build
 
 on:
@@ -10,7 +11,7 @@ on:
 jobs:
   build:
     name: Go Build
-    uses: sassy-bulldog/.github/.github/workflows/build-go.yml@v3.6.1 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/build-go.yml@v0.2.2 # x-release-please-component-version go
     with:
       runs-on: '["ubuntu-latest"]'
       artifact-name: 'go-build-artifacts'

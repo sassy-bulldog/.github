@@ -1,0 +1,18 @@
+# x-release-please-component-version dotnet
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Dotnet Build
+    uses: sassy-bulldog/.github/.github/workflows/build-dotnet.yml@dotnet-v1.0.0 # x-release-please-component-version dotnet
+    with:
+      runs-on: '["ubuntu-latest"]'
+      artifact-name: 'dotnet-build-artifacts'
+      version: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1-alpha' }}
