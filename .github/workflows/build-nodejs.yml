@@ -56,7 +56,6 @@ jobs:
         uses: actions/setup-node@v4.1.0
         with:
           node-version: ${{ inputs.node-version }}
-          cache: ${{ inputs.package-manager }}
       - name: Determine lockfile path
         id: set-lockfile-path
         run: |
