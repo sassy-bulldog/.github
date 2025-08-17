@@ -1,0 +1,81 @@
+name: 'Unit Tests: Java'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
+      java-version:
+        description: Java version to use for testing
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        description: Java distribution to use
+        required: false
+        type: string
+        default: 'temurin'
+      working-directory:
+        description: 'Directory to use for running the unit tests'
+        type: string
+        required: false
+        default: ./
+
+jobs:
+  test:
+    name: Testing Java ${{ matrix.java-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ${{ fromJSON(inputs.runs-on) }}
+        java-version: ${{ fromJson(format('["{0}"]', inputs.java-version)) }}
+      fail-fast: false
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v4.4.0
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: ${{ inputs.java-distribution }}
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Run tests with Maven
+        run: mvn clean test
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Generate test report
+        uses: dorny/test-reporter@v1.9.1
+        if: success() || failure()
+        with:
+          name: Maven Tests
+          path: '${{ inputs.working-directory }}/target/surefire-reports/*.xml'
+          reporter: java-junit
+
+  createBug:
+    name: Create Bug
+    needs: [test]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Java Tests Failed'
+      job: 'test'
+      status: 'failure'
