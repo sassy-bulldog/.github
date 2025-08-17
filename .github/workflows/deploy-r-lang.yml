@@ -182,7 +182,7 @@ jobs:
           # Test package loading
           for pkg in ./artifacts/*.tar.gz; do
             if [ -f "$pkg" ]; then
-              pkg_name=$(basename "$pkg" .tar.gz | sed 's/_[0-9].*//')
+              pkg_name=$(basename "$pkg" .tar.gz | awk -F'_' 'NF>1{NF--; print $0}' OFS="_")
               echo "Testing package: $pkg_name"
               Rscript -e "library($pkg_name)"
             fi
