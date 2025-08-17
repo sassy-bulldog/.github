@@ -77,13 +77,10 @@ jobs:
       - name: Make binaries executable
         if: inputs.deployment-target == 'binary'
         run: |
-          find ./artifacts -type f -name "*.exe" -o -type f -executable | while read binary; do
-            chmod +x "$binary" 2>/dev/null || true
-          done
           for binary in ./artifacts/*; do
             if [ -f "$binary" ] && ([ -x "$binary" ] || [[ "$binary" == *.exe ]]); then
               chmod +x "$binary" 2>/dev/null || true
-              echo "Binary: $(basename $binary)"
+              echo "Binary: $(basename "$binary")"
             fi
           done
           ls -la ./artifacts/
