@@ -42,7 +42,7 @@ on:
       image-name:
         description: Docker image name for container builds
         type: string
-        required: true
+        required: false
 
     secrets:
       DEPLOY_TOKEN:
@@ -138,6 +138,11 @@ jobs:
       - name: Build and push Docker image
         if: inputs.deployment-target == 'docker'
         run: |
+          if [ -z "${{ inputs.image-name }}" ]; then
+            echo "ERROR: image-name input is required for Docker deployments."
+            exit 1
+          fi
+
           if [ ! -f Dockerfile ]; then
             echo "ERROR: No Dockerfile found in $(pwd)."
             echo ""

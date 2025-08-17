@@ -97,9 +97,7 @@ jobs:
           if cargo set-version --help > /dev/null 2>&1; then
             cargo set-version "${{ inputs.version }}"
           else
-            if ! command -v cargo-set-version > /dev/null 2>&1; then
-              cargo install --locked cargo-edit
-            fi
+            cargo install --locked cargo-edit
             cargo set-version "${{ inputs.version }}"
           fi
         working-directory: "${{ inputs.working-directory }}"
