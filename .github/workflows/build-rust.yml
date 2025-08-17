@@ -113,7 +113,13 @@ jobs:
           fi
           # Remove non-executable files, but always keep .exe files (for Windows)
           # This will delete all non-executable files except those ending with .exe
-          find dist/${{ matrix.target }} -type f ! -executable ! -name '*.exe' -delete 2>/dev/null || true
+            find target/${{ matrix.target }}/release/ -maxdepth 1 -type f \( -executable -o -name '*.exe' \) -exec cp {} dist/${{ matrix.target }}/ \; 2>/dev/null || true
+          else
+            find target/${{ matrix.target }}/debug/ -maxdepth 1 -type f \( -executable -o -name '*.exe' \) -exec cp {} dist/${{ matrix.target }}/ \; 2>/dev/null || true
+          fi
+          # No need to remove non-executable files, as only binaries are copied
+          :
+          :
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Upload artifacts
