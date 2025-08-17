@@ -164,7 +164,6 @@ jobs:
 
           EXPOSE 80
             echo "Copying Dockerfile template for PHP application"
-            cp .github/docker/Dockerfile .
           fi
 
           docker build -t ${{ inputs.registry-url }}/php-app:${{ inputs.version }} .
