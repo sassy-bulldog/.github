@@ -163,7 +163,11 @@ jobs:
             IMAGE_TAG="${{ inputs.image-name }}:${{ inputs.version }}"
           fi
           docker build -t "$IMAGE_TAG" .
-          docker push "$IMAGE_TAG"
+          if [ -n "${{ inputs.registry-url }}" ]; then
+            docker push "$IMAGE_TAG"
+          else
+            echo "No registry-url provided, skipping docker push."
+          fi
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Deploy to Kubernetes
