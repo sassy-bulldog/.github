@@ -39,6 +39,10 @@ on:
         type: string
         required: false
         default: '["amd64", "arm64"]'
+      version-package:
+        description: Go package path for version variable (e.g., main, internal/version)
+        required: true
+        type: string
 
 jobs:
   build:
@@ -75,7 +79,7 @@ jobs:
           if [ "${{ matrix.goos }}" = "windows" ]; then
             binary_name="${binary_name}.exe"
           fi
-          go build -v -ldflags="-X main.version=${{ inputs.version }}" -o "${binary_name}" .
+          go build -v -ldflags="-X ${{ inputs.version-package }}.version=${{ inputs.version }}" -o "${binary_name}" .
           mkdir -p dist/${{ matrix.goos }}_${{ matrix.goarch }}
           mv "${binary_name}" dist/${{ matrix.goos }}_${{ matrix.goarch }}/
         working-directory: "${{ inputs.working-directory }}"

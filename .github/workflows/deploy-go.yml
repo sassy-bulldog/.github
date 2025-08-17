@@ -39,6 +39,11 @@ on:
         type: string
         required: false
         default: 'binary'
+      image-name:
+        description: Docker image name (e.g., my-app)
+        type: string
+        required: false
+        default: ${{ github.event.repository.name }}
 
     secrets:
       DEPLOY_TOKEN:
@@ -115,8 +120,8 @@ jobs:
           EOF
           fi
 
-          docker build -t ${{ inputs.registry-url }}/go-app:${{ inputs.version }} .
-          docker push ${{ inputs.registry-url }}/go-app:${{ inputs.version }}
+          docker build -t ${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }} .
+          docker push ${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }}
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Deploy to Kubernetes
