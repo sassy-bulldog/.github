@@ -1,5 +1,8 @@
 name: List Repos Matching a Name Pattern
 
+permissions:
+  contents: read
+
 # Controls when the workflow will run
 on:
   workflow_call:

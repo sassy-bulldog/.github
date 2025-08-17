@@ -1,5 +1,8 @@
 name: Get GitHub App Token
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
