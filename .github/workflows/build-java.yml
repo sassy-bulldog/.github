@@ -98,7 +98,7 @@ jobs:
         if: inputs.build-tool == 'gradle'
         run: |
           mkdir -p dist
-          cp build/libs/*.jar dist/ || true
+          find build/libs -name '*.jar' -exec cp {} dist/ \;
           find target -name '*.jar' -exec cp {} dist/ \;
           find target -name '*.war' -exec cp {} dist/ \;
         working-directory: "${{ inputs.working-directory }}"
