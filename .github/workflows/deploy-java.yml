@@ -1,0 +1,183 @@
+name: 'Deploy Java'
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for deployment'
+        type: string
+        required: false
+        default: ./
+      environment:
+        description: Environment to deploy to (dev, staging, prod)
+        type: string
+        required: true
+      artifact-name:
+        description: Name of the artifact to download from build
+        type: string
+        required: true
+      version:
+        description: Semantic version being deployed
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      java-version:
+        description: "Java version for deployment (allowed: 11, 17, 21)"
+        type: string
+        required: false
+        default: '17'
+      registry-url:
+        description: Container registry URL for Docker deployments
+        type: string
+        required: false
+        default: ''
+      deployment-target:
+        description: Deployment target (jar, war, docker, k8s, serverless)
+        type: string
+        required: false
+        default: 'jar'
+
+    secrets:
+      DEPLOY_TOKEN:
+        description: Token for deployment authentication
+        required: false
+      REGISTRY_PASSWORD:
+        description: Container registry password
+        required: false
+
+jobs:
+  deploy:
+    name: Deploy Java application
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4.4.0
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: 'temurin'
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ./artifacts
+
+      - name: Deploy JAR files
+        if: inputs.deployment-target == 'jar'
+        run: |
+          echo "Deploying JAR files to ${{ inputs.environment }}"
+          for jar in ./artifacts/*.jar; do
+            if [ -f "$jar" ]; then
+              echo "Would deploy: $(basename $jar) to ${{ inputs.environment }}"
+              # Add your JAR deployment logic here
+              # Examples: scp to application servers, upload to artifact repository
+            fi
+          done
+
+      - name: Deploy WAR files
+        if: inputs.deployment-target == 'war'
+        run: |
+          echo "Deploying WAR files to ${{ inputs.environment }}"
+          for war in ./artifacts/*.war; do
+            if [ -f "$war" ]; then
+              echo "Would deploy: $(basename $war) to application server"
+              # Add your WAR deployment logic here
+              # Examples: Tomcat manager deployment, copy to webapps directory
+            fi
+          done
+
+      - name: Log in to Container Registry
+        if: inputs.deployment-target == 'docker' && inputs.registry-url != ''
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ inputs.registry-url }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Validate Java version
+        id: validate-java-version
+        run: |
+          case "${{ inputs.java-version }}" in
+            11|17|21) echo "Java version ${{ inputs.java-version }} is allowed." ;;
+            *) echo "Error: java-version must be one of: 11, 17, 21"; exit 1 ;;
+          esac
+
+      - name: Build and push Docker image
+        if: inputs.deployment-target == 'docker'
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "Creating minimal Dockerfile for Java application"
+            cat > Dockerfile << 'EOF'
+          FROM openjdk:${{ inputs.java-version }}-jre-slim
+          WORKDIR /app
+          COPY artifacts/*.jar app.jar
+          EXPOSE 8080
+          ENTRYPOINT ["java", "-jar", "app.jar"]
+          EOF
+          fi
+
+          docker build -t ${{ inputs.registry-url }}/java-app:${{ inputs.version }} .
+          docker push ${{ inputs.registry-url }}/java-app:${{ inputs.version }}
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Deploy to Kubernetes
+        if: inputs.deployment-target == 'k8s'
+        run: |
+          echo "Deploying to Kubernetes cluster for ${{ inputs.environment }}"
+          # Add kubectl deployment logic here
+          # kubectl apply -f k8s/
+          # kubectl set image deployment/java-app java-app=${{ inputs.registry-url }}/java-app:${{ inputs.version }}
+
+      - name: Deploy serverless function
+        if: inputs.deployment-target == 'serverless'
+        run: |
+          echo "Deploying Java serverless function to ${{ inputs.environment }}"
+          # Add serverless deployment logic here
+          # Examples: AWS Lambda, Google Cloud Functions, Azure Functions
+
+      - name: Deploy to application server
+        if: contains(fromJSON('["jar", "war"]'), inputs.deployment-target)
+        run: |
+          echo "Starting application on server for ${{ inputs.environment }}"
+          # Add application server deployment logic here
+          # Examples: systemctl restart service, remote deployment scripts
+
+      - name: Health check
+        run: |
+          echo "Performing health check for ${{ inputs.environment }} deployment"
+          # Add health check logic here
+          # Examples: curl health endpoint, check application logs
+          sleep 10
+          echo "Health check passed"
+
+      - name: Notify deployment success
+        run: |
+          echo "Successfully deployed Java application version ${{ inputs.version }} to ${{ inputs.environment }}"
+          echo "Deployment target: ${{ inputs.deployment-target }}"
+
+  createBug:
+    name: Create Bug
+    needs: [deploy]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Java Deployment Failed'
+      job: 'deploy'
+      status: 'failure'

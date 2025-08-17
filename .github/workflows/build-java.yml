@@ -1,0 +1,125 @@
+name: 'Build Java'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for storing the artifacts and running the build'
+        type: string
+        required: false
+        default: ./
+      java-version:
+        description: Java version to use for building
+        required: false
+        type: string
+        default: '17'
+      java-distribution:
+        description: Java distribution to use
+        required: false
+        type: string
+        default: 'temurin'
+      version:
+        description: Semantic version of current build
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      artifact-name:
+        description: Name of the artifact to upload to the calling workflow
+        type: string
+        required: true
+      build-tool:
+        description: Build tool to use (maven or gradle)
+        type: string
+        required: false
+        default: 'maven'
+
+jobs:
+  build:
+    name: Build Java with ${{ inputs.build-tool }}
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Set up JDK ${{ inputs.java-version }}
+        uses: actions/setup-java@v4.4.0
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: ${{ inputs.java-distribution }}
+
+      - name: Cache Maven dependencies
+        if: inputs.build-tool == 'maven'
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Cache Gradle dependencies
+        if: inputs.build-tool == 'gradle'
+        uses: actions/cache@v4.1.2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Build with Maven
+        if: inputs.build-tool == 'maven'
+        run: mvn clean package -DskipTests -Drevision=${{ inputs.version }}
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Build with Gradle
+        if: inputs.build-tool == 'gradle'
+        run: ./gradlew build -x test -Pversion=${{ inputs.version }}
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Copy Maven artifacts
+        if: inputs.build-tool == 'maven'
+        run: |
+          mkdir -p dist
+          if ls target/*.jar 1> /dev/null 2>&1; then cp target/*.jar dist/; else echo "No JAR files found in target/. Build may have failed." && exit 1; fi
+          find target -name '*.war' -exec cp {} dist/ \;
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Copy Gradle artifacts
+        if: inputs.build-tool == 'gradle'
+        run: |
+          mkdir -p dist
+          find build/libs -name '*.jar' -exec cp {} dist/ \;
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Copy Gradle WAR artifacts
+        if: inputs.build-tool == 'gradle'
+        run: |
+          find build/libs -name '*.war' -exec cp {} dist/ \;
+        working-directory: "${{ inputs.working-directory }}"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.working-directory }}/dist/*
+          retention-days: 5
+
+  createBug:
+    name: Create Bug
+    needs: [build]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Java Build Failed'
+      job: 'build'
+      status: 'failure'
