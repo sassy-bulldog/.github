@@ -101,7 +101,7 @@ jobs:
           find build/libs -name '*.jar' -exec cp {} dist/ \;
         working-directory: "${{ inputs.working-directory }}"
 
-      - name: Copy Gradle artifacts
+      - name: Copy Gradle WAR artifacts
         if: inputs.build-tool == 'gradle'
         run: |
           mkdir -p dist
