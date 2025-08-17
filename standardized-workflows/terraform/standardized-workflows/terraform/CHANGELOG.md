@@ -2,11 +2,9 @@
 
 ## [0.1.0](https://github.com/sassy-bulldog/.github/compare/terraform@v0.0.1...terraform@v0.1.0) (2025-08-17)
 
-
 ### Features
 
 * **nodejs:** Add standardized Node.js workflows and configuration ([#92](https://github.com/sassy-bulldog/.github/issues/92)) ([961b7d8](https://github.com/sassy-bulldog/.github/commit/961b7d8029920049dcab150a3002f0db0b92af92))
-
 
 ### Bug Fixes
 
