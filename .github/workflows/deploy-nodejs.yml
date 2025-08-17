@@ -165,7 +165,7 @@ jobs:
           # Examples: AWS Lambda, Vercel Functions, Netlify Functions
 
       - name: Install dependencies for runtime
-        if: contains(fromJSON('["server", "serverless"]'), inputs.deployment-target)
+        if: inputs.deployment-target == 'serverless'
         run: |
           if [ -f artifacts/package.json ]; then
             cd artifacts
