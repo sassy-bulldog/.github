@@ -123,7 +123,13 @@ jobs:
             # Copy only executable files and .exe files from debug build
             find target/${{ matrix.target }}/debug/ -maxdepth 1 -type f \( -executable -o -name '*.exe' \) -exec cp {} dist/${{ matrix.target }}/ \; 2>/dev/null || true
           fi
-          # Note: All files are copied to dist, including non-executables, due to the cp command above.
+            # Copy only executable files and .exe files from release build
+            find target/${{ matrix.target }}/release/ -maxdepth 1 -type f \( -executable -o -name '*.exe' \) -exec cp {} dist/${{ matrix.target }}/ \; 2>/dev/null || true
+          else
+            # Copy only executable files and .exe files from debug build
+            find target/${{ matrix.target }}/debug/ -maxdepth 1 -type f \( -executable -o -name '*.exe' \) -exec cp {} dist/${{ matrix.target }}/ \; 2>/dev/null || true
+          fi
+          # Only executable files and .exe files are copied to dist.
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Upload artifacts
