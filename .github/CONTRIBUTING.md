@@ -279,9 +279,9 @@ The identifiers should be unique and easily searchable to avoid conflicts with
 common words. Examples include:
 
 - **dotnet**: .NET
-  - **ssdt**: SQL Server Data Tools
-  - **ssis**: SQL Server Integration Services
-- **r-lang**: R (to avoid conflict with the letter "R" in common words)
+  - **SSDT**: SQL Server Data Tools
+  - **SSIS**: SQL Server Integration Services
+- **R-lang**: R (to avoid conflict with the letter "R" in common words)
 - **py**: Python
 - **js**: JavaScript
 - **java**: Java

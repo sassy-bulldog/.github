@@ -32,10 +32,10 @@ on:
 jobs:
   deploy:
     name: SSIS Deploy
-    uses: sassy-bulldog/.github/.github/workflows/deploy-ssis.yml@SSIS-v1.0.0 # x-release-please-component-version SSIS
+    uses: sassy-bulldog/.github/.github/workflows/deploy-SSIS.yml@SSIS-v1.0.0 # x-release-please-component-version SSIS
     with:
       runs-on: '["ubuntu-latest"]'
       environment: ${{ github.event.inputs.environment }}
-      artifact-name: 'ssis-build-artifacts'
+      artifact-name: 'SSIS-build-artifacts'
       version: ${{ github.event.inputs.version }}
       deployment-target: ${{ github.event.inputs.deployment-target }}

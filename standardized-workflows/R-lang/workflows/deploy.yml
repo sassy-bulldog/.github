@@ -27,10 +27,10 @@ on:
 jobs:
   deploy:
     name: R Deploy
-    uses: sassy-bulldog/.github/.github/workflows/deploy-r-lang.yml@v0.2.2 # x-release-please-component-version R-lang
+    uses: sassy-bulldog/.github/.github/workflows/deploy-R-lang.yml@v0.2.2 # x-release-please-component-version R-lang
     with:
       runs-on: '["ubuntu-latest"]'
       environment: ${{ inputs.environment }}
-      artifact-name: 'r-build-artifacts'
+      artifact-name: 'R-build-artifacts'
       deployment-target: ${{ inputs.deployment-target }}
       version: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1-alpha' }}

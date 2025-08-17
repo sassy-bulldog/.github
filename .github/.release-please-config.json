@@ -55,52 +55,52 @@
         ".github/workflows/units-python.yml"
       ]
     },
-    "standardized-workflows/r-lang": {
-      "pull-request-title-pattern": "chore${scope}: Release r-lang v${version}",
+    "standardized-workflows/R-lang": {
+      "pull-request-title-pattern": "chore${scope}: Release R-lang v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "standardized-workflows/r-lang/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/R-lang/CHANGELOG.md",
       "release-type": "simple",
       "component": "R-lang",
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/r-lang/**/*",
-        ".github/workflows/build-r-lang.yml",
-        ".github/workflows/deploy-r-lang.yml",
-        ".github/workflows/units-r-lang.yml"
+        "standardized-workflows/R-lang/**/*",
+        ".github/workflows/build-R-lang.yml",
+        ".github/workflows/deploy-R-lang.yml",
+        ".github/workflows/units-R-lang.yml"
       ]
     },
-    "standardized-workflows/ssdt": {
-      "pull-request-title-pattern": "chore${scope}: Release ssdt v${version}",
+    "standardized-workflows/SSDT": {
+      "pull-request-title-pattern": "chore${scope}: Release SSDT v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "standardized-workflows/ssdt/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/SSDT/CHANGELOG.md",
       "release-type": "simple",
       "component": "SSDT",
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/ssdt/**/*",
-        ".github/workflows/build-ssdt.yml",
-        ".github/workflows/deploy-ssdt.yml",
-        ".github/workflows/units-ssdt.yml"
+        "standardized-workflows/SSDT/**/*",
+        ".github/workflows/build-SSDT.yml",
+        ".github/workflows/deploy-SSDT.yml",
+        ".github/workflows/units-SSDT.yml"
       ]
     },
-    "standardized-workflows/ssis": {
-      "pull-request-title-pattern": "chore${scope}: Release ssis v${version}",
+    "standardized-workflows/SSIS": {
+      "pull-request-title-pattern": "chore${scope}: Release SSIS v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "standardized-workflows/ssis/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/SSIS/CHANGELOG.md",
       "release-type": "simple",
       "component": "SSIS",
       "include-component-in-tag": true,
       "extra-files": [
         "standardized-workflows/all/**/*",
-        "standardized-workflows/ssis/**/*",
-        ".github/workflows/build-ssis.yml",
-        ".github/workflows/deploy-ssis.yml",
-        ".github/workflows/units-ssis.yml"
+        "standardized-workflows/SSIS/**/*",
+        ".github/workflows/build-SSIS.yml",
+        ".github/workflows/deploy-SSIS.yml",
+        ".github/workflows/units-SSIS.yml"
       ]
     },
     "standardized-workflows/terraform": {

@@ -1,4 +1,4 @@
-# x-release-please-component-version SSDT
+# x-release-please-component-version SSIS
 name: Build
 
 on:
@@ -10,9 +10,9 @@ on:
 
 jobs:
   build:
-    name: SSDT Build
-    uses: sassy-bulldog/.github/.github/workflows/build-ssdt.yml@SSDT-v1.0.0 # x-release-please-component-version SSDT
+    name: SSIS Build
+    uses: sassy-bulldog/.github/.github/workflows/build-SSIS.yml@SSIS-v1.0.0 # x-release-please-component-version SSIS
     with:
       runs-on: '["ubuntu-latest"]'
-      artifact-name: 'ssdt-build-artifacts'
+      artifact-name: 'SSIS-build-artifacts'
       version: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1-alpha' }}

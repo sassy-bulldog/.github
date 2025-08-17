@@ -32,10 +32,10 @@ on:
 jobs:
   deploy:
     name: SSDT Deploy
-    uses: sassy-bulldog/.github/.github/workflows/deploy-ssdt.yml@SSDT-v1.0.0 # x-release-please-component-version SSDT
+    uses: sassy-bulldog/.github/.github/workflows/deploy-SSDT.yml@SSDT-v1.0.0 # x-release-please-component-version SSDT
     with:
       runs-on: '["ubuntu-latest"]'
       environment: ${{ github.event.inputs.environment }}
-      artifact-name: 'ssdt-build-artifacts'
+      artifact-name: 'SSDT-build-artifacts'
       version: ${{ github.event.inputs.version }}
       deployment-target: ${{ github.event.inputs.deployment-target }}

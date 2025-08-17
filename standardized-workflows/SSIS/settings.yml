@@ -17,11 +17,11 @@ variables:
 
 batch_file_operations:
   - target_branch: main
-    commit_msg: 'ci(standards): Update SSDT Workflows'
+    commit_msg: 'ci(standards): Update SSIS Workflows'
     files:
-      - src_file: standardized-workflows/ssdt/.pre-commit-config.yaml
+      - src_file: standardized-workflows/SSIS/.pre-commit-config.yaml
         dest_file: .pre-commit-config.yaml
-      - src_file: standardized-workflows/ssdt/dependabot.yml
+      - src_file: standardized-workflows/SSIS/dependabot.yml
         dest_file: .github/dependabot.yml
-      - src_file: standardized-workflows/ssdt/workflows/unit-tests.yml
+      - src_file: standardized-workflows/SSIS/workflows/unit-tests.yml
         dest_file: .github/workflows/unit-tests.yml
