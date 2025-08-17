@@ -17,7 +17,7 @@
       "include-component-in-tag": false,
       "extra-files": [
         ".github/workflows/**.*",
-        "examples/shared-workflows/*.yml",
+        "examples/shared-workflows/*.yml"
       ]
     },
     "repo-governance/dotnet": {
