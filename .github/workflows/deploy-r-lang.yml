@@ -183,7 +183,7 @@ jobs:
             if [ -f "$pkg" ]; then
               pkg_name=$(basename "$pkg" .tar.gz | sed 's/_[0-9].*//')
               echo "Testing package: $pkg_name"
-              # Rscript -e "library($pkg_name)"
+              Rscript -e "library($pkg_name)"
             fi
           done
 
