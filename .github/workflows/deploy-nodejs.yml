@@ -140,26 +140,9 @@ jobs:
         if: inputs.deployment-target == 'docker'
         run: |
           if [ ! -f Dockerfile ]; then
-            echo "Creating minimal Dockerfile for Node.js application"
-            echo "FROM node:${{ inputs.node-version }}-alpine" > Dockerfile
-            echo "WORKDIR /app" >> Dockerfile
-            if ls artifacts/package*.json 1> /dev/null 2>&1; then
-              echo "COPY artifacts/package*.json ./" >> Dockerfile
-              echo "RUN npm ci --only=production" >> Dockerfile
-            fi
-            echo "COPY artifacts/ ." >> Dockerfile
-            echo "EXPOSE 3000" >> Dockerfile
-            # Use the start-command input, split into JSON array for CMD
-            START_CMD="${{ inputs.start-command }}"
-            # Convert the start command to a JSON array for Docker CMD
-            # If the command is a single word, output as ["word"], else split by spaces
-            if [[ "$START_CMD" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
-              echo "CMD [\"$START_CMD\"]" >> Dockerfile
-            else
-              # Split command into array
-              CMD_JSON=$(printf '%s\n' "$START_CMD" | awk '{for(i=1;i<=NF;i++) printf "\"%s\"%s", $i, (i==NF?"":", ")}')
-              echo "CMD [${CMD_JSON}]" >> Dockerfile
-            fi
+            echo "ERROR: No Dockerfile found in the working directory."
+            echo "Please provide a reviewed, static Dockerfile in your repository or artifact."
+            exit 1
           fi
 
           if [ -n "${{ inputs.registry-url }}" ]; then
