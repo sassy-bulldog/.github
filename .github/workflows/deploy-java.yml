@@ -30,7 +30,7 @@ on:
         required: false
         default: 0.0.1-alpha
       java-version:
-        description: Java version for deployment
+        description: Java version for deployment (allowed: 11, 17, 21)
         type: string
         required: false
         default: '17'
@@ -60,6 +60,13 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
+      - name: Validate Java version
+        run: |
+          case "${{ inputs.java-version }}" in
+            11|17|21) echo "Java version ${{ inputs.java-version }} is allowed." ;;
+            *) echo "Error: java-version must be one of: 11, 17, 21"; exit 1 ;;
+          esac
+
       - name: Clean Agent Workspace
         uses: tiacsys/clean-after-action@v3.0.0
 
