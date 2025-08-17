@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: Terraform Build
-    uses: sassy-bulldog/.github/.github/workflows/build-terraform.yml@v0.2.2 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/build-terraform.yml@v0.3.0 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'
       artifact-name: 'terraform-build-artifacts'

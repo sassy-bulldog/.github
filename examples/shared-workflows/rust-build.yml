@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: Rust Build
-    uses: sassy-bulldog/.github/.github/workflows/build-rust.yml@v0.2.2 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/build-rust.yml@v0.3.0 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'
       artifact-name: 'rust-build-artifacts'
