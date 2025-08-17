@@ -1,0 +1,131 @@
+name: 'Build Rust'
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for storing the artifacts and running the build'
+        type: string
+        required: false
+        default: ./
+      rust-version:
+        description: Rust version to use for building
+        required: false
+        type: string
+        default: 'stable'
+      version:
+        description: Semantic version of current build
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      artifact-name:
+        description: Name of the artifact to upload to the calling workflow
+        type: string
+        required: true
+      target-triple:
+        description: Target triples for cross-compilation
+        type: string
+        required: false
+        default: '["x86_64-unknown-linux-gnu", "x86_64-pc-windows-gnu", "x86_64-apple-darwin"]'
+      profile:
+        description: Cargo build profile
+        type: string
+        required: false
+        default: 'release'
+
+jobs:
+  build:
+    name: Build Rust ${{ matrix.target }}
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    strategy:
+      matrix:
+        target: ${{ fromJSON(inputs.target-triple) }}
+      fail-fast: false
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Install Rust ${{ inputs.rust-version }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ inputs.rust-version }}
+          targets: ${{ matrix.target }}
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo index
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v4.1.2
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install cross-compilation tools
+        if: matrix.target == 'x86_64-pc-windows-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-mingw-w64-x86-64
+
+      - name: Update version in Cargo.toml
+        run: |
+          sed -i 's/^version = .*/version = "${{ inputs.version }}"/' Cargo.toml
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Build for target
+        run: |
+          if [ "${{ inputs.profile }}" = "release" ]; then
+            cargo build --release --target ${{ matrix.target }}
+          else
+            cargo build --target ${{ matrix.target }}
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Prepare artifacts
+        run: |
+          mkdir -p dist/${{ matrix.target }}
+          if [ "${{ inputs.profile }}" = "release" ]; then
+            cp target/${{ matrix.target }}/release/* dist/${{ matrix.target }}/ 2>/dev/null || true
+          else
+            cp target/${{ matrix.target }}/debug/* dist/${{ matrix.target }}/ 2>/dev/null || true
+          fi
+          # Remove non-executable files
+          find dist/${{ matrix.target }} -type f ! -executable -delete 2>/dev/null || true
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{ inputs.artifact-name }}-${{ matrix.target }}
+          path: ${{ inputs.working-directory }}/dist/${{ matrix.target }}/*
+          retention-days: 5
+
+  createBug:
+    name: Create Bug
+    needs: [build]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Rust Build Failed'
+      job: 'build'
+      status: 'failure'

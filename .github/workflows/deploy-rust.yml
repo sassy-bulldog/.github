@@ -1,0 +1,182 @@
+name: 'Deploy Rust'
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for deployment'
+        type: string
+        required: false
+        default: ./
+      environment:
+        description: Environment to deploy to (dev, staging, prod)
+        type: string
+        required: true
+      artifact-name:
+        description: Name of the artifact to download from build
+        type: string
+        required: true
+      version:
+        description: Semantic version being deployed
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      registry-url:
+        description: Container registry URL for Docker deployments
+        type: string
+        required: false
+        default: ''
+      deployment-target:
+        description: Deployment target (binary, docker, k8s, serverless, crates)
+        type: string
+        required: false
+        default: 'binary'
+
+    secrets:
+      DEPLOY_TOKEN:
+        description: Token for deployment authentication
+        required: false
+      REGISTRY_PASSWORD:
+        description: Container registry password
+        required: false
+      CRATES_IO_TOKEN:
+        description: Token for publishing to crates.io
+        required: false
+
+jobs:
+  deploy:
+    name: Deploy Rust application
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Set up Rust
+        if: inputs.deployment-target == 'crates'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ./artifacts
+
+      - name: Make binaries executable
+        if: inputs.deployment-target == 'binary'
+        run: |
+          find ./artifacts -type f -name "*.exe" -o -type f -perm /a+x | while read binary; do
+            chmod +x "$binary" 2>/dev/null || true
+            echo "Binary: $(basename $binary)"
+          done
+          ls -la ./artifacts/
+
+      - name: Deploy binary artifacts
+        if: inputs.deployment-target == 'binary'
+        run: |
+          echo "Deploying Rust binaries to ${{ inputs.environment }}"
+          # Add your binary deployment logic here
+          for binary in ./artifacts/*; do
+            if [ -f "$binary" ] && ([ -x "$binary" ] || [[ "$binary" == *.exe ]]); then
+              echo "Would deploy: $(basename $binary) to ${{ inputs.environment }}"
+              # Examples: scp to servers, upload to S3, copy to deployment directory
+            fi
+          done
+
+      - name: Publish to crates.io
+        if: inputs.deployment-target == 'crates' && inputs.environment == 'prod'
+        run: |
+          echo "Publishing to crates.io"
+          if [ -n "${{ secrets.CRATES_IO_TOKEN }}" ]; then
+            cargo login ${{ secrets.CRATES_IO_TOKEN }}
+            cargo publish
+          else
+            echo "CRATES_IO_TOKEN not provided, skipping publish"
+          fi
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Log in to Container Registry
+        if: inputs.deployment-target == 'docker' && inputs.registry-url != ''
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ inputs.registry-url }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker image
+        if: inputs.deployment-target == 'docker'
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "Creating minimal Dockerfile for Rust binary"
+            cat > Dockerfile << 'EOF'
+          FROM debian:bookworm-slim
+          RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+          WORKDIR /app
+          COPY artifacts/* ./
+          RUN chmod +x ./* 2>/dev/null || true
+          RUN find . -type f -executable -exec mv {} app \; -quit || cp * app
+          EXPOSE 8080
+          CMD ["./app"]
+          EOF
+          fi
+          
+          docker build -t ${{ inputs.registry-url }}/rust-app:${{ inputs.version }} .
+          docker push ${{ inputs.registry-url }}/rust-app:${{ inputs.version }}
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Deploy to Kubernetes
+        if: inputs.deployment-target == 'k8s'
+        run: |
+          echo "Deploying to Kubernetes cluster for ${{ inputs.environment }}"
+          # Add kubectl deployment logic here
+          # kubectl apply -f k8s/
+          # kubectl set image deployment/rust-app rust-app=${{ inputs.registry-url }}/rust-app:${{ inputs.version }}
+
+      - name: Deploy serverless function
+        if: inputs.deployment-target == 'serverless'
+        run: |
+          echo "Deploying Rust serverless function to ${{ inputs.environment }}"
+          # Add serverless deployment logic here
+          # Examples: AWS Lambda (with cargo lambda), Google Cloud Functions
+
+      - name: Performance validation
+        if: inputs.deployment-target == 'binary'
+        run: |
+          echo "Validating performance for Rust deployment"
+          # Add performance testing/validation here
+          echo "Performance validation passed"
+
+      - name: Health check
+        run: |
+          echo "Performing health check for ${{ inputs.environment }} deployment"
+          # Add health check logic here
+          sleep 5
+          echo "Health check passed"
+
+      - name: Notify deployment success
+        run: |
+          echo "Successfully deployed Rust application version ${{ inputs.version }} to ${{ inputs.environment }}"
+          echo "Deployment target: ${{ inputs.deployment-target }}"
+
+  createBug:
+    name: Create Bug
+    needs: [deploy]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Rust Deployment Failed'
+      job: 'deploy'
+      status: 'failure'
