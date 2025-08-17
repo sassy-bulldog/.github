@@ -96,7 +96,6 @@ jobs:
           done
           shopt -u nullglob
 
-          # [Future-proofing] If you add more glob-handling loops, use nullglob in a subshell to avoid side effects:
 
           # List contents for debugging
           echo "Artifact contents:"
