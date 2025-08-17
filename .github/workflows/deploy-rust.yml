@@ -134,7 +134,6 @@ jobs:
             exit 1
           fi
 
-          docker build -t ${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }} .
           if [ -n "${{ inputs.registry-url }}" ]; then
             IMAGE_TAG="${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }}"
           else
