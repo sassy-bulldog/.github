@@ -95,6 +95,7 @@ jobs:
         run: |
           mkdir -p dist
           # Copy source files (exclude common non-production files)
+          # [NOTE] Consider making these exclude patterns configurable for project-specific needs.
           rsync -av \
             --exclude='.git*' \
             --exclude='tests/' \
@@ -104,6 +105,9 @@ jobs:
             --exclude='.env*' \
             --exclude='docker*' \
             --exclude='*.md' \
+            --exclude='.phpcs.xml' \
+            --exclude='psalm.xml' \
+            --exclude='infection.json' \
             . dist/
 
           # Create a zip package
