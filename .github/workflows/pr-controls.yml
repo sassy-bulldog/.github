@@ -19,6 +19,9 @@ on:
 jobs:
   pr_title:
     name: Check PR Title 📝
+    permissions:
+      contents: read
+      pull-requests: read
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]' ) }}
     steps:
       #TODO: Deprecated NodeJS Version
