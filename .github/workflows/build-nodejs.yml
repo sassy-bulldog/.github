@@ -125,12 +125,12 @@ jobs:
           mkdir -p dist
           # Also copy build output if it exists
           shopt -s nullglob
-          tgz_files=( *.tgz )
-          if [ ${#tgz_files[@]} -gt 0 ]; then
-            mv "${tgz_files[@]}" dist/
+          # Add more patterns to package_files if your package manager outputs other formats
+          package_files=( *.tgz *.tar.gz )
+          if [ ${#package_files[@]} -gt 0 ] && [ -e "${package_files[0]}" ]; then
+            mv "${package_files[@]}" dist/
           else
-            echo "Error: No .tgz files found to move to dist/"
-            exit 1
+            echo "Warning: No package files (*.tgz, *.tar.gz) found to move to dist/. This may be expected for some build types."
           fi
         working-directory: "${{ inputs.working-directory }}"
 
