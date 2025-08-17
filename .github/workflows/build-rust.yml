@@ -114,7 +114,6 @@ jobs:
             cp target/${{ matrix.target }}/debug/* dist/${{ matrix.target }}/ 2>/dev/null || true
           fi
           # Remove non-executable files, but always keep .exe files (for Windows)
-            find target/${{ matrix.target }}/release/ -maxdepth 1 -type f \( -executable -o -name '*.exe' \) -exec cp {} dist/${{ matrix.target }}/ \; 2>/dev/null || true
             # Copy only executable files and .exe files from release build
             find target/${{ matrix.target }}/release/ -maxdepth 1 -type f \( -executable -o -name '*.exe' \) -exec cp {} dist/${{ matrix.target }}/ \; 2>/dev/null || true
           else
