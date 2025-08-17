@@ -79,6 +79,7 @@ jobs:
         run: |
           find ./artifacts -type f -name "*.exe" -o -type f -executable | while read binary; do
             chmod +x "$binary" 2>/dev/null || true
+          done
           for binary in ./artifacts/*; do
             if [ -f "$binary" ] && ([ -x "$binary" ] || [[ "$binary" == *.exe ]]); then
               chmod +x "$binary" 2>/dev/null || true
