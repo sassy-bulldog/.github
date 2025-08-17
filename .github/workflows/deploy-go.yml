@@ -120,15 +120,15 @@ jobs:
           EOF
           fi
 
-          docker build -t ${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }} .
+          IMAGE_TAG="${{ inputs.image-name }}:${{ inputs.version }}"
           if [ -n "${{ inputs.registry-url }}" ]; then
-            IMAGE_TAG="${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }}"
-          else
-            IMAGE_TAG="${{ inputs.image-name }}:${{ inputs.version }}"
+            IMAGE_TAG="${{ inputs.registry-url }}/${IMAGE_TAG}"
           fi
-
           docker build -t "$IMAGE_TAG" .
-          docker push "$IMAGE_TAG"
+
+          if [ -n "${{ inputs.registry-url }}" ]; then
+            docker push "$IMAGE_TAG"
+          fi
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Deploy to Kubernetes

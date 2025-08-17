@@ -43,7 +43,6 @@ on:
         description: Go package path for version variable (e.g., main, internal/version)
         required: true
         type: string
-        default: main
 
 jobs:
   build:
