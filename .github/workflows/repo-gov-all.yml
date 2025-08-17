@@ -1,5 +1,8 @@
 name: Organization Repository Governance
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.repository_owner }}-repo-gov
   cancel-in-progress: true

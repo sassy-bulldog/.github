@@ -1,5 +1,8 @@
 name: 'Code-Owners are Team(s)'
 
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:

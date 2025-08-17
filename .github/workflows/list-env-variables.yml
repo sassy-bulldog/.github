@@ -1,6 +1,9 @@
 # TODO: Need to make sure secrets are secure
 name: 'List Environment Variables'
 
+permissions:
+  contents: read
+
 on:
   workflow_run:
     workflows: [ 'Mock Test Workflow for Other Branches' ]

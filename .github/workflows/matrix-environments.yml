@@ -1,5 +1,8 @@
 name: Get Matrix of Environments by Branch
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
