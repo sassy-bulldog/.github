@@ -110,13 +110,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Build and push Docker image
-        if: inputs.deployment-target == 'docker'
+      - name: Validate Java version
+        id: validate-java-version
         run: |
           case "${{ inputs.java-version }}" in
             11|17|21) echo "Java version ${{ inputs.java-version }} is allowed." ;;
             *) echo "Error: java-version must be one of: 11, 17, 21"; exit 1 ;;
           esac
+
+      - name: Build and push Docker image
+        if: inputs.deployment-target == 'docker'
+        run: |
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for Java application"
             cat > Dockerfile << 'EOF'
