@@ -132,7 +132,7 @@ jobs:
               [ -e "$file" ] || continue
               if [ "${file##*.}" = "exe" ]; then
                 files_found="$files_found $file"
-              elif [ -f "$file" ] && [ -x "$file" ] && [[ "$file" != *.* ]]; then
+              elif [ -f "$file" ] && [ -x "$file" ] && [ "${file##*.}" = "$(basename "$file")" ]; then
                 files_found="$files_found $file"
               fi
             done
