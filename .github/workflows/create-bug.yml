@@ -1,5 +1,8 @@
 name: Create an Issue documenting the bug
 
+permissions:
+  contents: read
+
 # Controls when the workflow will run
 on:
   workflow_call:

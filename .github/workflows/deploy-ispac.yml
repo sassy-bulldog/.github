@@ -1,5 +1,8 @@
 name: Deploy ISPACs
 
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:

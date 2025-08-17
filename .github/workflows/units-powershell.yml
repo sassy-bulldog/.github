@@ -1,5 +1,8 @@
 name: 'Unit Tests: PowerShell'
 
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:

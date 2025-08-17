@@ -1,5 +1,8 @@
 name: 'Build dotnet'
 
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:

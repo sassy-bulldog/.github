@@ -1,4 +1,8 @@
 name: 'Issue & PR Maintenance'
+
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:
@@ -14,9 +18,6 @@ on:
   push:
     paths:
       - '.github/workflows/stale.yml'
-
-permissions:
-  contents: read
 
 jobs:
   get-app-token:
@@ -79,6 +80,7 @@ jobs:
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
     permissions:
       issues: write
+      pull-requests: write
     steps:
       #TODO: Deprecated NodeJS Version
       - name: Clean Agent Workspace
