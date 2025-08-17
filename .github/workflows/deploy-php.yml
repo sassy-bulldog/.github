@@ -163,7 +163,8 @@ jobs:
           RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader --no-interaction; fi
 
           EXPOSE 80
-          EOF
+            echo "Copying Dockerfile template for PHP application"
+            cp .github/docker/Dockerfile .
           fi
 
           docker build -t ${{ inputs.registry-url }}/php-app:${{ inputs.version }} .
