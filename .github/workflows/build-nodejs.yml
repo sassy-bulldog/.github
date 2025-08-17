@@ -130,7 +130,6 @@ jobs:
             pnpm pack
           fi
           mkdir -p dist
-          mv *.tgz dist/ || true
           # Also copy build output if it exists
           shopt -s nullglob
           tgz_files=(*.tgz)
