@@ -1,0 +1,38 @@
+# version: 1.0.0
+# Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      deployment-target:
+        description: 'Deployment target'
+        required: true
+        default: 'server'
+        type: choice
+        options:
+          - static
+          - server
+          - docker
+          - k8s
+          - serverless
+
+jobs:
+  deploy:
+    name: Node.js Deploy
+    uses: sassy-bulldog/.github/.github/workflows/deploy-nodejs.yml@v0.2.2 # x-release-please-version
+    with:
+      runs-on: '["ubuntu-latest"]'
+      environment: ${{ inputs.environment }}
+      artifact-name: 'nodejs-build-artifacts'
+      deployment-target: ${{ inputs.deployment-target }}
+      version: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1-alpha' }}

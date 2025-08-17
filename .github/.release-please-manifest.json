@@ -1,14 +1,14 @@
 {
   ".": "0.2.2",
-  "standardized-workflows/dotnet": "0.2.2",
-  "standardized-workflows/python": "0.2.2",
-  "standardized-workflows/r-lang": "0.2.2",
-  "standardized-workflows/ssdt": "0.2.2",
-  "standardized-workflows/ssis": "0.2.2",
-  "standardized-workflows/terraform": "0.2.2",
-  "standardized-workflows/go": "0.0.0",
-  "standardized-workflows/java": "0.0.0",
-  "standardized-workflows/nodejs": "0.0.0",
-  "standardized-workflows/rust": "0.0.0",
-  "standardized-workflows/php": "0.0.0"
+  "repo-governance/dotnet": "0.2.2",
+  "repo-governance/python": "0.2.2",
+  "repo-governance/R-lang": "0.2.2",
+  "repo-governance/SSDT": "0.2.2",
+  "repo-governance/SSIS": "0.2.2",
+  "repo-governance/terraform": "0.2.2",
+  "repo-governance/go": "0.2.2",
+  "repo-governance/java": "0.2.2",
+  "repo-governance/nodejs": "0.2.2",
+  "repo-governance/rust": "0.2.2",
+  "repo-governance/php": "0.2.2"
 }

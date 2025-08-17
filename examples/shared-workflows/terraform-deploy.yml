@@ -1,0 +1,42 @@
+# version: 1.0.0
+# Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      deployment-target:
+        description: 'Deployment target'
+        required: true
+        default: 'binary'
+        type: choice
+        options:
+          - binary
+          - docker
+          - k8s
+          - serverless
+      version:
+        description: 'Semantic version to deploy'
+        required: false
+        default: '0.0.1'
+        type: string
+
+jobs:
+  deploy:
+    name: Terraform Deploy
+    uses: sassy-bulldog/.github/.github/workflows/deploy-terraform.yml@v0.2.2 # x-release-please-version
+    with:
+      runs-on: '["ubuntu-latest"]'
+      environment: ${{ github.event.inputs.environment }}
+      artifact-name: 'terraform-build-artifacts'
+      version: ${{ github.event.inputs.version }}
+      deployment-target: ${{ github.event.inputs.deployment-target }}

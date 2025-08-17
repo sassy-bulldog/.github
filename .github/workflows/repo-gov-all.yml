@@ -1,3 +1,4 @@
+---
 name: Organization Repository Governance
 
 permissions:
@@ -39,32 +40,32 @@ on:
       - '.gitignore'
       - '.github/CODEOWNERS'
       - '.github/pr-scope-labeler.yml'
-      - 'standardized-workflows/**'
+      - 'repo-governance/**'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   matrix-repos:
     strategy:
       matrix:
-        repo-filter: [ '','dotnet', 'ssdt', 'ssis', 'terraform' ]
-        settings_file: [ 'standardized-workflows/all/settings.yml' ]
+        repo-filter: [ '','dotnet', 'SSDT', 'SSIS', 'terraform' ]
+        settings_file: [ 'repo-governance/all/settings.yml' ]
         delay: [0]
         action: [ apply ]
         include:
           - repo-filter: 'terraform'
-            settings_file: 'standardized-workflows/terraform/settings.yml'
+            settings_file: 'repo-Governance/terraform/settings.yml'
             delay: 0
             action: ${{ inputs.action || 'apply'}}
           - repo-filter: 'dotnet'
-            settings_file: 'standardized-workflows/dotnet/settings.yml'
+            settings_file: 'repo-governance/dotnet/settings.yml'
             delay: 0 # 3600
             action: ${{ inputs.action || 'apply'}}
-          - repo-filter: 'ssdt'
-            settings_file: 'standardized-workflows/ssdt/settings.yml'
+          - repo-filter: 'SSDT'
+            settings_file: 'repo-governance/SSDT/settings.yml'
             delay: 0 # 7200
             action: ${{ inputs.action || 'apply'}}
-          - repo-filter: 'ssis'
-            settings_file: 'standardized-workflows/ssis/settings.yml'
+          - repo-filter: 'SSIS'
+            settings_file: 'repo-governance/SSIS/settings.yml'
             delay: 0 # 10800
             action: ${{ inputs.action || 'apply'}}
       fail-fast: false

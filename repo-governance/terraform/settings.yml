@@ -1,0 +1,49 @@
+collaborators:
+
+settings:
+
+labels:
+
+branch_protections:
+  - name: dev
+    protection:
+      pr_options:
+        required_approving_review_count: 1
+        dismiss_stale_reviews: true
+        require_code_owner_reviews: true
+        dismissal_restrictions:
+          users: []
+          teams: [sres]
+      required_status_checks:
+        strict: true
+        checks:
+          - 'Controls to Standardize Pull Requests / Check PR Title 📝'
+          - terraform / Lint @ Max Version
+          - 'pre-commit.ci - pr'
+      require_conversation_resolution: true
+      enforce_admins: true
+      require_linear_history: true
+      allow_force_pushes: false
+      allow_deletions: false
+      block_creations: false
+
+environments:
+
+secrets:
+
+variables:
+
+batch_file_operations:
+  - target_branch: main
+    commit_msg: 'ci(standards): Update Terraform Workflows'
+    files:
+      - src_file: repo-governance/terraform/.pre-commit-config.yaml
+        dest_file: .pre-commit-config.yaml
+      - src_file: repo-governance/terraform/.terraform-docs.yaml
+        dest_file: .terraform-docs.yaml
+      - src_file: repo-governance/terraform/dependabot.yml
+        dest_file: .github/dependabot.yml
+      - src_file: repo-governance/terraform/workflows/lint.yml
+        dest_file: .github/workflows/lint.yml
+      - src_file: repo-governance/terraform/workflows/unit-tests.yml
+        dest_file: .github/workflows/unit-tests.yml

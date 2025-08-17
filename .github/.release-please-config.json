@@ -1,0 +1,159 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-search-depth": 400,
+  "group-pull-request-title-pattern": "chore${scope}: Release Multiple ${component} v${version}",
+  "pull-request-title-pattern": "chore(${component}): Release v${version} - ${scope}",
+  "packages": {
+    ".": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "CHANGELOG.md",
+      "release-type": "simple",
+      "bump-minor-pre-major": false,
+      "bump-patch-for-minor-pre-major": false,
+      "draft": false,
+      "prerelease": false,
+      "include-component-in-tag": false,
+      "extra-files": [
+        "examples/shared-workflows/codeowners.yml",
+        "examples/shared-workflows/pr-controls.yml",
+        "examples/shared-workflows/release.yml",
+        "examples/shared-workflows/stale.yml",
+        "examples/shared-workflows/R-lang-build.yml",
+        "examples/shared-workflows/R-lang-deploy.yml",
+        "examples/shared-workflows/R-lang-unit-tests.yml",
+        "examples/shared-workflows/SSDT-build.yml",
+        "examples/shared-workflows/SSDT-deploy.yml",
+        "examples/shared-workflows/SSDT-unit-tests.yml",
+        "examples/shared-workflows/SSIS-build.yml",
+        "examples/shared-workflows/SSIS-deploy.yml",
+        "examples/shared-workflows/SSIS-unit-tests.yml",
+        "examples/shared-workflows/dotnet-build.yml",
+        "examples/shared-workflows/dotnet-deploy.yml",
+        "examples/shared-workflows/dotnet-unit-tests.yml",
+        "examples/shared-workflows/go-build.yml",
+        "examples/shared-workflows/go-deploy.yml",
+        "examples/shared-workflows/go-unit-tests.yml",
+        "examples/shared-workflows/java-build.yml",
+        "examples/shared-workflows/java-deploy.yml",
+        "examples/shared-workflows/java-unit-tests.yml",
+        "examples/shared-workflows/nodejs-build.yml",
+        "examples/shared-workflows/nodejs-deploy.yml",
+        "examples/shared-workflows/nodejs-unit-tests.yml",
+        "examples/shared-workflows/php-build.yml",
+        "examples/shared-workflows/php-deploy.yml",
+        "examples/shared-workflows/php-unit-tests.yml",
+        "examples/shared-workflows/python-build.yml",
+        "examples/shared-workflows/python-deploy.yml",
+        "examples/shared-workflows/python-unit-tests.yml",
+        "examples/shared-workflows/rust-build.yml",
+        "examples/shared-workflows/rust-deploy.yml",
+        "examples/shared-workflows/rust-unit-tests.yml",
+        "examples/shared-workflows/terraform-build.yml",
+        "examples/shared-workflows/terraform-deploy.yml",
+        "examples/shared-workflows/terraform-lint.yml",
+        "examples/shared-workflows/terraform-unit-tests.yml"
+      ]
+    },
+    "repo-governance/dotnet": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/dotnet/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "dotnet",
+      "include-component-in-tag": true,
+      "extra-files": []
+    },
+    "repo-governance/python": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/python/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "python",
+      "include-component-in-tag": true,
+      "extra-files": []
+    },
+    "repo-governance/R-lang": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/R-lang/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "R-lang",
+      "include-component-in-tag": true,
+      "extra-files": []
+    },
+    "repo-governance/SSDT": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/SSDT/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "SSDT",
+      "include-component-in-tag": true,
+      "extra-files": []
+    },
+    "repo-governance/SSIS": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/SSIS/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "SSIS",
+      "include-component-in-tag": true,
+      "extra-files": []
+    },
+    "repo-governance/terraform": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/terraform/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "terraform",
+      "include-component-in-tag": true,
+      "extra-files": []
+    },
+    "repo-governance/go": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/go/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "go",
+      "include-component-in-tag": true,
+      "extra-files": []
+    },
+    "repo-governance/java": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/java/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "java",
+      "include-component-in-tag": true,
+      "extra-files": []
+    },
+    "repo-governance/nodejs": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/nodejs/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "nodejs",
+      "include-component-in-tag": true,
+      "extra-files": []
+    },
+    "repo-governance/rust": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/rust/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "rust",
+      "include-component-in-tag": true,
+      "extra-files": []
+    },
+    "repo-governance/php": {
+      "tag-separator": "@",
+      "include-v-in-tag": true,
+      "changelog-path": "repo-governance/php/CHANGELOG.md",
+      "release-type": "simple",
+      "component": "php",
+      "include-component-in-tag": true,
+      "extra-files": []
+    }
+  },
+  "plugins": []
+}
