@@ -1,0 +1,158 @@
+name: 'Deploy Go'
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Additional required tags for the pipeline agents to use.
+        required: true
+        type: string
+      working-directory:
+        description: 'Directory to use for deployment'
+        type: string
+        required: false
+        default: ./
+      environment:
+        description: Environment to deploy to (dev, staging, prod)
+        type: string
+        required: true
+      artifact-name:
+        description: Name of the artifact to download from build
+        type: string
+        required: true
+      version:
+        description: Semantic version being deployed
+        type: string
+        required: false
+        default: 0.0.1-alpha
+      registry-url:
+        description: Container registry URL for Docker deployments
+        type: string
+        required: false
+        default: ''
+      deployment-target:
+        description: Deployment target (binary, docker, k8s, serverless)
+        type: string
+        required: false
+        default: 'binary'
+
+    secrets:
+      DEPLOY_TOKEN:
+        description: Token for deployment authentication
+        required: false
+      REGISTRY_PASSWORD:
+        description: Container registry password
+        required: false
+
+jobs:
+  deploy:
+    name: Deploy Go application
+    runs-on: ${{ fromJSON(inputs.runs-on) }}
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Clean Agent Workspace
+        uses: tiacsys/clean-after-action@v3.0.0
+
+      - name: Checkout Repo
+        uses: actions/checkout@v5.0.0
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ./artifacts
+
+      - name: Set up Go
+        if: inputs.deployment-target == 'serverless'
+        uses: actions/setup-go@v5.2.0
+        with:
+          go-version: '1.22'
+
+      - name: Make binaries executable
+        if: inputs.deployment-target == 'binary'
+        run: |
+          find ./artifacts -type f -executable -exec chmod +x {} \;
+          ls -la ./artifacts/
+
+      - name: Deploy binary artifacts
+        if: inputs.deployment-target == 'binary'
+        run: |
+          echo "Deploying Go binaries to ${{ inputs.environment }}"
+          # Add your binary deployment logic here
+          # Examples: scp to servers, upload to S3, etc.
+          for binary in ./artifacts/*; do
+            if [ -f "$binary" ] && [ -x "$binary" ]; then
+              echo "Would deploy: $(basename $binary) to ${{ inputs.environment }}"
+              # Actual deployment commands would go here
+            fi
+          done
+
+      - name: Log in to Container Registry
+        if: inputs.deployment-target == 'docker' && inputs.registry-url != ''
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ inputs.registry-url }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker image
+        if: inputs.deployment-target == 'docker'
+        run: |
+          if [ ! -f Dockerfile ]; then
+            echo "Creating minimal Dockerfile for Go binary"
+            cat > Dockerfile << 'EOF'
+          FROM alpine:latest
+          RUN apk --no-cache add ca-certificates
+          WORKDIR /root/
+          COPY artifacts/* ./
+          RUN chmod +x ./*
+          CMD ["./app"]
+          EOF
+          fi
+          
+          docker build -t ${{ inputs.registry-url }}/go-app:${{ inputs.version }} .
+          docker push ${{ inputs.registry-url }}/go-app:${{ inputs.version }}
+        working-directory: "${{ inputs.working-directory }}"
+
+      - name: Deploy to Kubernetes
+        if: inputs.deployment-target == 'k8s'
+        run: |
+          echo "Deploying to Kubernetes cluster for ${{ inputs.environment }}"
+          # Add kubectl deployment logic here
+          # kubectl apply -f k8s/
+          # kubectl set image deployment/go-app go-app=${{ inputs.registry-url }}/go-app:${{ inputs.version }}
+
+      - name: Deploy serverless function
+        if: inputs.deployment-target == 'serverless'
+        run: |
+          echo "Deploying Go serverless function to ${{ inputs.environment }}"
+          # Add serverless deployment logic here
+          # Examples: AWS Lambda, Google Cloud Functions, Azure Functions
+          
+      - name: Health check
+        run: |
+          echo "Performing health check for ${{ inputs.environment }} deployment"
+          # Add health check logic here
+          sleep 5
+          echo "Health check passed"
+
+      - name: Notify deployment success
+        run: |
+          echo "Successfully deployed Go application version ${{ inputs.version }} to ${{ inputs.environment }}"
+          echo "Deployment target: ${{ inputs.deployment-target }}"
+
+  createBug:
+    name: Create Bug
+    needs: [deploy]
+    if: failure()
+    uses: ./.github/workflows/create-bug.yml
+    with:
+      runs-on: ${{ fromJSON(inputs.runs-on) }}
+      title: 'Go Deployment Failed'
+      job: 'deploy'
+      status: 'failure'
