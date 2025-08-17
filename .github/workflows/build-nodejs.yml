@@ -130,7 +130,7 @@ jobs:
           if [ ${#package_files[@]} -gt 0 ] && [ -e "${package_files[0]}" ]; then
             mv "${package_files[@]}" dist/
           else
-            echo "Warning: No package files (*.tgz, *.tar.gz) found to move to dist/. This can happen if your build script does not produce a package file, or if your package manager does not support packaging. If you expect a package file to be created, please check your build logs and configuration."
+            echo "Warning: No package files found to move to dist/. Check build configuration if packages are expected."
           fi
         working-directory: "${{ inputs.working-directory }}"
 
