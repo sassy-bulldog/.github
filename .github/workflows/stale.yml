@@ -15,6 +15,9 @@ on:
     paths:
       - '.github/workflows/stale.yml'
 
+permissions:
+  contents: read
+
 jobs:
   get-app-token:
     name: Get GitHub App Token
@@ -29,6 +32,9 @@ jobs:
     name: Close Issues w/o Update for 10-days, Mark Issues and PRs Older than 90-days as Stale
     needs: get-app-token
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
       - name: Clean Agent Workspace
         uses: tiacsys/clean-after-action@v3.0.0
@@ -72,7 +78,6 @@ jobs:
     needs: get-app-token
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]') }}
     permissions:
-      contents: read
       issues: write
     steps:
       #TODO: Deprecated NodeJS Version
