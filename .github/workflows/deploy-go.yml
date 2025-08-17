@@ -116,7 +116,19 @@ jobs:
           WORKDIR /root/
           COPY artifacts/* ./
           RUN chmod +x ./*
-          CMD ["./app"]
+            # Find the first executable file in artifacts (excluding directories)
+            BINARY_NAME=$(find artifacts -maxdepth 1 -type f -executable -exec basename {} \; | head -n 1)
+            if [ -z "$BINARY_NAME" ]; then
+              echo "No executable binary found in artifacts directory."
+              exit 1
+            fi
+            cat > Dockerfile <<EOF
+          FROM alpine:latest
+          RUN apk --no-cache add ca-certificates
+          WORKDIR /root/
+          COPY artifacts/* ./
+          RUN chmod +x ./$BINARY_NAME
+          CMD ["./$BINARY_NAME"]
           EOF
           fi
 
