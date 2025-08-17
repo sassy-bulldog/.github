@@ -149,7 +149,17 @@ jobs:
             fi
             echo "COPY artifacts/ ." >> Dockerfile
             echo "EXPOSE 3000" >> Dockerfile
-            echo 'CMD ["npm", "start"]' >> Dockerfile
+            # Use the start-command input, split into JSON array for CMD
+            START_CMD="${{ inputs.start-command }}"
+            # Convert the start command to a JSON array for Docker CMD
+            # If the command is a single word, output as ["word"], else split by spaces
+            if [[ "$START_CMD" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
+              echo "CMD [\"$START_CMD\"]" >> Dockerfile
+            else
+              # Split command into array
+              CMD_JSON=$(printf '%s\n' "$START_CMD" | awk '{for(i=1;i<=NF;i++) printf "\"%s\"%s", $i, (i==NF?"":", ")}')
+              echo "CMD [${CMD_JSON}]" >> Dockerfile
+            fi
           fi
 
           if [ -n "${{ inputs.registry-url }}" ]; then
