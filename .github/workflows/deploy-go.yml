@@ -121,7 +121,14 @@ jobs:
           fi
 
           docker build -t ${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }} .
-          docker push ${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }}
+          if [ -n "${{ inputs.registry-url }}" ]; then
+            IMAGE_TAG="${{ inputs.registry-url }}/${{ inputs.image-name }}:${{ inputs.version }}"
+          else
+            IMAGE_TAG="${{ inputs.image-name }}:${{ inputs.version }}"
+          fi
+
+          docker build -t "$IMAGE_TAG" .
+          docker push "$IMAGE_TAG"
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Deploy to Kubernetes
