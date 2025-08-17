@@ -34,7 +34,7 @@ repository:
         strict: true
         contexts:
           - "Unit Tests / Node.js Unit Tests"
-          - "Build / Node.js Build"
+          - "Node.js Build"
       enforce_admins: false
       required_pull_request_reviews:
         required_approving_review_count: 1
