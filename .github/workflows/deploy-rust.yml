@@ -128,10 +128,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Build and push Docker image
-        if: inputs.deployment-target == 'docker'
-        run: |
-          if [ ! -f Dockerfile ]; then
       # NOTE: A Dockerfile must exist in the specified working directory for Docker deployment.
       # The Dockerfile should define how to build your Rust application container image.
       # Example minimal Dockerfile:
