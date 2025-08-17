@@ -148,7 +148,13 @@ jobs:
             chmod +x entrypoint.sh
             echo "FROM debian:bookworm-slim" > Dockerfile
             echo "RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*" >> Dockerfile
+            # Removed ineffective COPY artifacts/* ./ line
+            echo 'chmod +x app' >> entrypoint.sh
+            chmod +x entrypoint.sh
+            echo "FROM debian:bookworm-slim" > Dockerfile
+            echo "RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*" >> Dockerfile
             echo "WORKDIR /app" >> Dockerfile
+            echo "COPY artifacts/* ./ " >> Dockerfile
             echo "COPY entrypoint.sh /app/entrypoint.sh" >> Dockerfile
             echo "EXPOSE 8080" >> Dockerfile
             echo "COPY entrypoint.sh /app/entrypoint.sh" >> Dockerfile
