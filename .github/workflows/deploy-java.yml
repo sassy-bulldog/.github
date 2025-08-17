@@ -60,13 +60,6 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
-      - name: Validate Java version
-        run: |
-          case "${{ inputs.java-version }}" in
-            11|17|21) echo "Java version ${{ inputs.java-version }} is allowed." ;;
-            *) echo "Error: java-version must be one of: 11, 17, 21"; exit 1 ;;
-          esac
-
       - name: Clean Agent Workspace
         uses: tiacsys/clean-after-action@v3.0.0
 
@@ -120,6 +113,10 @@ jobs:
       - name: Build and push Docker image
         if: inputs.deployment-target == 'docker'
         run: |
+          case "${{ inputs.java-version }}" in
+            11|17|21) echo "Java version ${{ inputs.java-version }} is allowed." ;;
+            *) echo "Error: java-version must be one of: 11, 17, 21"; exit 1 ;;
+          esac
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for Java application"
             cat > Dockerfile << 'EOF'
