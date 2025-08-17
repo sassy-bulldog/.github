@@ -91,7 +91,7 @@ jobs:
         run: |
           mkdir -p dist
           cp target/*.jar dist/ || true
-          cp target/*.war dist/ || true
+          find target -name '*.war' -exec cp {} dist/ \;
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Copy Gradle artifacts
