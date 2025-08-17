@@ -126,7 +126,8 @@ jobs:
             echo "Creating minimal Dockerfile for Python application"
             cat > Dockerfile << 'EOF'
             PYTHON_VERSION="${{ inputs.python-version }}"
-            cat > Dockerfile << "EOF"
+            PYTHON_VERSION="${{ inputs.python-version }}"
+            cat > Dockerfile <<EOF
           FROM python:${PYTHON_VERSION}-slim
 
           # Set environment variables
