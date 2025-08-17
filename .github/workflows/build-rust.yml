@@ -86,12 +86,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-mingw-w64-x86-64
 
-      - name: Install cargo-edit
-        run: cargo install cargo-edit
-        working-directory: "${{ inputs.working-directory }}"
-
       - name: Update version in Cargo.toml
-        run: cargo set-version "${{ inputs.version }}"
+        run: |
+          if cargo set-version --help > /dev/null 2>&1; then
+            cargo set-version "${{ inputs.version }}"
+          else
+            cargo install --locked cargo-edit
+            cargo set-version "${{ inputs.version }}"
+          fi
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Build for target
