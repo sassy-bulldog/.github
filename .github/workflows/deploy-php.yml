@@ -136,7 +136,6 @@ jobs:
             echo "Creating minimal Dockerfile for PHP application"
             echo "FROM php:8.2-apache" > Dockerfile
             echo "RUN apt-get update && apt-get install -y libpng-dev libjpeg62-turbo-dev libfreetype6-dev zip unzip" >> Dockerfile
-            echo "    && docker-php-ext-configure gd --with-freetype --with-jpeg \" >> Dockerfile
             echo "RUN apt-get update && apt-get install -y libpng-dev libjpeg62-turbo-dev libfreetype6-dev zip unzip \\" >> Dockerfile
             echo "    && docker-php-ext-configure gd --with-freetype --with-jpeg \\" >> Dockerfile
             echo "    && docker-php-ext-install -j\$(nproc) gd pdo pdo_mysql \\" >> Dockerfile
