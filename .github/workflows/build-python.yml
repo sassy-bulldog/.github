@@ -112,7 +112,7 @@ jobs:
           cp dist/* dist-final/ 2>/dev/null || true
           # Also create a source distribution if not already created
           if ! ls dist/*.tar.gz 1> /dev/null 2>&1 && [ "${{ inputs.build-backend }}" = "setuptools" ]; then
-            python setup.py sdist --dist-dir dist-final/
+            python -m build --sdist --outdir dist-final/
           fi
         working-directory: "${{ inputs.working-directory }}"
 
