@@ -1,5 +1,9 @@
 # TODO: Make this a pre-commit action
 name: 'Lint: Terraform'
+
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:

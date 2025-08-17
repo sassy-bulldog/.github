@@ -1,5 +1,8 @@
 name: Build ISPACs
 
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:

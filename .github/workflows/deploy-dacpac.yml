@@ -1,5 +1,8 @@
 name: Deploy DACPACs
 
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:
