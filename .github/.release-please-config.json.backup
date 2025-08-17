@@ -16,15 +16,18 @@
       "prerelease": false,
       "include-component-in-tag": false,
       "extra-files": [
-        ".github/workflows/**.*",
-        "examples/shared-workflows/*.yml",
+        ".github/workflows/codeowners.yml",
+        ".github/workflows/pr-controls.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/stale.yml",
+        "standardized-workflows/all/**/*"
       ]
     },
-    "repo-governance/dotnet": {
+    "standardized-workflows/dotnet": {
       "pull-request-title-pattern": "chore${scope}: Release dotnet v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/dotnet/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/dotnet/CHANGELOG.md",
       "release-type": "simple",
       "component": "dotnet",
       "include-component-in-tag": true,
@@ -32,11 +35,11 @@
         "**/*"
       ]
     },
-    "repo-governance/python": {
+    "standardized-workflows/python": {
       "pull-request-title-pattern": "chore${scope}: Release python v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/python/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/python/CHANGELOG.md",
       "release-type": "simple",
       "component": "python",
       "include-component-in-tag": true,
@@ -44,112 +47,137 @@
         "**/*"
       ]
     },
-    "repo-governance/R-lang": {
+    "standardized-workflows/R-lang": {
       "pull-request-title-pattern": "chore${scope}: Release R-lang v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/R-lang/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/R-lang/CHANGELOG.md",
       "release-type": "simple",
       "component": "R-lang",
       "include-component-in-tag": true,
       "extra-files": [
-        "**/*"
+        "**/*",
+        "../../.github/workflows/deploy-R-lang.yml",
+        "../../.github/workflows/units-R-lang.yml"
       ]
     },
-    "repo-governance/SSDT": {
+    "standardized-workflows/SSDT": {
       "pull-request-title-pattern": "chore${scope}: Release SSDT v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/SSDT/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/SSDT/CHANGELOG.md",
       "release-type": "simple",
       "component": "SSDT",
       "include-component-in-tag": true,
       "extra-files": [
-        "**/*"
+        "**/*",
+        "../../.github/workflows/build-dacpac.yml",
+        "../../.github/workflows/deploy-dacpac.yml",
+        "../../.github/workflows/plan-dacpac.yml"
       ]
     },
-    "repo-governance/SSIS": {
+    "standardized-workflows/SSIS": {
       "pull-request-title-pattern": "chore${scope}: Release SSIS v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/SSIS/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/SSIS/CHANGELOG.md",
       "release-type": "simple",
       "component": "SSIS",
       "include-component-in-tag": true,
       "extra-files": [
-        "**/*"
+        "**/*",
+        "../../.github/workflows/build-ispac.yml",
+        "../../.github/workflows/deploy-ispac.yml",
+        "../../.github/workflows/units-ispac.yml"
       ]
     },
-    "repo-governance/terraform": {
+    "standardized-workflows/terraform": {
       "pull-request-title-pattern": "chore${scope}: Release terraform v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/terraform/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/terraform/CHANGELOG.md",
       "release-type": "simple",
       "component": "terraform",
       "include-component-in-tag": true,
       "extra-files": [
-        "**/*"
+        "**/*",
+        "../../.github/workflows/lint-terraform.yml",
+        "../../.github/workflows/units-terraform.yml"
       ]
     },
-    "repo-governance/go": {
+    "standardized-workflows/go": {
       "pull-request-title-pattern": "chore${scope}: Release go v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/go/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/go/CHANGELOG.md",
       "release-type": "simple",
       "component": "go",
       "include-component-in-tag": true,
       "extra-files": [
-        "**/*"
+        "**/*",
+        "../../.github/workflows/build-go.yml",
+        "../../.github/workflows/deploy-go.yml",
+        "../../.github/workflows/units-go.yml"
       ]
     },
-    "repo-governance/java": {
+    "standardized-workflows/java": {
       "pull-request-title-pattern": "chore${scope}: Release java v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/java/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/java/CHANGELOG.md",
       "release-type": "simple",
       "component": "java",
       "include-component-in-tag": true,
       "extra-files": [
-        "**/*"
+        "**/*",
+        "../../.github/workflows/build-java.yml",
+        "../../.github/workflows/deploy-java.yml",
+        "../../.github/workflows/units-java.yml"
       ]
     },
-    "repo-governance/nodejs": {
+    "standardized-workflows/nodejs": {
       "pull-request-title-pattern": "chore${scope}: Release nodejs v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/nodejs/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/nodejs/CHANGELOG.md",
       "release-type": "simple",
       "component": "nodejs",
       "include-component-in-tag": true,
       "extra-files": [
-        "**/*"
+        "**/*",
+        "../../.github/workflows/build-nodejs.yml",
+        "../../.github/workflows/deploy-nodejs.yml",
+        "../../.github/workflows/units-nodejs.yml"
       ]
     },
-    "repo-governance/rust": {
+    "standardized-workflows/rust": {
       "pull-request-title-pattern": "chore${scope}: Release rust v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/rust/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/rust/CHANGELOG.md",
       "release-type": "simple",
       "component": "rust",
       "include-component-in-tag": true,
       "extra-files": [
-        "**/*"
+        "**/*",
+        "../../.github/workflows/build-rust.yml",
+        "../../.github/workflows/deploy-rust.yml",
+        "../../.github/workflows/units-rust.yml"
       ]
     },
-    "repo-governance/php": {
+    "standardized-workflows/php": {
       "pull-request-title-pattern": "chore${scope}: Release php v${version}",
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/php/CHANGELOG.md",
+      "changelog-path": "standardized-workflows/php/CHANGELOG.md",
       "release-type": "simple",
       "component": "php",
       "include-component-in-tag": true,
       "extra-files": [
-        "**/*"
+        "**/*",
+        "../../.github/workflows/build-php.yml",
+        "../../.github/workflows/deploy-php.yml",
+        "../../.github/workflows/units-php.yml"
       ]
     }
   },

@@ -1,0 +1,27 @@
+collaborators:
+
+settings:
+
+labels:
+
+branch_protections:
+
+environments:
+
+secrets:
+
+variables:
+  - key: SQL_SERVER_NAME
+    value: ''
+    exists: false
+
+batch_file_operations:
+  - target_branch: main
+    commit_msg: 'ci(standards): Update SSIS Workflows'
+    files:
+      - src_file: repo-governance/SSIS/.pre-commit-config.yaml
+        dest_file: .pre-commit-config.yaml
+      - src_file: repo-governance/SSIS/dependabot.yml
+        dest_file: .github/dependabot.yml
+      - src_file: repo-governance/SSIS/workflows/unit-tests.yml
+        dest_file: .github/workflows/unit-tests.yml

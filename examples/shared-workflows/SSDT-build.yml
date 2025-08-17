@@ -1,0 +1,18 @@
+# x-release-please-version
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: SSDT Build
+    uses: sassy-bulldog/.github/.github/workflows/build-SSDT.yml@SSDT-v1.0.0 # x-release-please-version
+    with:
+      runs-on: '["ubuntu-latest"]'
+      artifact-name: 'SSDT-build-artifacts'
+      version: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1-alpha' }}

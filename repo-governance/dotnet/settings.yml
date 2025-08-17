@@ -1,0 +1,22 @@
+settings:
+
+labels:
+
+branch_protections:
+
+environments:
+
+secrets:
+
+variables:
+
+batch_file_operations:
+  - target_branch: main
+    commit_msg: 'ci(standards): Update dotnet Workflows'
+    files:
+      - src_file: repo-governance/dotnet/.pre-commit-config.yaml
+        dest_file: .pre-commit-config.yaml
+      - src_file: repo-governance/dotnet/dependabot.yml
+        dest_file: .github/dependabot.yml
+      - src_file: repo-governance/dotnet/workflows/unit-tests.yml
+        dest_file: .github/workflows/unit-tests.yml

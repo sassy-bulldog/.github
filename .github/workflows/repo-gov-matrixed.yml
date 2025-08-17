@@ -44,7 +44,7 @@ on:
 jobs:
   matrix-repos:
     concurrency:
-      group: ${{ inputs.repo-filter || 'all' }}-repo-list@${{ inputs.settings_files || '[ "standardized-workflows/all/settings.yml" ]' }}
+      group: ${{ inputs.repo-filter || 'all' }}-repo-list@${{ inputs.settings_files || '[ "repo-governance/all/settings.yml" ]' }}
       cancel-in-progress: true
 
     name: Get list of repos
@@ -66,6 +66,6 @@ jobs:
     with:
       runs-on: ${{ inputs.runs-on || '[ "ubuntu-latest" ]' }}
       repos: ${{ needs.matrix-repos.outputs.repos }}
-      settings_files: ${{ inputs.settings_files || '[ "standardized-workflows/all/settings.yml" ]' }}
+      settings_files: ${{ inputs.settings_files || '[ "repo-governance/all/settings.yml" ]' }}
       action: ${{ inputs.action || 'check' }}
     secrets: inherit
