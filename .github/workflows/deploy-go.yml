@@ -78,10 +78,11 @@ jobs:
         with:
           go-version: '1.22'
 
-      - name: Make binaries executable
+      - name: Make all artifacts executable
         if: inputs.deployment-target == 'binary'
         run: |
-          find ./artifacts -type f -executable -exec chmod +x {} \;
+          # Assume all files in artifacts/ are Go binaries
+          chmod +x ./artifacts/*
           ls -la ./artifacts/
 
       - name: Deploy binary artifacts
@@ -91,7 +92,7 @@ jobs:
           # Add your binary deployment logic here
           # Examples: scp to servers, upload to S3, etc.
           for binary in ./artifacts/*; do
-            if [ -f "$binary" ] && [ -x "$binary" ]; then
+            if [ -f "$binary" ]; then
               echo "Would deploy: $(basename $binary) to ${{ inputs.environment }}"
               # Actual deployment commands would go here
             fi
@@ -108,33 +109,25 @@ jobs:
       - name: Build and push Docker image
         if: inputs.deployment-target == 'docker'
         run: |
+          # Assume all files in artifacts/ are Go binaries, pick the first as entrypoint
+          BINARY_NAME=$(find artifacts -maxdepth 1 -type f | head -n 1 | xargs -n1 basename)
+          if [ -z "$BINARY_NAME" ]; then
+            echo "No binary found in artifacts directory."
+            exit 1
+          fi
           if [ ! -f Dockerfile ]; then
-            echo "Creating minimal Dockerfile for Go binary"
-            cat > Dockerfile << 'EOF'
-          FROM alpine:latest
-          RUN apk --no-cache add ca-certificates
-          WORKDIR /root/
-          COPY artifacts/* ./
-          RUN chmod +x ./*
-            # Find the first executable file in artifacts (excluding directories)
-            BINARY_NAME=$(find artifacts -maxdepth 1 -type f -executable -exec basename {} \; | head -n 1)
-            if [ -z "$BINARY_NAME" ]; then
-              echo "No executable binary found in artifacts directory."
-              exit 1
-            fi
-            cat > Dockerfile <<EOF
-          FROM alpine:latest
-          RUN apk --no-cache add ca-certificates
-          WORKDIR /root/
-          COPY artifacts/* ./
-          RUN chmod +x ./$BINARY_NAME
-          CMD ["./$BINARY_NAME"]
-          EOF
+            echo "Creating minimal Dockerfile for Go binary: $BINARY_NAME"
+            echo 'FROM alpine:latest' > Dockerfile
+            echo 'RUN apk --no-cache add ca-certificates' >> Dockerfile
+            echo 'WORKDIR /root/' >> Dockerfile
+            echo 'COPY artifacts/* ./' >> Dockerfile
+            echo "RUN chmod +x ./$BINARY_NAME" >> Dockerfile
+            echo "CMD [\"./$BINARY_NAME\"]" >> Dockerfile
           fi
 
           IMAGE_TAG="${{ inputs.image-name }}:${{ inputs.version }}"
           if [ -n "${{ inputs.registry-url }}" ]; then
-            IMAGE_TAG="${{ inputs.registry-url }}/${IMAGE_TAG}"
+            IMAGE_TAG="${{ inputs.registry-url }}/$IMAGE_TAG"
           fi
           docker build -t "$IMAGE_TAG" .
 
