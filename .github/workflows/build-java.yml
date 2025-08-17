@@ -100,7 +100,6 @@ jobs:
           mkdir -p dist
           find build/libs -name '*.jar' -exec cp {} dist/ \;
           find target -name '*.jar' -exec cp {} dist/ \;
-          find target -name '*.war' -exec cp {} dist/ \;
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Copy Gradle artifacts
