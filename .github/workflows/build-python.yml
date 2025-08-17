@@ -113,7 +113,6 @@ jobs:
           # Also create a source distribution if not already created
           if ! ls dist/*.tar.gz 1> /dev/null 2>&1 && [ "${{ inputs.build-backend }}" = "setuptools" ]; then
             python -m build --sdist --outdir dist-final/
-          fi
         working-directory: "${{ inputs.working-directory }}"
 
       - name: Upload artifacts
