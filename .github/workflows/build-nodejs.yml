@@ -57,7 +57,25 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
           cache: ${{ inputs.package-manager }}
-          cache-dependency-path: ${{ inputs.working-directory }}/${{ inputs.package-manager == 'npm' && 'package-lock.json' || inputs.package-manager == 'yarn' && 'yarn.lock' || inputs.package-manager == 'pnpm' && 'pnpm-lock.yaml' }}
+      - name: Determine lockfile path
+        id: set-lockfile-path
+        run: |
+          if [ "${{ inputs.package-manager }}" = "npm" ]; then
+            echo "LOCKFILE_PATH=${{ inputs.working-directory }}/package-lock.json" >> $GITHUB_ENV
+          elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
+            echo "LOCKFILE_PATH=${{ inputs.working-directory }}/yarn.lock" >> $GITHUB_ENV
+          elif [ "${{ inputs.package-manager }}" = "pnpm" ]; then
+            echo "LOCKFILE_PATH=${{ inputs.working-directory }}/pnpm-lock.yaml" >> $GITHUB_ENV
+          else
+            echo "LOCKFILE_PATH=" >> $GITHUB_ENV
+          fi
+
+      - name: Use Node.js ${{ inputs.node-version }}
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: ${{ inputs.package-manager }}
+          cache-dependency-path: ${{ env.LOCKFILE_PATH }}
 
       - name: Setup pnpm
         if: inputs.package-manager == 'pnpm'
