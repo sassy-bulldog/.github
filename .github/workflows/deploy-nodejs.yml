@@ -86,11 +86,6 @@ jobs:
         run: |
           cd artifacts
           # Extract any compressed artifacts
-          for file in *.tar.gz *.tgz; do
-            if [ -f "$file" ]; then
-              tar -xzf "$file"
-            fi
-          done
           shopt -s nullglob
           for file in *.tar.gz *.tgz; do
             if [ -f "$file" ]; then
