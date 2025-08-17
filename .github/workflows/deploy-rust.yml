@@ -126,7 +126,13 @@ jobs:
           WORKDIR /app
           COPY artifacts/* ./
           RUN chmod +x ./* 2>/dev/null || true
-          RUN find . -type f -executable -exec mv {} app \; -quit || cp * app
+          RUN set -e; \
+            files=(*); \
+            if [ "${#files[@]}" -ne 1 ]; then \
+              echo "Error: Expected exactly one binary in /app, found ${#files[@]} files: ${files[*]}"; \
+              exit 1; \
+            fi; \
+            mv "${files[0]}" app
           EXPOSE 8080
           CMD ["./app"]
           EOF
