@@ -134,21 +134,27 @@ jobs:
         run: |
           if [ ! -f Dockerfile ]; then
             echo "Creating minimal Dockerfile for PHP application"
+            # Write entrypoint script for composer logic
+            echo '#!/bin/bash' > docker-entrypoint.sh
+            echo 'set -e' >> docker-entrypoint.sh
+            echo 'if [ -f composer.json ] && [ -f composer.lock ]; then' >> docker-entrypoint.sh
+            echo '  composer install --no-dev --optimize-autoloader --no-interaction --check-lock' >> docker-entrypoint.sh
+            echo 'elif [ -f composer.json ]; then' >> docker-entrypoint.sh
+            echo '  composer install --no-dev --optimize-autoloader --no-interaction' >> docker-entrypoint.sh
+            echo 'fi' >> docker-entrypoint.sh
+            chmod +x docker-entrypoint.sh
+            # Write Dockerfile
             echo "FROM php:8.2-apache" > Dockerfile
-            echo "RUN apt-get update && apt-get install -y libpng-dev libjpeg62-turbo-dev libfreetype6-dev zip unzip" >> Dockerfile
+            echo "RUN apt-get update && apt-get install -y libpng-dev libjpeg62-turbo-dev libfreetype6-dev zip unzip \\" >> Dockerfile
             echo "    && docker-php-ext-configure gd --with-freetype --with-jpeg \\" >> Dockerfile
             echo "    && docker-php-ext-install -j\$(nproc) gd pdo pdo_mysql \\" >> Dockerfile
             echo "    && rm -rf /var/lib/apt/lists/*" >> Dockerfile
             echo "COPY --from=composer:latest /usr/bin/composer /usr/bin/composer" >> Dockerfile
             echo "COPY artifacts/ /var/www/html/" >> Dockerfile
+            echo "COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh" >> Dockerfile
             echo "RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html" >> Dockerfile
             echo "WORKDIR /var/www/html" >> Dockerfile
-            echo 'RUN set -e; \' >> Dockerfile
-            echo '    if [ -f composer.json ] && [ -f composer.lock ]; then \' >> Dockerfile
-            echo '        composer install --no-dev --optimize-autoloader --no-interaction --check-lock; \' >> Dockerfile
-            echo '    elif [ -f composer.json ]; then \' >> Dockerfile
-            echo '        composer install --no-dev --optimize-autoloader --no-interaction; \' >> Dockerfile
-            echo '    fi' >> Dockerfile
+            echo "RUN bash /usr/local/bin/docker-entrypoint.sh" >> Dockerfile
             echo "EXPOSE 80" >> Dockerfile
             echo "Copying Dockerfile template for PHP application"
           fi
