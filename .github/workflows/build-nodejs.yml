@@ -126,7 +126,7 @@ jobs:
           # Also copy build output if it exists
           shopt -s nullglob
           tgz_files=( *.tgz )
-          if compgen -G "*.tgz" > /dev/null; then
+          if [ ${#tgz_files[@]} -gt 0 ]; then
             mv "${tgz_files[@]}" dist/
           else
             echo "Warning: No .tgz files found to move to dist/"
