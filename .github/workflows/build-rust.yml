@@ -124,11 +124,9 @@ jobs:
             PROFILE_DIR=debug
           fi
 
-          # Copy only files with .exe extension (Windows) or files with no extension (Unix) from the build profile directory
-          find target/${{ matrix.target }}/${PROFILE_DIR}/ -maxdepth 1 -type f \
-            \( -name '*.exe' -o ! -name '*.*' \) \
-          files_found=$(find target/${{ matrix.target }}/${PROFILE_DIR}/ -maxdepth 1 -type f \
-            \( -name '*.exe' -o ! -name '*.*' \))
+          # Find only .exe files (Windows) or files with no extension (Unix)
+          files_found=$(find target/${{ matrix.target }}/${PROFILE_DIR}/ -maxdepth 1 -type f \( -name '*.exe' -o ! -name '*.*' \))
+
           if [ -z "$files_found" ]; then
             echo "::warning::No build artifacts found in target/${{ matrix.target }}/${PROFILE_DIR}/"
           else

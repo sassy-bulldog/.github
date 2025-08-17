@@ -116,15 +116,7 @@ jobs:
           else
             echo "CRATES_IO_TOKEN not provided, skipping publish"
           fi
-          if [ -n "$CRATES_IO_TOKEN" ]; then
-            echo "$CRATES_IO_TOKEN" | cargo login
-            cargo publish
-          else
-            echo "CRATES_IO_TOKEN not provided, skipping publish"
-          fi
         working-directory: "${{ inputs.working-directory }}"
-        env:
-          CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 
       - name: Log in to Container Registry
         if: inputs.deployment-target == 'docker' && inputs.registry-url != ''
