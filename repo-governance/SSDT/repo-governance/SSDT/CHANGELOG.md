@@ -2,7 +2,6 @@
 
 ## [0.2.3](https://github.com/sassy-bulldog/.github/compare/SSDT@v0.2.2...SSDT@v0.2.3) (2025-08-18)
 
-
 ### Bug Fixes
 
 * Add missing component workflows and bring up to standards ([6072800](https://github.com/sassy-bulldog/.github/commit/6072800ac6484bf7b86644d94a0bc9a40aed4f5d))
