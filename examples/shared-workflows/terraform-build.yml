@@ -1,5 +1,6 @@
 # version: 1.0.0
-# Name as it appears on the Actions tab of GitHub (for current repo; this get's ignored if called from another repo)
+# Name as it appears on the Actions tab of GitHub
+# (for current repo; this get's ignored if called from another repo)
 name: Build
 
 on:
@@ -12,6 +13,7 @@ on:
 jobs:
   build:
     name: Terraform Build
+    # yamllint disable-line rule:line-length
     uses: sassy-bulldog/.github/.github/workflows/build-terraform.yml@v0.3.1 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'
