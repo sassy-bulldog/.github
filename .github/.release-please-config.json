@@ -58,7 +58,7 @@
     "repo-governance/dotnet": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/dotnet/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "dotnet",
       "include-component-in-tag": true,
@@ -67,7 +67,7 @@
     "repo-governance/python": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/python/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "python",
       "include-component-in-tag": true,
@@ -76,7 +76,7 @@
     "repo-governance/R-lang": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/R-lang/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "R-lang",
       "include-component-in-tag": true,
@@ -85,7 +85,7 @@
     "repo-governance/SSDT": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/SSDT/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "SSDT",
       "include-component-in-tag": true,
@@ -94,7 +94,7 @@
     "repo-governance/SSIS": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/SSIS/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "SSIS",
       "include-component-in-tag": true,
@@ -103,7 +103,7 @@
     "repo-governance/terraform": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/terraform/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "terraform",
       "include-component-in-tag": true,
@@ -112,7 +112,7 @@
     "repo-governance/go": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/go/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "go",
       "include-component-in-tag": true,
@@ -121,7 +121,7 @@
     "repo-governance/java": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/java/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "java",
       "include-component-in-tag": true,
@@ -130,7 +130,7 @@
     "repo-governance/nodejs": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/nodejs/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "nodejs",
       "include-component-in-tag": true,
@@ -139,7 +139,7 @@
     "repo-governance/rust": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/rust/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "rust",
       "include-component-in-tag": true,
@@ -148,7 +148,7 @@
     "repo-governance/php": {
       "tag-separator": "@",
       "include-v-in-tag": true,
-      "changelog-path": "repo-governance/php/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "release-type": "simple",
       "component": "php",
       "include-component-in-tag": true,
