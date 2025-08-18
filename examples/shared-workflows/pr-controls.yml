@@ -14,6 +14,9 @@ on:
       - synchronize
       - reopened
 
+permissions:
+  contents: read
+
 jobs:
   commit_title:
     name: Controls to Standardize Pull Requests
