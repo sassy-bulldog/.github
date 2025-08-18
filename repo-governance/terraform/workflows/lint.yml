@@ -9,9 +9,8 @@ name: Lint Code
 # yamllint disable-line rule:line-length
 # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
 permissions:
-  contents: read
-  checks: write
   contents: write
+  checks: write
 
 # Controls when the workflow will run
 on:
