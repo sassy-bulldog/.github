@@ -1,33 +1,38 @@
+# This file configures pre-commit hooks for the repository.
+# It defines the tools and checks that will run automatically before each
+# commit, helping to enforce code quality, formatting, and best practices.
+# For more information, see:
+#   https://pre-commit.com/
+---
 fail_fast: false
 minimum_pre_commit_version: "2.6.0"
+
 ci:
   autofix_commit_msg: 'chore(pre-commit.ci): Auto fixes [...]'
   autoupdate_commit_msg: 'chore(pre-commit.ci): Auto update of pre-commit hooks'
+  skip:
+    - terraform_fmt_docker
+    - terraform_validate_docker
+    - terraform_tflint_docker
+    - terraform_docs_docker
+    - terraform_checkov_docker
+    - terraform_trivy_docker
 
 repos:
-  # https://pre-commit.com/hooks.html
-  - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.81.0
+  # Fork from https://github.com/antonbabenko/pre-commit-terraform
+  # His does not yet use docker images
+  - repo: https://github.com/actuarysailor/pre-commit-terraform
+    rev: "1815705d890046e053875e8b75e30965f9fa62e9"
     hooks:
-      - id: terraform_fmt
-      - id: terraform_validate
-      - id: terraform_tflint
-        args:
-          - '--args=--only=terraform_deprecated_interpolation'
-          - '--args=--only=terraform_deprecated_index'
-          - '--args=--only=terraform_unused_declarations'
-          - '--args=--only=terraform_comment_syntax'
-          - '--args=--only=terraform_documented_outputs'
-          - '--args=--only=terraform_documented_variables'
-          - '--args=--only=terraform_typed_variables'
-          - '--args=--only=terraform_module_pinned_source'
-          - '--args=--only=terraform_naming_convention'
-          - '--args=--only=terraform_required_version'
-          - '--args=--only=terraform_required_providers'
-          - '--args=--only=terraform_standard_module_structure'
-          - '--args=--only=terraform_workspace_remote'
+      - id: terraform_fmt_docker
+      - id: terraform_validate_docker
+      - id: terraform_tflint_docker
+      - id: terraform_docs_docker
+      - id: terraform_checkov_docker
+      - id: terraform_trivy_docker
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       # - id: check-illegal-windows-names
       - id: check-case-conflict
@@ -38,18 +43,14 @@ repos:
       - id: check-merge-conflict
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/terraform-docs/terraform-docs
-    # To update run:
-    # pre-commit autoupdate --freeze
-    rev: 212db41760d7fc45d736d5eb94a483d0d2a12049  # frozen: v0.16.0
+      - id: check-added-large-files
+
+  # Optionally, add yamllint for YAML files
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.37.1  # Use the latest stable version
     hooks:
-      - id: terraform-docs-go
-        args:
-          - "--config=.terraform-docs.yaml"
-          - "--lockfile=false"
-          - "--recursive"
-          - "--recursive-path=examples/"
-          - "./"
+      - id: yamllint
+
   - repo: https://github.com/markdownlint/markdownlint
     rev: v0.13.0
     hooks:
