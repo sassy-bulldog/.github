@@ -53,7 +53,7 @@ jobs:
         action: [ apply ]
         include:
           - repo-filter: 'terraform'
-            settings_file: 'repo-Governance/terraform/settings.yml'
+            settings_file: 'repo-governance/terraform/settings.yml'
             delay: 0
             action: ${{ inputs.action || 'apply'}}
           - repo-filter: 'dotnet'
