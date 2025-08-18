@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     name: SSIS Build
-    uses: sassy-bulldog/.github/.github/workflows/build-ispac.yml@v0.3.0 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/build-ispac.yml@v0.3.1 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'
       artifact-name: 'SSIS-build-artifacts'
