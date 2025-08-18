@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/sassy-bulldog/.github/compare/v0.3.0...v0.3.1) (2025-08-18)
+
+
+### Bug Fixes
+
+* **terraform:** Add working docker terraform pre-commit hooks ([af5ac7c](https://github.com/sassy-bulldog/.github/commit/af5ac7c5ab93a07e8b14f23dfed632669e04d8de))
+
 ## [0.3.0](https://github.com/sassy-bulldog/.github/compare/v0.2.2...v0.3.0) (2025-08-18)
 
 

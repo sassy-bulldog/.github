@@ -36,7 +36,7 @@ jobs:
   deploy:
     name: Terraform Deploy
     # yamllint disable-line rule:line-length
-    uses: sassy-bulldog/.github/.github/workflows/deploy-terraform.yml@v0.3.0 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/deploy-terraform.yml@v0.3.1 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'
       environment: ${{ github.event.inputs.environment }}

@@ -33,7 +33,7 @@ on:
 jobs:
   deploy:
     name: Python Deploy
-    uses: sassy-bulldog/.github/.github/workflows/deploy-python.yml@v0.3.0 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/deploy-python.yml@v0.3.1 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'
       environment: ${{ github.event.inputs.environment }}

@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     name: Python Build
-    uses: sassy-bulldog/.github/.github/workflows/build-python.yml@v0.3.0 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/build-python.yml@v0.3.1 # x-release-please-version
     with:
       runs-on: '["ubuntu-latest"]'
       artifact-name: 'python-build-artifacts'

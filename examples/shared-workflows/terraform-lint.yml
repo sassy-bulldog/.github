@@ -29,5 +29,5 @@ jobs:
   run-terraform-linters:
     name: terraform
     # yamllint disable-line rule:line-length
-    uses: sassy-bulldog/.github/.github/workflows/lint-terraform.yml@v0.3.0 # x-release-please-version
+    uses: sassy-bulldog/.github/.github/workflows/lint-terraform.yml@v0.3.1 # x-release-please-version
     secrets: inherit
