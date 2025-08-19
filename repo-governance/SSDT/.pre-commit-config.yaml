@@ -1,8 +1,15 @@
+# This file configures pre-commit hooks for the repository.
+# It defines the tools and checks that will run automatically before each
+# commit, helping to enforce code quality, formatting, and best practices.
+# For more information, see:
+#   https://pre-commit.com/
+---
 fail_fast: false
 minimum_pre_commit_version: "2.6.0"
+
 ci:
-  autofix_commit_msg: 'chore(pre-commit.ci): Auto fixes [...]'
-  autoupdate_commit_msg: 'chore(pre-commit.ci): Auto update of pre-commit hooks'
+    autofix_commit_msg: 'chore(pre-commit.ci): Auto fixes [...]'
+    autoupdate_commit_msg: 'chore(pre-commit.ci): Auto update of pre-commit hooks'
 
 repos:
   # https://docs.sqlfluff.com/en/stable/production/pre_commit.html
@@ -18,6 +25,7 @@ repos:
         # Arbitrary arguments to show an example
         # args: [--rules, "LT02,CP02"]
         # additional_dependencies: ['<dbt-adapter>', 'sqlfluff-templater-dbt']
+
   # https://pre-commit.com/hooks.html
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -31,7 +39,9 @@ repos:
       - id: check-merge-conflict
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.13.0
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.41.0
     hooks:
-      - id: markdownlint
+      - id: markdownlint-fix
+        exclude: ^(CHANGELOG|LICENSE|BLANK_README|.github/).*$
