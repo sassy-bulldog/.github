@@ -142,7 +142,7 @@ jobs:
 
       - name: Log in to Container Registry
         if: inputs.deployment-target == 'docker' && inputs.registry-url != ''
-        uses: docker/login-action@v3.3.0
+        uses: docker/login-action@v3.5.0
         with:
           registry: ${{ inputs.registry-url }}
           username: ${{ github.actor }}
