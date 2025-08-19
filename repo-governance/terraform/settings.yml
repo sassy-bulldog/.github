@@ -37,6 +37,8 @@ batch_file_operations:
   - target_branch: main
     commit_msg: 'ci(standards): Update Terraform Workflows'
     files:
+      - src_file: repo-governance/terraform/.markdownlint.json
+        dest_file: .markdownlint.json
       - src_file: repo-governance/terraform/.pre-commit-config.yaml
         dest_file: .pre-commit-config.yaml
       - src_file: repo-governance/terraform/.terraform-docs.yaml
