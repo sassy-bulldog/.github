@@ -75,7 +75,7 @@ jobs:
           tools: composer
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v5.0.0
         with:
           name: ${{ inputs.artifact-name }}
           path: ./artifacts
