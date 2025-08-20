@@ -4,6 +4,9 @@
 ---
 name: Deploy
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
