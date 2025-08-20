@@ -45,4 +45,3 @@ repos:
     rev: v0.41.0
     hooks:
       - id: markdownlint-fix
-        exclude: ^(CHANGELOG|LICENSE|BLANK_README|.github/).*$
