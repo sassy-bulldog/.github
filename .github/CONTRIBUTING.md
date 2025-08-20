@@ -64,11 +64,13 @@ fsutil.exe file setCaseSensitiveInfo "%USERPROFILE%\source" enable
 
 ### Installing Visual Studio Code
 
-To install Visual Studio Code, follow the instructions provided by Microsoft [here](https://code.visualstudio.com/download).
+To install Visual Studio Code, follow the instructions provided by Microsoft on
+the [Visual Studio Code download page](https://code.visualstudio.com/download).
 
 ### Installing Visual Studio
 
-To install Visual Studio, follow the instructions provided by Microsoft [here](https://visualstudio.microsoft.com).
+To install Visual Studio, follow the instructions provided by Microsoft on
+[the Visual Studio download page](https://visualstudio.microsoft.com).
 
 ### R
 
@@ -194,9 +196,10 @@ Load these variables in your application using appropriate libraries:
 
 For a more consistent development environment,especially when working
 with Unix-based tools, consider installing WSL.
-Follow the instructions
-[here](https://learn.microsoft.com/en-us/windows/wsl/install)
-to set it up.
+Follow the instructions in the
+[official WSL installation guide](
+https://learn.microsoft.com/en-us/windows/wsl/install
+) to set it up.
 
 ### Pre-commit Hooks
 

@@ -1,14 +1,13 @@
+<!-- markdownlint-disable MD013 -->
 # Changelog
 
 ## [0.3.1](https://github.com/sassy-bulldog/.github/compare/v0.3.0...v0.3.1) (2025-08-18)
-
 
 ### Bug Fixes
 
 * **terraform:** Add working docker terraform pre-commit hooks ([af5ac7c](https://github.com/sassy-bulldog/.github/commit/af5ac7c5ab93a07e8b14f23dfed632669e04d8de))
 
 ## [0.3.0](https://github.com/sassy-bulldog/.github/compare/v0.2.2...v0.3.0) (2025-08-18)
-
 
 ### Features
 
@@ -18,7 +17,6 @@
 * **php:** Add standardized PHP workflows and configuration ([#94](https://github.com/sassy-bulldog/.github/issues/94)) ([80d9e11](https://github.com/sassy-bulldog/.github/commit/80d9e114e5d95fbc2913914cc8f0b2237e8a4e5e))
 * **r,py:** Finish building out centralized workflows that had placeholders ([#95](https://github.com/sassy-bulldog/.github/issues/95)) ([3fba0af](https://github.com/sassy-bulldog/.github/commit/3fba0afdc543477405f5b4c6d965ee61cd09e69e))
 * **rust:** Add standardized Rust workflows and configuration ([#93](https://github.com/sassy-bulldog/.github/issues/93)) ([4087f3e](https://github.com/sassy-bulldog/.github/commit/4087f3eea717662a5d524ff1ec9da9d7b6cca996))
-
 
 ### Bug Fixes
 
@@ -43,13 +41,11 @@
 
 ## [0.2.2](https://github.com/sassy-bulldog/.github/compare/v0.2.1...v0.2.2) (2024-09-12)
 
-
 ### Bug Fixes
 
 * Runs-on as optional parameter ([#38](https://github.com/sassy-bulldog/.github/issues/38)) ([63873bd](https://github.com/sassy-bulldog/.github/commit/63873bdf88e8d76baf2e89f42b966d2c921deda0))
 
 ## [0.2.1](https://github.com/sassy-bulldog/.github/compare/v0.2.0...v0.2.1) (2024-09-12)
-
 
 ### Bug Fixes
 
@@ -57,13 +53,11 @@
 
 ## [0.2.0](https://github.com/sassy-bulldog/.github/compare/v0.1.1...v0.2.0) (2024-09-01)
 
-
 ### Features
 
 * Adding more languages ([#8](https://github.com/sassy-bulldog/.github/issues/8)) ([e09eb20](https://github.com/sassy-bulldog/.github/commit/e09eb205b71b78860521e14abfd27fbb155a5c29))
 
 ## [0.1.1](https://github.com/sassy-bulldog/.github/compare/v0.1.0...v0.1.1) (2024-08-31)
-
 
 ### Bug Fixes
 
@@ -71,7 +65,7 @@
 
 ## [0.1.0](https://github.com/sassy-bulldog/.github/compare/v0.0.1...v0.1.0) (2024-08-31)
 
-
 ### Features
 
 * Initial Release ([#1](https://github.com/sassy-bulldog/.github/issues/1)) ([b7654fa](https://github.com/sassy-bulldog/.github/commit/b7654fa0138ba7f1e7d74e614d6106708bbc7881))
+<!-- markdownlint-enable MD013 -->

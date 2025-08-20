@@ -75,6 +75,7 @@ jobs:
     name: Apply Scoping Labels to PR
     permissions:
       pull-requests: write
+      issues: write
     runs-on: ${{ fromJSON(inputs.runs-on || '[ "ubuntu-latest" ]' ) }}
     steps:
       #TODO: Deprecated NodeJS Version
