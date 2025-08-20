@@ -59,8 +59,6 @@ batch_file_operations:
         dest_file: .gitignore
       - src_file: .markdownlint.json
         dest_file: .markdownlint.json
-      - src_file: .markdownlintignore
-        dest_file: .markdownlintignore
       - src_file: .github/CODEOWNERS
         dest_file: .github/CODEOWNERS
       - src_file: .github/pr-scope-labeler.yml
