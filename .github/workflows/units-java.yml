@@ -52,7 +52,7 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
 
       - name: Cache Maven dependencies
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
