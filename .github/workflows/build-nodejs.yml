@@ -73,7 +73,7 @@ jobs:
           cache-dependency-path: ${{ env.LOCKFILE_PATH }}
       - name: Setup pnpm
         if: inputs.package-manager == 'pnpm'
-        uses: pnpm/action-setup@v4.0.0
+        uses: pnpm/action-setup@v4.1.0
         with:
           version: latest
 
