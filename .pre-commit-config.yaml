@@ -30,3 +30,4 @@ repos:
     rev: v0.45.0
     hooks:
     - id: markdownlint-fix
+    #  exclude: "^(CHANGELOG).*"

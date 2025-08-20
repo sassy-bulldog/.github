@@ -197,7 +197,9 @@ Load these variables in your application using appropriate libraries:
 For a more consistent development environment,especially when working
 with Unix-based tools, consider installing WSL.
 Follow the instructions in the
-[official WSL installation guide](https://learn.microsoft.com/en-us/windows/wsl/install) to set it up.
+[official WSL installation guide](
+https://learn.microsoft.com/en-us/windows/wsl/install
+) to set it up.
 
 ### Pre-commit Hooks
 

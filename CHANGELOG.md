@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 -->
 # Changelog
 
 ## [0.3.1](https://github.com/sassy-bulldog/.github/compare/v0.3.0...v0.3.1) (2025-08-18)
@@ -67,3 +68,4 @@
 ### Features
 
 * Initial Release ([#1](https://github.com/sassy-bulldog/.github/issues/1)) ([b7654fa](https://github.com/sassy-bulldog/.github/commit/b7654fa0138ba7f1e7d74e614d6106708bbc7881))
+<!-- markdownlint-enable MD013 -->
